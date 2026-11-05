@@ -89,6 +89,23 @@ h2+.lead{margin:0 0 18px;color:var(--muted)}
 .help p,.help ol{margin:0;font-size:15px;padding-inline-start:20px}
 .help p{padding:0}
 footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;color:var(--muted);font-size:14px}
+.vtools{margin:8px 0}
+.vform{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:10px;background:var(--soft);margin-bottom:14px}
+.vform label{display:grid;gap:4px;font-size:15px}
+.vform input,.vform select{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;min-width:0}
+.vhint{margin:0;font-size:13px;color:var(--muted)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:10px 0 6px}
+.vcard{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.vmedia{aspect-ratio:16/9;background:#1d2433;position:relative;display:grid;place-items:center}
+.vmedia iframe,.vmedia video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vplay{width:68px;height:68px;border-radius:50%;border:0;background:var(--orange);color:#fff;font-size:28px;cursor:pointer}
+.vmedia .host{position:absolute;bottom:8px;inset-inline-start:10px;color:#fff;font-size:13px;opacity:.85;direction:ltr}
+.vinfo{padding:10px 14px;display:flex;flex-direction:column;gap:4px}
+.vinfo h3{margin:0;font-size:17px}
+.vinfo p{margin:0;font-size:14px;color:var(--muted)}
+.vinfo .vlinks{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px}
+.vinfo .vlinks a,.vinfo .vlinks button{font:inherit;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+.vbadge{display:inline-block;font-size:12px;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:0 10px;align-self:flex-start}
 .sr{position:absolute;left:-9999px}
 :focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 @media (max-width:560px){.btns{grid-template-columns:1fr}}
@@ -99,7 +116,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <div class="head"><h1>ورشة القصص مع سكراتش</h1>
   <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div>
   <p>كل ما تحتاجه لإنشاء مشروعك في صفحة واحدة: أوراق المشاريع، مشاريع جاهزة، أصوات، صور، أماكن وديكورات. لا حاجة إلى الإنترنت.</p>
-  <nav class="jump" aria-label="التنقّل"><a href="#start">كيف أبدأ؟</a><a href="#stories">اختر قصتك</a><a href="#library">المكتبة</a><a href="#help">مساعدة</a></nav>
+  <nav class="jump" aria-label="التنقّل"><a href="#start">كيف أبدأ؟</a><a href="#stories">اختر قصتك</a><a href="#videos">فيديوهات</a><a href="#library">المكتبة</a><a href="#help">مساعدة</a></nav>
 </div></header>
 
 <main class="wrap">
@@ -118,6 +135,24 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <h2>اختر قصتك</h2>
   <p class="lead">لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.</p>
   <div class="stories" id="storyGrid"></div>
+</section>
+
+<section id="videos">
+  <h2>فيديوهات</h2>
+  <p class="lead">شاهد الفيديو هنا دون مغادرة الصفحة. الفيديوهات تبقى في موقعها الأصلي (يوتيوب وغيره) ولا تُحمَّل في المشروع.</p>
+  <div class="row vtools">
+    <select id="vstory" aria-label="تصفية الفيديوهات حسب القصة"></select>
+    <button type="button" class="btn" id="vadd">+ إضافة رابط فيديو</button>
+  </div>
+  <form id="vform" class="vform" hidden>
+    <label>رابط الفيديو أو كود التضمين
+      <input type="text" id="vurl" placeholder="https://www.youtube.com/watch?v=… أو https://vimeo.com/…" dir="ltr" required></label>
+    <label>العنوان (اختياري)<input type="text" id="vtitle"></label>
+    <label>القصة<select id="vst"></select></label>
+    <div class="row"><button class="btn main" type="submit">إضافة</button><button class="btn" type="button" id="vcancel">إلغاء</button></div>
+    <p class="vhint">الرابط يُحفَظ في هذا المتصفح فقط. لإظهاره للجميع، أضِفه في الملف <b dir="ltr">videos.js</b>.</p>
+  </form>
+  <div class="vgrid" id="vgrid"></div>
 </section>
 
 <section id="library">
@@ -153,6 +188,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 </dialog>
 <footer><div class="wrap">الصور مرسومة خصيصًا لهذه الورشة، والأصوات والموسيقى مولَّدة بالحاسوب، ويمكنك استعمالها وتعديلها بحرّية في مشاريعك.</div></footer>
 
+<script src="videos.js"></script>
 <script>
 const DATA = __DATA__;
 const CATS = [
@@ -241,6 +277,72 @@ function render(){
 }
 $("#subs").addEventListener("click", e => { const b=e.target.closest("[data-sub]"); if(!b) return; state.sub=b.dataset.sub; render(); });
 render();
+
+// ---- فيديوهات : affichage dans la page, sans télécharger la vidéo
+function embedInfo(raw){
+  raw = (raw||"").trim();
+  const m = raw.match(/<iframe[^>]*\ssrc=["']([^"']+)["']/i); if (m) raw = m[1];
+  if (raw.startsWith("//")) raw = "https:" + raw;
+  let u; try { u = new URL(raw); } catch(e){ return null; }
+  if (!/^https?:$/.test(u.protocol)) return null;
+  const h = u.hostname.replace(/^(www|m|music)\./,""), p = u.pathname, q = u.searchParams;
+  const t = parseInt(q.get("t")||q.get("start")||"0",10) || 0;
+  const yt = id => ({kind:"iframe", host:"YouTube", src:`https://www.youtube-nocookie.com/embed/${id}?rel=0${t?`&start=${t}`:""}`});
+  if (h === "youtu.be") { const id = p.slice(1).split("/")[0]; return id ? yt(id) : null; }
+  if (h === "youtube.com" || h === "youtube-nocookie.com") {
+    if (p === "/watch" && q.get("v")) return yt(q.get("v"));
+    const mm = p.match(/^\/(embed|shorts|live|v)\/([\w-]{6,})/); if (mm && mm[2] !== "videoseries") return yt(mm[2]);
+    if ((p === "/playlist" || mm) && q.get("list")) return {kind:"iframe", host:"YouTube", src:`https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(q.get("list"))}`};
+    return null;
+  }
+  if (h === "vimeo.com" || h === "player.vimeo.com") { const id = (p.match(/(\d{5,})/)||[])[1]; return id ? {kind:"iframe", host:"Vimeo", src:`https://player.vimeo.com/video/${id}`} : null; }
+  if (h === "dailymotion.com" || h === "dai.ly") { const id = h === "dai.ly" ? p.slice(1) : (p.match(/\/video\/([a-z0-9]+)/i)||[])[1]; return id ? {kind:"iframe", host:"Dailymotion", src:`https://www.dailymotion.com/embed/video/${id}`} : null; }
+  if (h === "archive.org") { const id = (p.match(/^\/(?:details|embed)\/([^/]+)/)||[])[1]; return id ? {kind:"iframe", host:"Internet Archive", src:`https://archive.org/embed/${id}`} : null; }
+  if (h === "drive.google.com") { const id = (p.match(/\/file\/d\/([\w-]+)/)||[])[1] || q.get("id"); return id ? {kind:"iframe", host:"Google Drive", src:`https://drive.google.com/file/d/${id}/preview`} : null; }
+  if (h === "ted.com" || h === "embed.ted.com") { const mm = p.match(/\/talks\/([^/?]+)/); return mm ? {kind:"iframe", host:"TED", src:`https://embed.ted.com/talks/${mm[1]}`} : null; }
+  if (h === "facebook.com" || h === "fb.watch") return {kind:"iframe", host:"Facebook", src:`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(u.href)}&show_text=false`};
+  if (/\.(mp4|webm|ogv|ogg)$/i.test(p)) return {kind:"video", host:h, src:u.href};
+  if (/\/embed\//i.test(p) || /^player\./.test(h)) return {kind:"iframe", host:h, src:u.href};
+  return {kind:"link", host:h, src:u.href};
+}
+const VKEY = "ateliers-contes-videos";
+const userVideos = () => { try { return JSON.parse(localStorage.getItem(VKEY)||"[]"); } catch(e){ return []; } };
+const saveUserVideos = a => { try { localStorage.setItem(VKEY, JSON.stringify(a)); return true; } catch(e){ return false; } };
+const vsel = $("#vstory"), vst = $("#vst");
+vsel.append(el("option",{value:"",text:"كل القصص"})); vst.append(el("option",{value:"",text:"بدون قصة"}));
+DATA.stories.forEach(s => { vsel.append(el("option",{value:s.key,text:s.title})); vst.append(el("option",{value:s.key,text:s.title})); });
+function playVideo(box, info, title){
+  const old = box.querySelector(".vplay"); if (old) old.remove();
+  if (info.kind === "video") box.append(el("video",{src:info.src,controls:"",autoplay:"",playsinline:"","aria-label":title}));
+  else box.append(el("iframe",{src:info.src,title,allow:"autoplay; fullscreen; picture-in-picture; encrypted-media",allowfullscreen:"",referrerpolicy:"strict-origin-when-cross-origin",loading:"lazy"}));
+}
+function renderVideos(){
+  const g = $("#vgrid"); g.replaceChildren();
+  const mine = userVideos().map((v,i)=>({...v,mine:i}));
+  const all = (window.VIDEOS||[]).concat(mine).filter(v => !vsel.value || v.story === vsel.value);
+  if (!all.length) { g.append(el("div",{class:"empty",text: (window.VIDEOS||[]).length+mine.length ? "لا توجد فيديوهات لهذه القصة." : "لا توجد فيديوهات بعد. اضغط «إضافة رابط فيديو» والصق رابطًا من يوتيوب أو غيره."})); return; }
+  all.forEach(v => {
+    const info = embedInfo(v.url); const st = DATA.stories.find(s=>s.key===v.story);
+    const title = v.title || (info ? info.host : "فيديو");
+    const media = el("div",{class:"vmedia"});
+    if (info && info.kind !== "link") { const b = el("button",{class:"vplay",type:"button","aria-label":"تشغيل: "+title,text:"▶"}); b.addEventListener("click", () => playVideo(media, info, title)); media.append(b); }
+    else media.append(el("a",{class:"btn",href:v.url,target:"_blank",rel:"noopener",text:"هذا الموقع لا يسمح بالعرض هنا. افتحه في موقعه"}));
+    if (info) media.append(el("span",{class:"host",text:info.host}));
+    const links = el("div",{class:"vlinks"}, el("a",{href:v.url,target:"_blank",rel:"noopener",text:"فتح في الموقع الأصلي"}));
+    if (v.mine !== undefined) { const r = el("button",{type:"button",text:"حذف"}); r.addEventListener("click", () => { const a = userVideos(); a.splice(v.mine,1); saveUserVideos(a); renderVideos(); }); links.append(r); }
+    g.append(el("article",{class:"vcard"}, media, el("div",{class:"vinfo"}, st && el("span",{class:"vbadge",text:st.title}), el("h3",{text:title}), v.note && el("p",{text:v.note}), links)));
+  });
+}
+vsel.addEventListener("change", renderVideos);
+$("#vadd").addEventListener("click", () => { const f = $("#vform"); f.hidden = !f.hidden; if (!f.hidden) $("#vurl").focus(); });
+$("#vcancel").addEventListener("click", () => { $("#vform").hidden = true; });
+$("#vform").addEventListener("submit", e => {
+  e.preventDefault(); const url = $("#vurl").value.trim(); const info = embedInfo(url);
+  if (!info) { $("#vurl").setCustomValidity("الرابط غير صحيح"); $("#vurl").reportValidity(); setTimeout(()=>$("#vurl").setCustomValidity(""),2500); return; }
+  const a = userVideos(); a.push({title:$("#vtitle").value.trim(), url: (info.kind==="iframe" && /<iframe/i.test(url)) ? info.src : url, story:$("#vst").value}); saveUserVideos(a);
+  $("#vform").reset(); $("#vform").hidden = true; renderVideos();
+});
+renderVideos();
 
 // ---- installation / raccourci sur le bureau
 const instBtn = $("#install"), dlg = $("#installHelp");

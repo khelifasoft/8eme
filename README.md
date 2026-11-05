@@ -8,6 +8,8 @@ Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'él
 - les onze contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
 - une bibliothèque : lieux (31), décors (69), personnages (37), animaux (24), costumes et accessoires (79), images animées (50, en images successives) et sons (203 : effets, musiques, voix de synthèse).
 
+**Vidéos** : la section « فيديوهات » affiche des vidéos hébergées ailleurs (YouTube, Vimeo, Dailymotion, Internet Archive, Google Drive, TED, Facebook, fichiers `.mp4`, ou un code `<iframe>`), sans quitter la page et sans télécharger la vidéo. Pour qu'une vidéo apparaisse chez tous les élèves, ajouter une ligne dans `videos.js` (explications dans le fichier). Le bouton « + إضافة رابط فيديو » ajoute un lien seulement dans le navigateur de la personne qui l'utilise. YouTube refuse souvent l'affichage quand la page est ouverte comme simple fichier (`file://`) : utiliser GitHub Pages ou `lancer.bat` / `lancer.sh`. Certains propriétaires interdisent l'intégration de leurs vidéos ; la page propose alors le lien vers le site d'origine.
+
 **Raccourci sur le bureau** : le bouton « ⬇ اختصار على سطح المكتب » en haut de la page a deux comportements.
 - Si la page est servie en HTTPS (GitHub Pages) ou sur `localhost`, et que le navigateur le permet, il installe l'application (Chrome, Edge). Elle fonctionne alors hors connexion pour les pages déjà ouvertes (`manifest.webmanifest`, `sw.js`, `icones/`).
 - Sinon, par exemple sur un réseau local en HTTP, il télécharge un petit fichier de raccourci (`.url` sous Windows, `.webloc` sous macOS, `.desktop` sous Linux) que l'élève place sur le bureau. Sur téléphone, il explique « Ajouter à l'écran d'accueil ».

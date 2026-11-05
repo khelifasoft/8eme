@@ -1,8 +1,8 @@
 // Service worker : permet l'installation et l'utilisation hors connexion.
 // Les fichiers déjà ouverts sont gardés en mémoire pour les prochaines fois.
-const VERSION = "v1";
+const VERSION = "v2";
 const CACHE = "ateliers-contes-" + VERSION;
-const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icones/icone-192.png", "./icones/icone-512.png"];
+const CORE = ["./", "./index.html", "./manifest.webmanifest", "./videos.js", "./icones/icone-192.png", "./icones/icone-512.png"];
 
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
