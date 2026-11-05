@@ -114,6 +114,17 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .vpbody{aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden}
 .vpbody iframe,.vpbody video{width:100%;height:100%;border:0;display:block}
 .vpfoot{margin:8px 0 0;font-size:14px}
+.srcsites{max-width:520px;grid-template-columns:repeat(3,1fr);margin:6px 0 12px}
+.srctools{margin:6px 0}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;padding:10px 0}
+.tcard{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:#fff}
+.tcard h3{margin:0;font-size:17px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.tcard h3 small{font-size:12px;color:var(--muted);direction:ltr;font-weight:400}
+.tlinks{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.tlinks .btn{font-size:13px;padding:4px 6px}
+.tlinks .btn.vid{border-color:var(--orange);color:#a85a08}
+.tlinks .btn.vid:hover{background:var(--orange);color:#fff}
+.tnote{margin:6px 0 0;font-size:13px;color:var(--muted)}
 .sr{position:absolute;left:-9999px}
 :focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 @media (max-width:560px){.btns{grid-template-columns:1fr}}
@@ -125,7 +136,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <div class="hbtns"><a class="btn alt" id="getscratch" href="https://scratch.mit.edu/download" target="_blank" rel="noopener">⬇ تحميل برنامج سكراتش</a>
   <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div></div>
   <p>كل ما تحتاجه لإنشاء مشروعك في صفحة واحدة: أوراق المشاريع، مشاريع جاهزة، أصوات، صور، أماكن وديكورات. لا حاجة إلى الإنترنت.</p>
-  <nav class="jump" aria-label="التنقّل"><a href="#start">كيف أبدأ؟</a><a href="#scratch">تحميل برنامج سكراتش</a><a href="#stories">اختر قصتك</a><a href="#videos">فيديوهات</a><a href="#library">المكتبة</a><a href="#help">مساعدة</a></nav>
+  <nav class="jump" aria-label="التنقّل"><a href="#start">كيف أبدأ؟</a><a href="#scratch">تحميل برنامج سكراتش</a><a href="#stories">اختر قصتك</a><a href="#videos">فيديوهات</a><a href="#sources">صور وفيديوهات جاهزة</a><a href="#library">المكتبة</a><a href="#help">مساعدة</a></nav>
 </div></header>
 
 <main class="wrap">
@@ -165,6 +176,23 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
     <span id="vcount" class="small"></span>
   </div>
   <div class="vgrid" id="vgrid"></div>
+</section>
+
+<section id="sources">
+  <h2>صور متحركة وفيديوهات جاهزة</h2>
+  <p class="lead">مواقع مجانية فيها آلاف الصور والفيديوهات. اختر موضوعًا ليفتح لك البحث الجاهز في الموقع الذي تريده.</p>
+  <div class="btns srcsites">
+    <a class="btn main" href="https://www.pexels.com/fr-fr/" target="_blank" rel="noopener noreferrer">Pexels</a>
+    <a class="btn main" href="https://mixkit.co/" target="_blank" rel="noopener noreferrer">Mixkit</a>
+    <a class="btn main" href="https://pixabay.com/photos/" target="_blank" rel="noopener noreferrer">Pixabay</a>
+  </div>
+  <div class="row srctools">
+    <input type="search" id="tq" placeholder="ابحث عن موضوع (غابة، بحر، قصر…)" aria-label="بحث عن موضوع">
+    <select id="tstory" aria-label="مواضيع حسب القصة"></select>
+    <span id="tcount" class="small"></span>
+  </div>
+  <div class="tgrid" id="tgrid"></div>
+  <p class="small tnote">الصور والفيديوهات تبقى في مواقعها الأصلية ولا تُنسخ في هذا المشروع. لكل موقع رخصته الخاصة، فاقرأ شروطه قبل التحميل، ولا تعد نشر الملفات كمكتبة مستقلة. نتائج البحث قد تتغير مع الوقت.</p>
 </section>
 
 <section id="library">
@@ -386,6 +414,41 @@ function renderVideos(){
 }
 vsel.addEventListener("change", renderVideos); vq.addEventListener("input", renderVideos);
 renderVideos();
+
+// ---- مواضيع جاهزة : روابط بحث نحو Pexels و Mixkit و Pixabay (rien n'est copié ici)
+const THEMES = [
+ ["غابة","forest",["layla","crow","lion","hare","shepherd"]],["قصر","castle",["cinderella","frog"]],["بحر","sea waves",["sindbad"]],["سفينة","sailing ship",["sindbad"]],
+ ["جزيرة","tropical island",["sindbad"]],["صحراء","desert",["alibaba","sindbad"]],["جبل","mountain",["alibaba"]],["كهف","cave",["alibaba"]],["كنز وذهب","gold coins treasure",["alibaba"]],
+ ["ليل ونجوم","night sky stars",["cinderella"]],["ساعة","clock",["cinderella"]],["سحر ولمعان","magic sparkles",["cinderella"]],["حفلة ورقص","ball dance",["cinderella"]],
+ ["حديقة","garden flowers",["frog","cinderella"]],["بئر","old well",["frog"]],["مزرعة","farm",["pigs","duckling","shepherd"]],["مرعى وتلال","green hills pasture",["shepherd"]],
+ ["قرية","village",["djeha","shepherd"]],["سوق","market",["djeha","alibaba"]],["جسر ونهر","bridge river",["djeha"]],["بيت","house",["pigs","layla"]],
+ ["مطر","rain",["duckling"]],["ثلج وشتاء","snow winter",["duckling"]],["ربيع","spring blossom",["duckling","hare"]],["نار","fire flames",["alibaba"]],["ريح","wind",["pigs"]],
+ ["ذئب","wolf",["layla","pigs","shepherd"]],["أسد","lion",["lion"]],["فأر","mouse",["lion"]],["أرنب","rabbit hare",["hare"]],["سلحفاة","tortoise",["hare"]],
+ ["ثعلب","fox",["crow"]],["غراب","crow bird",["crow"]],["ضفدع","frog",["frog"]],["بطة","duck",["duckling"]],["بجعة","swan",["duckling"]],["خروف وغنم","sheep",["shepherd"]],
+ ["خنزير","pig",["pigs"]],["حمار","donkey",["djeha"]],["جمل","camel",["alibaba","sindbad"]],["حصان","horse",["cinderella"]],["فراشة","butterfly",[]],["عصفور","bird flying",[]],
+ ["سباق","running race",["hare"]],["شجرة","tree",[]],["شمس وغيوم","sun clouds",[]],["أطفال يقرؤون","children reading",[]],["كتاب وقصص","storybook",[]]
+];
+const tsel = $("#tstory"), tq = $("#tq");
+tsel.append(el("option",{value:"",text:"كل المواضيع"})); DATA.stories.forEach(s => tsel.append(el("option",{value:s.key,text:s.title})));
+function themeLinks(q){
+  const e = encodeURIComponent(q), d = e.replace(/%20/g,"-");
+  return [
+    ["Pexels صور", `https://www.pexels.com/search/${e}/`, ""], ["Pexels فيديو", `https://www.pexels.com/search/videos/${e}/`, "vid"],
+    ["Pixabay صور", `https://pixabay.com/images/search/${e}/`, ""], ["Pixabay فيديو", `https://pixabay.com/videos/search/${e}/`, "vid"],
+    ["Mixkit فيديو", `https://mixkit.co/free-stock-video/discover/${d}/`, "vid"]
+  ];
+}
+function renderThemes(){
+  const g = $("#tgrid"); g.replaceChildren();
+  const q = tq.value.trim().toLowerCase();
+  const items = THEMES.filter(t => (!tsel.value || t[2].includes(tsel.value)) && (!q || (t[0]+" "+t[1]).toLowerCase().includes(q)));
+  $("#tcount").textContent = items.length ? `${items.length} موضوع` : "";
+  if (!items.length) { g.append(el("div",{class:"empty",text:"لا توجد مواضيع مطابقة."})); return; }
+  items.forEach(t => g.append(el("article",{class:"tcard"}, el("h3",{}, el("span",{text:t[0]}), el("small",{text:t[1]})),
+    el("div",{class:"tlinks"}, themeLinks(t[1]).map(([n,u,c]) => el("a",{class:"btn "+c,href:u,target:"_blank",rel:"noopener noreferrer",text:n}))))));
+}
+tsel.addEventListener("change", renderThemes); tq.addEventListener("input", renderThemes);
+renderThemes();
 
 // ---- installation / raccourci sur le bureau
 const instBtn = $("#install"), dlg = $("#installHelp");
