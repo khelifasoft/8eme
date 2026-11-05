@@ -1,0 +1,1 @@
+Placer ici les captures d'écran des vidéos (jpg ou png), puis les référencer avec le champ image dans ../videos.js.

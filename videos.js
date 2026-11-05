@@ -6,5 +6,10 @@
 //   note  : petite explication (facultatif)
 // Exemple (à décommenter en remplaçant par une vraie adresse) :
 //   { title: "مشاهدة قصة سندريلا", url: "https://www.youtube.com/watch?v=IDENTIFIANT", story: "cinderella", note: "قصة مصوّرة" },
+//   image : capture d'écran de la vidéo (facultatif), par exemple "videos/cendrillon.jpg" : mettre le fichier dans le dossier videos/.
+//           Sans image, la page utilise la miniature fournie par YouTube, Vimeo, etc.
+// Options : mettre autoThumbnails à false pour ne contacter AUCUN site extérieur avant que l'élève clique sur une vidéo
+//           (alors seules les captures « image » sont affichées).
+window.VIDEOS_OPTIONS = { autoThumbnails: true };
 window.VIDEOS = [
 ];
