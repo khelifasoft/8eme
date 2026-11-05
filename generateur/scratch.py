@@ -6,7 +6,7 @@ from xml.sax.saxutils import escape
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 STORIES = json.load(open(os.path.join(HERE, "stories.json"), encoding="utf-8"))
-OUT = sys.argv[1]
+OUT = sys.argv[1] if len(sys.argv) > 1 else '.'
 
 # ---------- données des contes ----------
 # sprite: (nom, couleur, [(nom_costume, couleur), ...])
@@ -356,6 +356,7 @@ def build(key):
     zf.writestr("project.json", json.dumps(proj, ensure_ascii=False))
     zf.close()
 
-os.makedirs(OUT, exist_ok=True)
-for k in D: build(k)
-print("ok", len(D))
+if __name__ == "__main__":
+    os.makedirs(OUT, exist_ok=True)
+    for k in D: build(k)
+    print("ok", len(D))

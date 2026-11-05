@@ -2,11 +2,15 @@
 
 ## Page de l'élève
 
+Titre : **قصص سكراتش / Histoires Scratch**. La page est en arabe et en français : les boutons AR / FR (en haut et dans le menu) changent la langue et le sens de lecture, et le choix est mémorisé ; `index.html?lang=fr` ouvre directement la version française. Le menu ☰ (barre fixe et panneau latéral) donne accès à toutes les sections : accueil, démarrage, contes, **jeux Scratch**, vidéos, bibliothèque, ressources, téléchargement de Scratch et aide. Les traductions sont dans `generateur/i18n_fr.py` ; les noms d'éléments de la bibliothèque sont déduits de leurs identifiants français et les voix prêtes restent en arabe. Les fiches (HTML, Word) et les dialogues des projets sont en arabe.
+
 Adresse publique (après activation de GitHub Pages) : **https://khelifasoft.github.io/8eme/**
 
 Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'élève y trouve :
 - les douze contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
 - une bibliothèque : lieux (34), décors (74), personnages (37), animaux (29), costumes et accessoires (79), images animées (54, en images successives) et sons (214 : effets, musiques, voix de synthèse).
+
+**Jeux Scratch** : la section « ألعاب سكراتش » propose un petit jeu « attrape les objets » par conte, à télécharger (`jeux/jeu_*.sb3`, générés par `python3 generateur/jeux.py jeux`) : le joueur suit la souris, les objets tombent de plus en plus vite, trois vies. Pour afficher aussi des jeux publiés sur scratch.mit.edu, ajouter une ligne dans `jeux.js` : ils se jouent dans la page.
 
 **Images animées et vidéos** : la section « صور متحركة وفيديوهات جاهزة » propose 48 thèmes (forêt, château, mer, loup, tortue…) filtrables par conte. Chaque thème ouvre la recherche correspondante sur Pexels, Pixabay et Mixkit. Rien n'est copié dans le dépôt : les licences de ces sites interdisent de redistribuer leurs fichiers sous forme de bibliothèque. Les adresses de recherche sont construites dans `generateur/page.py` (`THEMES`, `themeLinks`) et peuvent changer si les sites modifient leurs URL.
 

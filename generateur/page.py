@@ -2,12 +2,17 @@
 import json, os
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 man = json.load(open(os.path.join(HERE, "manifest.json"), encoding="utf-8"))
+import sys; sys.path.insert(0, HERE)
+import i18n_fr
+games = json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8"))
+man["games"] = games
+FR = i18n_fr.build(man, games)
 TPL = r'''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ورشة القصص مع سكراتش</title>
+<title>قصص سكراتش</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#1f4aa8">
 <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
@@ -20,23 +25,42 @@ html{scroll-behavior:smooth}
 body{margin:0;background:#fff;color:var(--ink);font-family:var(--font);line-height:1.7;font-size:16px}
 a{color:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left)) 0 max(16px,env(safe-area-inset-right))}
-header.top{border-bottom:3px solid var(--orange);padding:28px 0 20px}
-header.top h1{margin:0;font-size:clamp(28px,5vw,44px);color:var(--blue);line-height:1.2}
-header.top p{margin:6px 0 0;color:var(--muted);font-size:17px}
+.hero{border-bottom:3px solid var(--orange);padding:24px 0 18px}
+.hero h1{margin:0;font-size:clamp(28px,5vw,44px);color:var(--blue);line-height:1.2}
+.hero p{margin:6px 0 0;color:var(--muted);font-size:17px}
+html{scroll-padding-top:68px}
+body{padding-top:56px}
+.topbar{position:fixed;top:0;inset-inline:0;height:56px;background:#141414;color:#fff;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 max(16px,env(safe-area-inset-left)) 0 max(16px,env(safe-area-inset-right))}
+.brand{color:#fff;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:.2px}
+.barbtns{display:flex;align-items:center;gap:8px}
+.langbtn{font:inherit;font-size:13px;font-weight:700;color:#fff;background:transparent;border:1px solid #666;border-radius:6px;padding:3px 10px;cursor:pointer}
+.langbtn[aria-pressed=true]{background:#ffd400;color:#111;border-color:#ffd400}
+.burger{width:44px;height:44px;background:transparent;border:0;display:grid;align-content:center;gap:6px;cursor:pointer;padding:10px}
+.burger span{display:block;height:3px;background:#fff;border-radius:2px;transition:transform .3s,opacity .3s}
+.burger[aria-expanded=true] span:nth-child(1){transform:translateY(9px) rotate(45deg)}
+.burger[aria-expanded=true] span:nth-child(2){opacity:0}
+.burger[aria-expanded=true] span:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
+.veil{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55}
+.side{position:fixed;top:0;bottom:0;width:min(300px,84vw);background:#111;color:#fff;z-index:60;padding:78px 26px 24px;display:flex;flex-direction:column;justify-content:space-between;overflow-y:auto;transition:transform .35s ease,visibility .35s;visibility:hidden}
+[dir=rtl] .side{right:0;transform:translateX(100%)}
+[dir=ltr] .side{left:0;transform:translateX(-100%)}
+.side.open{transform:none;visibility:visible}
+.side ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:22px}
+.side a{color:#fff;text-decoration:none;font-size:20px;font-weight:600;display:inline-block;padding-bottom:4px;border-bottom:3px solid #ffd400}
+.side a:hover,.side a:focus-visible{color:#ffd400}
+.sidelang{display:flex;gap:8px;margin-top:28px}
+.sidelang .langbtn{font-size:15px;padding:6px 16px}
 .hbtns{display:flex;gap:8px;flex-wrap:wrap}
 #getscratch{font-size:16px;padding:8px 18px;white-space:nowrap}
 .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
 #install{display:inline-flex;align-items:center;gap:8px;font-size:16px;padding:8px 18px;white-space:nowrap}
 #install[hidden]{display:none}
-dialog{border:1px solid var(--line);border-radius:14px;max-width:min(520px,92vw);padding:20px 22px;font-family:var(--font);direction:rtl;color:var(--ink)}
+dialog{border:1px solid var(--line);border-radius:14px;max-width:min(520px,92vw);padding:20px 22px;font-family:var(--font);color:var(--ink)}
 dialog::backdrop{background:rgba(20,30,50,.45)}
 dialog h3{margin:0 0 8px;font-size:20px;color:var(--blue)}
 dialog ul{margin:8px 0 14px;padding-inline-start:20px}
 dialog li{margin:4px 0}
 dialog .small{font-size:14px;color:var(--muted)}
-nav.jump{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-nav.jump a{border:1px solid var(--line);border-radius:999px;padding:4px 16px;text-decoration:none;font-size:15px;background:#fff}
-nav.jump a:hover,nav.jump a:focus-visible{border-color:var(--blue);color:var(--blue)}
 section{padding:30px 0 6px}
 h2{font-size:26px;margin:0 0 6px;color:var(--blue)}
 h2+.lead{margin:0 0 18px;color:var(--muted)}
@@ -57,7 +81,7 @@ h2+.lead{margin:0 0 18px;color:var(--muted)}
 .btn.main:hover{background:#163a86}
 .btn.wide{grid-column:1/-1}
 .btn.alt{border-color:var(--orange);color:#a85a08}.btn.alt:hover{background:var(--orange);color:#fff}
-.tools{position:sticky;top:0;background:#fff;z-index:5;border-bottom:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:10px}
+.tools{position:sticky;top:56px;background:#fff;z-index:5;border-bottom:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:10px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
 .tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 16px;font:inherit;font-size:15px;cursor:pointer}
 .tab[aria-selected=true]{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -125,19 +149,48 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .tlinks .btn.vid{border-color:var(--orange);color:#a85a08}
 .tlinks .btn.vid:hover{background:var(--orange);color:#fff}
 .tnote{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.gamegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding:10px 0}
+.gcard{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.gcover{aspect-ratio:16/9;background:var(--soft);display:block;width:100%;object-fit:cover}
+.gbody{padding:10px 14px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.gbody h3{margin:0;font-size:18px}
+.gbody p{margin:0;font-size:14px;color:var(--muted)}
+.gbody .btns{margin-top:auto}
 .sr{position:absolute;left:-9999px}
 :focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 @media (max-width:560px){.btns{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <div class="head"><h1>ورشة القصص مع سكراتش</h1>
+<header class="topbar" id="top">
+  <a class="brand" href="#top">قصص سكراتش</a>
+  <div class="barbtns">
+    <button type="button" class="langbtn" data-lang="ar" aria-label="العربية">AR</button>
+    <button type="button" class="langbtn" data-lang="fr" aria-label="Français">FR</button>
+    <button type="button" class="burger" id="burger" aria-label="القائمة" aria-expanded="false" aria-controls="side"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<div class="veil" id="veil" hidden></div>
+<nav class="side" id="side" aria-label="القائمة الرئيسية" aria-hidden="true">
+  <ul>
+    <li><a href="#top">الرئيسية</a></li>
+    <li><a href="#start">كيف أبدأ؟</a></li>
+    <li><a href="#stories">القصص</a></li>
+    <li><a href="#games">ألعاب سكراتش</a></li>
+    <li><a href="#videos">فيديوهات</a></li>
+    <li><a href="#library">المكتبة</a></li>
+    <li><a href="#sources">صور وفيديوهات جاهزة</a></li>
+    <li><a href="#scratch">تحميل سكراتش</a></li>
+    <li><a href="#help">مساعدة</a></li>
+  </ul>
+  <div class="sidelang"><button type="button" class="langbtn" data-lang="ar">العربية</button><button type="button" class="langbtn" data-lang="fr">Français</button></div>
+</nav>
+<section class="hero"><div class="wrap">
+  <div class="head"><h1>قصص سكراتش</h1>
   <div class="hbtns"><a class="btn alt" id="getscratch" href="https://scratch.mit.edu/download" target="_blank" rel="noopener">⬇ تحميل برنامج سكراتش</a>
   <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div></div>
   <p>كل ما تحتاجه لإنشاء مشروعك في صفحة واحدة: أوراق المشاريع، مشاريع جاهزة، أصوات، صور، أماكن وديكورات. لا حاجة إلى الإنترنت.</p>
-  <nav class="jump" aria-label="التنقّل"><a href="#start">كيف أبدأ؟</a><a href="#scratch">تحميل برنامج سكراتش</a><a href="#stories">اختر قصتك</a><a href="#videos">فيديوهات</a><a href="#sources">صور وفيديوهات جاهزة</a><a href="#library">المكتبة</a><a href="#help">مساعدة</a></nav>
-</div></header>
+</div></section>
 
 <main class="wrap">
 <section id="start">
@@ -165,6 +218,13 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <h2>اختر قصتك</h2>
   <p class="lead">لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.</p>
   <div class="stories" id="storyGrid"></div>
+</section>
+
+<section id="games">
+  <h2>ألعاب سكراتش</h2>
+  <p class="lead">لعبة صغيرة لكل قصة: حرّك الفأرة والتقط الأشياء قبل أن تسقط. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
+  <div class="gamegrid" id="gameGrid"></div>
+  <div class="gamegrid" id="extGames"></div>
 </section>
 
 <section id="videos">
@@ -231,9 +291,10 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <div id="ihBody"></div>
   <form method="dialog"><button class="btn main" style="margin-top:10px">حسنًا</button></form>
 </dialog>
-<footer><div class="wrap"><span dir="ltr" style="float:left">__BUILD__</span>الصور مرسومة خصيصًا لهذه الورشة، والأصوات والموسيقى مولَّدة بالحاسوب، ويمكنك استعمالها وتعديلها بحرّية في مشاريعك.</div></footer>
+<footer><div class="wrap"><span dir="ltr" style="display:block">__BUILD__</span>الصور مرسومة خصيصًا لهذه الورشة، والأصوات والموسيقى مولَّدة بالحاسوب، ويمكنك استعمالها وتعديلها بحرّية في مشاريعك.</div></footer>
 
 <script src="videos.js"></script>
+<script src="jeux.js"></script>
 <script>
 const DATA = __DATA__;
 const CATS = [
@@ -490,10 +551,88 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
+// ---- menu latéral (☰) et jeux
+const burger = $("#burger"), side = $("#side"), veil = $("#veil");
+function menu(open){ side.classList.toggle("open", open); side.setAttribute("aria-hidden", String(!open)); burger.setAttribute("aria-expanded", String(open)); veil.hidden = !open; if (open) side.querySelector("a").focus(); }
+burger.addEventListener("click", () => menu(!side.classList.contains("open")));
+veil.addEventListener("click", () => menu(false));
+side.addEventListener("click", e => { if (e.target.closest("a")) menu(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && side.classList.contains("open")) { menu(false); burger.focus(); } });
+
+function renderGames(){
+  const g = $("#gameGrid"); g.replaceChildren();
+  (DATA.games||[]).forEach(x => g.append(el("article",{class:"gcard"},
+    el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
+    el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
+      el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}))))));
+  // jeux Scratch publiés sur scratch.mit.edu (liste dans jeux.js) : joués ici, sans quitter la page
+  const ext = $("#extGames"); ext.replaceChildren();
+  (window.JEUX||[]).forEach(j => {
+    const id = ((j.url||"").match(/projects\/(\d+)/)||[])[1]; if (!id) return;
+    if (j.fr) FRMAP[j.title] = j.fr;
+    const info = {kind:"iframe", host:"Scratch", src:`https://scratch.mit.edu/projects/${id}/embed`};
+    const b = el("button",{class:"btn main",type:"button",text:"العب هنا"});
+    b.addEventListener("click", () => openPlayer({url:`https://scratch.mit.edu/projects/${id}/`}, info, j.title));
+    ext.append(el("article",{class:"gcard"}, el("div",{class:"gbody"}, el("h3",{text:j.title}), j.note && el("p",{text:j.note}),
+      el("div",{class:"btns"}, b, el("a",{class:"btn",href:`https://scratch.mit.edu/projects/${id}/`,target:"_blank",rel:"noopener",text:"فتح في سكراتش"})))));
+  });
+}
+renderGames();
+
+// ---- اللغة : العربية / Français (traduction de tout le texte de la page)
+const FRMAP = __FRMAP__, FRRULES = __FRRULES__.map(([a,b]) => [new RegExp(a), b]);
+let LANG = "ar";
+const origText = new WeakMap(), origAttr = new WeakMap(), origHTML = new WeakMap(), ATTRS = ["placeholder","aria-label","title","alt"];
+function trStr(t){
+  const k = t.trim(); if (!k) return null;
+  if (FRMAP[k] !== undefined) return t.replace(k, FRMAP[k]);
+  for (const [re, rep] of FRRULES) if (re.test(k)) return t.replace(k, k.replace(re, (...m) => rep.replace(/\$(\d)/g, (_, i) => FRMAP[m[+i]] !== undefined ? FRMAP[m[+i]] : m[+i])));
+  return null;
+}
+function trElement(n){
+  if (n.hasAttribute("data-fr")) { if (!origHTML.has(n)) origHTML.set(n, n.innerHTML); n.innerHTML = n.getAttribute("data-fr"); return false; }
+  for (const a of ATTRS) { const v = n.getAttribute(a); if (v) { const r = trStr(v); if (r !== null && r !== v) { const o = origAttr.get(n) || {}; if (!(a in o)) o[a] = v; origAttr.set(n, o); n.setAttribute(a, r); } } }
+  return true;
+}
+function walk(root, fn){
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, { acceptNode(n){ if (n.nodeType === 1) { if (/^(SCRIPT|STYLE)$/.test(n.tagName) || n.hasAttribute("data-nofr")) return NodeFilter.FILTER_REJECT; return fn(n) === false ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; } return NodeFilter.FILTER_ACCEPT; } });
+  if (root.nodeType === 3) { fn(root); return; }
+  if (root.nodeType === 1) { if (fn(root) === false) return; }
+  let n; while ((n = w.nextNode())) if (n.nodeType === 3) fn(n);
+}
+function toFr(n){ if (n.nodeType === 3) { const r = trStr(n.nodeValue); if (r !== null && r !== n.nodeValue) { if (!origText.has(n)) origText.set(n, n.nodeValue); n.nodeValue = r; } return true; } return trElement(n); }
+function toAr(n){
+  if (n.nodeType === 3) { if (origText.has(n)) n.nodeValue = origText.get(n); return true; }
+  if (origHTML.has(n)) { n.innerHTML = origHTML.get(n); origHTML.delete(n); return false; }
+  const o = origAttr.get(n); if (o) { for (const a in o) n.setAttribute(a, o[a]); origAttr.delete(n); }
+  return true;
+}
+const obs = new MutationObserver(ms => {
+  obs.disconnect();
+  for (const m of ms) { if (m.type === "childList") m.addedNodes.forEach(x => walk(x, toFr)); else if (m.type === "characterData") toFr(m.target); else if (m.type === "attributes") trElement(m.target); }
+  startObs();
+});
+function startObs(){ obs.observe(document.body, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:ATTRS}); }
+function setLang(l){
+  if (l === LANG && document.documentElement.lang === l) return;
+  obs.disconnect(); LANG = l;
+  document.documentElement.lang = l; document.documentElement.dir = l === "fr" ? "ltr" : "rtl";
+  if (!document.documentElement.hasAttribute("data-ar-title")) document.documentElement.setAttribute("data-ar-title", document.title);
+  if (l === "fr") { walk(document.body, toFr); document.title = FRMAP[document.documentElement.getAttribute("data-ar-title")] || document.title; startObs(); }
+  else { walk(document.body, toAr); document.title = document.documentElement.getAttribute("data-ar-title"); }
+  document.querySelectorAll(".langbtn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === l)));
+  try { localStorage.setItem("ateliers-contes-lang", l); } catch(e){}
+}
+document.querySelectorAll(".langbtn").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+let want = "ar";
+try { want = new URLSearchParams(location.search).get("lang") || localStorage.getItem("ateliers-contes-lang") || "ar"; } catch(e){}
+document.querySelectorAll(".langbtn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === "ar")));
+if (want === "fr") setLang("fr");
+
 </script>
 </body>
 </html>
 '''
 import datetime
-open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8").write(TPL.replace("__DATA__", json.dumps(man, ensure_ascii=False)).replace("__BUILD__", "نسخة " + datetime.date.today().isoformat()))
+open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8").write(TPL.replace("__DATA__", json.dumps(man, ensure_ascii=False)).replace("__FRMAP__", json.dumps(FR["map"], ensure_ascii=False)).replace("__FRRULES__", json.dumps(FR["rules"], ensure_ascii=False)).replace("__BUILD__", "نسخة " + datetime.date.today().isoformat()))
 print("index.html", os.path.getsize(os.path.join(ROOT, "index.html")) // 1024, "Ko")
