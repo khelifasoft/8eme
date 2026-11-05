@@ -5,6 +5,7 @@ man = json.load(open(os.path.join(HERE, "manifest.json"), encoding="utf-8"))
 import sys; sys.path.insert(0, HERE)
 import i18n_fr
 games = json.load(open(os.path.join(HERE, "jeux2_manifest.json"), encoding="utf-8"))
+games += json.load(open(os.path.join(HERE, "jeux3_manifest.json"), encoding="utf-8"))
 for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8")):
     games.append(dict(g, cat="catch", cat_ar="التقاط الأشياء (لكل قصة لعبة)", cat_fr="Attrape-objets (un jeu par conte)"))
 man["games"] = games
@@ -529,7 +530,7 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
 // ---- jeux
-const GAME_CATS = ["quiz", "math", "memory", "reflex", "catch"];
+const GAME_CATS = ["quiz", "math", "memory", "order", "reflex", "catch"];
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
   GAME_CATS.forEach(cat => {
