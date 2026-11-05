@@ -49,11 +49,12 @@ python3 generateur/make.py fiches
 
 ## Versions Word
 
-Les mêmes fiches existent au format Word dans `word/` (une page A4 chacune, texte de droite à gauche).
+Les mêmes fiches existent au format Word dans `word/` (une page A4 chacune, texte de droite à gauche) : `.docx` et `.doc`. Le `.doc` (Word 97-2003) s'ouvre dans toutes les versions de Word, y compris Word 2007 ; les `.docx` sont corrigés par `generateur/word_compat.py` pour Word 2007.
 
 ```bash
 npm install docx
 node generateur/docx.js word
+python3 generateur/word_compat.py word   # compatibilité Word 2007 + versions .doc
 ```
 
 Le contenu est lu dans `generateur/stories.json`. Si vous modifiez `make.py`, régénérez ce fichier avant de lancer `docx.js`.

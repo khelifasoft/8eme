@@ -117,7 +117,7 @@ STORY_LIST = []
 for sk in D:
     s = STORIES[sk]
     with zipfile.ZipFile(os.path.join(DL, f"histoire_{sk}.zip"), "w", zipfile.ZIP_DEFLATED) as z:
-        for src_, dst in ((f"word/{sk}.docx", f"{sk}/ورقة_المشروع.docx"), (f"fiches/{sk}.html", f"{sk}/ورقة_المشروع.html"), (f"scratch/{sk}.sb3", f"{sk}/مشروع_سكراتش.sb3")):
+        for src_, dst in ((f"word/{sk}.docx", f"{sk}/ورقة_المشروع.docx"), (f"word/{sk}.doc", f"{sk}/ورقة_المشروع_Word2003.doc"), (f"fiches/{sk}.html", f"{sk}/ورقة_المشروع.html"), (f"scratch/{sk}.sb3", f"{sk}/مشروع_سكراتش.sb3")):
             z.write(os.path.join(ROOT, src_), dst)
         seen = set()
         for a in M:
@@ -127,7 +127,7 @@ for sk in D:
                 for f in a["frames"]: z.write(os.path.join(ROOT, f), f"{sk}/موارد/animations/{a['id']}/{os.path.basename(f)}")
     summary = s["summary"].split(".")[0] + "."
     STORY_LIST.append(dict(key=sk, title=s["title"], summary=summary, morale=s["morale"], main=s["main"], accent=s["accent"],
-        docx=f"word/{sk}.docx", html=f"fiches/{sk}.html", sb3=f"scratch/{sk}.sb3", pack=f"telechargements/histoire_{sk}.zip",
+        docx=f"word/{sk}.docx", doc=f"word/{sk}.doc", html=f"fiches/{sk}.html", sb3=f"scratch/{sk}.sb3", pack=f"telechargements/histoire_{sk}.zip",
         n=sum(1 for a in M if sk in a["tags"])))
 json.dump(dict(stories=STORY_LIST, assets=M, zips={k: f"telechargements/{k}.zip" for k in ZIPS}), open(os.path.join(HERE, "manifest.json"), "w", encoding="utf-8"), ensure_ascii=False)
 print("ressources :", len(M), "| zips :", len(os.listdir(DL)))

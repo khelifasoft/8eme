@@ -180,10 +180,11 @@ DATA.stories.forEach(s => {
       el("div",{class:"morale",text:s.morale}),
       el("div",{class:"btns"},
         el("a",{class:"btn main",href:s.docx,download:`ورقة ${s.title}.docx`,text:"ورقة المشروع (Word)"}),
+        el("a",{class:"btn",href:s.doc,download:`ورقة ${s.title}.doc`,title:"للإصدارات القديمة من Word (2003 و2007)",text:"Word قديم (.doc)"}),
         el("a",{class:"btn",href:s.html,target:"_blank",rel:"noopener",text:"قراءة الورقة"}),
         el("a",{class:"btn",href:s.sb3,download:`${s.title}.sb3`,text:"مشروع سكراتش"}),
         el("button",{class:"btn alt",type:"button","data-story":s.key,text:`موارد القصة (${s.n})`}),
-        el("a",{class:"btn wide",href:s.pack,download:`حزمة ${s.title}.zip`,text:"تحميل كل شيء لهذه القصة (.zip)"}))));
+        el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"}))));
   grid.append(card);
 });
 grid.addEventListener("click", e => { const b = e.target.closest("[data-story]"); if(!b) return; state.story = b.dataset.story; $("#story").value = state.story; render(); document.getElementById("library").scrollIntoView(); });
