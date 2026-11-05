@@ -39,6 +39,7 @@ Le contenu est lu dans `generateur/stories.json`. Si vous modifiez `make.py`, r�
 Dans `scratch/`, un projet `.sb3` par conte, déjà préparé pour les élèves :
 - les décors (fonds de couleur avec le nom du lieu) et les lutins (pastilles colorées avec leur nom, parfois deux costumes) ;
 - le scénario en six scènes : le décor lance « مشهد 1 », puis chaque réplique et chaque déplacement est un message reçu par le lutin concerné ;
+- une voix de synthèse en arabe (espeak-ng) pour chaque réplique et pour la morale : le lutin joue le son puis affiche la bulle, dont la durée s'adapte au son ;
 - le bandeau de la morale, affiché à la fin.
 
 Pour les utiliser : Scratch (en ligne ou hors ligne), **Fichier > Charger depuis votre ordinateur**, puis le drapeau vert. Les élèves peuvent ensuite dessiner leurs propres costumes, changer les répliques et enregistrer leur voix.
@@ -46,6 +47,10 @@ Pour les utiliser : Scratch (en ligne ou hors ligne), **Fichier > Charger depuis
 ```bash
 python3 generateur/scratch.py scratch
 ```
+
+La régénération avec les voix demande `espeak-ng` (`apt install espeak-ng`) ; sans lui, les projets sont créés sans son.
+
+La voix de synthèse est robotique. Pour une vraie voix, ouvrir un lutin dans Scratch, onglet **Sons**, enregistrer la réplique avec le micro, puis remplacer le son joué.
 
 ## Impression
 

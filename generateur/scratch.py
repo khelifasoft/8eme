@@ -1,6 +1,6 @@
 """Génère un projet Scratch 3 (.sb3) pour chaque conte.
 Usage : python3 scratch.py <dossier_de_sortie>"""
-import json, hashlib, zipfile, sys, os
+import json, hashlib, zipfile, sys, os, subprocess, wave, tempfile, shutil
 from xml.sax.saxutils import escape
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -120,6 +120,22 @@ def svg_banner(text):
             f'<rect x="2" y="2" width="436" height="42" rx="10" fill="#ffffff" stroke="#222222" stroke-width="3"/>'
             f'<text x="220" y="{23+fs//3}" text-anchor="middle" font-family="Sans Serif" font-size="{fs}" font-weight="bold" fill="#222222">{escape(text)}</text></svg>')
 
+HAS_TTS = shutil.which("espeak-ng") is not None
+_voice_cache = {}
+def voice(zf, store, text):
+    """Voix de synthèse arabe (espeak-ng) -> (md5, rate, frames, durée). None si indisponible."""
+    if not HAS_TTS: return None
+    if text in _voice_cache: return _voice_cache[text]
+    with tempfile.TemporaryDirectory() as td:
+        f = os.path.join(td, "v.wav")
+        subprocess.run(["espeak-ng", "-v", "ar", "-s", "125", "-p", "45", "-w", f, text], check=True, stderr=subprocess.DEVNULL)
+        data = open(f, "rb").read()
+        w = wave.open(f); rate, frames = w.getframerate(), w.getnframes(); w.close()
+    md5 = hashlib.md5(data).hexdigest()
+    if md5 not in store: zf.writestr(md5 + ".wav", data); store.add(md5)
+    _voice_cache[text] = (md5, rate, frames, frames / rate)
+    return _voice_cache[text]
+
 class Blocks:
     def __init__(self): self.b = {}; self.n = 0
     def nid(self): self.n += 1; return f"b{self.n}"
@@ -141,6 +157,9 @@ class Blocks:
     def hat_flag(self): return self.add("event_whenflagclicked")
     def hat_recv(self, name, bid): return self.add("event_whenbroadcastreceived", fields={"BROADCAST_OPTION": [name, bid]})
     def bc(self, name, bid, wait=False): return self.add("event_broadcastandwait" if wait else "event_broadcast", inputs={"BROADCAST_INPUT": [1, [11, name, bid]]})
+    def play(self, name):
+        m = self.add("sound_sounds_menu", fields={"SOUND_MENU": [name, None]}, shadow=True)
+        return self.add("sound_play", inputs={"SOUND_MENU": [1, m]})
     def say(self, t, s): return self.add("looks_sayforsecs", inputs={"MESSAGE": self.txt(t), "SECS": self.num(s)})
     def glide(self, x, y, s): return self.add("motion_glidesecstoxy", inputs={"SECS": self.num(s), "X": self.num(x), "Y": self.num(y)})
     def goto(self, x, y): return self.add("motion_gotoxy", inputs={"X": self.num(x), "Y": self.num(y)})
@@ -209,12 +228,21 @@ def build(key):
         ids = [b.hat_flag(), b.hide(), b.size(80 if w == 100 else 100), b.costume(first)]
         b.chain(ids, 0, 0)
         y = 160
+        sounds = []; snames = {}
+        for (m, st) in hs:
+            if st[0] == "say" and st[2] not in snames:
+                v = voice(zf, store, st[2])
+                if v: snames[st[2]] = f"صوت {len(snames)+1}"; sounds.append({"assetId": v[0], "name": snames[st[2]], "dataFormat": "wav", "rate": v[1], "sampleCount": v[2], "md5ext": v[0] + ".wav"})
         for (m, st) in hs:
             ids = [b.hat_recv(m, mid(m))]
             op = st[0]
             if op == "show": ids += [b.goto(st[2], st[3]), b.show()]
             elif op == "hide": ids += [b.hide()]
-            elif op == "say": ids += [b.say(st[2], 2)]
+            elif op == "say":
+                if st[2] in snames:
+                    dur = _voice_cache[st[2]][3]
+                    ids += [b.play(snames[st[2]]), b.say(st[2], max(2, round(dur + 0.5, 1)))]
+                else: ids += [b.say(st[2], 2)]
             elif op == "glide": ids += [b.glide(st[2], st[3], st[4])]
             elif op == "goto": ids += [b.goto(st[2], st[3])]
             elif op == "costume": ids += [b.costume(st[2])]
@@ -224,7 +252,7 @@ def build(key):
             md5 = asset(zf, svg, store)
             cs.append({"assetId": md5, "name": n, "md5ext": md5 + ".svg", "dataFormat": "svg", "rotationCenterX": w // 2, "rotationCenterY": h // 2})
         return {"isStage": False, "name": name, "variables": {}, "lists": {}, "broadcasts": {}, "blocks": b.b, "comments": {},
-                "currentCostume": 0, "costumes": cs, "sounds": [], "volume": 100, "layerOrder": layer, "visible": False,
+                "currentCostume": 0, "costumes": cs, "sounds": sounds, "volume": 100, "layerOrder": layer, "visible": False,
                 "x": 0, "y": 0, "size": 80 if w == 100 else 100, "direction": 90, "draggable": False, "rotationStyle": "all around"}
     layer = 1
     for (n, col, alts) in d["sprites"]:
@@ -234,11 +262,13 @@ def build(key):
     morale = s["morale"]
     bb = Blocks()
     ids = [bb.hat_flag(), bb.hide(), bb.goto(0, 150)]; bb.chain(ids, 0, 0)
-    ids = [bb.hat_recv("الحكمة", mid("الحكمة")), bb.show()]; bb.chain(ids, 0, 160)
+    mv = voice(zf, store, morale)
+    msounds = [{"assetId": mv[0], "name": "صوت الحكمة", "dataFormat": "wav", "rate": mv[1], "sampleCount": mv[2], "md5ext": mv[0] + ".wav"}] if mv else []
+    ids = [bb.hat_recv("الحكمة", mid("الحكمة")), bb.show()] + ([bb.play("صوت الحكمة")] if mv else []); bb.chain(ids, 0, 160)
     md5 = asset(zf, svg_banner(morale), store)
     targets.append({"isStage": False, "name": "الحكمة", "variables": {}, "lists": {}, "broadcasts": {}, "blocks": bb.b, "comments": {},
         "currentCostume": 0, "costumes": [{"assetId": md5, "name": "الحكمة", "md5ext": md5 + ".svg", "dataFormat": "svg", "rotationCenterX": 220, "rotationCenterY": 23}],
-        "sounds": [], "volume": 100, "layerOrder": layer, "visible": False, "x": 0, "y": 150, "size": 100, "direction": 90, "draggable": False, "rotationStyle": "all around"})
+        "sounds": msounds, "volume": 100, "layerOrder": layer, "visible": False, "x": 0, "y": 150, "size": 100, "direction": 90, "draggable": False, "rotationStyle": "all around"})
     stage["broadcasts"] = {v: k for k, v in bcs.items()}
     proj = {"targets": targets, "monitors": [], "extensions": [], "meta": {"semver": "3.0.0", "vm": "0.2.0", "agent": "Mozilla/5.0"}}
     zf.writestr("project.json", json.dumps(proj, ensure_ascii=False))
