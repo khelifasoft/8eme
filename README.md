@@ -2,6 +2,8 @@
 
 ## Page de l'élève
 
+Adresse publique (après activation de GitHub Pages) : **https://khelifasoft.github.io/8eme/**
+
 Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'élève y trouve :
 - les dix contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
 - une bibliothèque : lieux (30), décors (65), personnages (37), animaux (23), costumes et accessoires (79), images animées (48, en images successives) et sons (192 : effets, musiques, voix de synthèse).
