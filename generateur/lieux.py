@@ -111,7 +111,17 @@ def colline_soir():
 def prairie_maisons():
     return (ciel("#bfe4f2", "#eaf6e0", 230) + colline(200, "#8bc870", 20, 20) + sol(240, "#7acb6a", "#62b552") + frag("maison_paille", 10, 130, 0.9) + frag("maison_bois", 170, 130, 0.9) + frag("maison_brique", 330, 125, 0.95) + frag("fleurs", 40, 300, 1.0) + frag("buisson", 380, 280, 0.9) + sun(400, 10, .6) + cloud(180, 20, .7))
 
+def _etang(c1, c2, sol_c, eau_c, deco=""):
+    return (ciel(c1, c2, 230) + colline(200, sol_c, 14, 30) + sol(235, sol_c) + f'<ellipse cx="260" cy="290" rx="190" ry="60" fill="{eau_c}" stroke="#333" stroke-width="3"/>' + deco)
+def etang_ferme():
+    return _etang("#bfe4f2", "#eaf6e0", "#8ad672", "#4a90c8", frag("maison", 10, 90, 0.9) + frag("roseaux", 390, 190, 0.9) + frag("nenuphar", 200, 280, 0.8) + frag("buisson", 380, 150, 0.8) + sun(400, 10, .6) + cloud(150, 20, .6))
+def etang_hiver():
+    return _etang("#c8d0dc", "#eef2f6", "#f2f6fa", "#c8e4f2", frag("sapin", 20, 70, 1.1) + frag("sapin", 400, 80, 1.0) + frag("bonhomme_neige", 340, 150, 0.8) + frag("roseaux", 30, 210, 0.8) + "".join(f'<circle cx="{x}" cy="{y}" r="3" fill="#fff"/>' for x, y in [(40, 30), (120, 60), (200, 20), (290, 50), (360, 20), (440, 70), (80, 100), (250, 90)]))
+def etang_printemps():
+    return _etang("#9ad4f2", "#f4fbe8", "#9ae082", "#5aa8d8", frag("arbre", 20, 80, 1.1) + frag("fleurs", 380, 220, 1.0) + frag("roseaux", 400, 160, 0.8) + frag("nenuphar", 190, 280, 0.8) + frag("nenuphar", 300, 300, 0.7) + sun(380, 10, .7) + cloud(140, 20, .6))
+
 LIEUX = {
+ "etang_ferme": ("المزرعة والبركة", etang_ferme, ["duckling"]), "etang_hiver": ("البركة في الشتاء", etang_hiver, ["duckling"]), "etang_printemps": ("البركة في الربيع", etang_printemps, ["duckling"]),
  "prairie_maisons": ("المرج وثلاثة بيوت", prairie_maisons, ["pigs"]),
  "colline_pature": ("التل والمرعى", colline_pature, ["shepherd"]), "colline_soir": ("التل في المساء", colline_soir, ["shepherd"]),
  "foret": ("غابة", foret, ["layla", "crow", "lion", "hare"]), "foret_nuit": ("غابة في الليل", foret_nuit, ["layla"]), "foret_dense": ("غابة كثيفة", foret_dense, ["layla"]),

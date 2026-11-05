@@ -89,7 +89,15 @@ def maison_brique():
     return 150, 130, b + R(62, 84, 26, 44, "#4a2a1a", 3) + R(98, 76, 20, 20, "#bfe0f0", 3) + R(100, 10, 14, 30, "#a85a3a", 2)
 def maison_effondree(): return 170, 90, P("M10 84 L40 52 L60 70 L80 40 L108 66 L140 58 L160 84Z", "#a89070") + L(30, 78, 70, 56, "#8a5a2a", 6) + L(80, 64, 128, 72, "#8a5a2a", 6) + L(50, 48, 36, 30, "#c9a030", 4) + L(110, 56, 124, 36, "#c9a030", 4)
 
+def oeuf(): return 70, 90, E(35, 50, 26, 34, "#f4ecd8") + C(26, 40, 3, "#d8c8a0", 0) + C(44, 58, 3.5, "#d8c8a0", 0) + C(34, 70, 2.5, "#d8c8a0", 0)
+def nid_oeufs(): return 140, 90, P("M8 56 Q70 110 132 56 L120 74 Q70 100 20 74Z", "#a8743a") + E(50, 50, 20, 26, "#f4ecd8") + E(78, 46, 20, 26, "#f4ecd8") + E(100, 52, 18, 24, "#e8dcc0")
+def roseaux(): return 110, 130, "".join(L(15 + i * 16, 124, 12 + i * 16 + (i % 3 - 1) * 4, 20 + (i % 2) * 20, "#6a8a3a", 5) + E(12 + i * 16 + (i % 3 - 1) * 4, 18 + (i % 2) * 20, 5, 14, "#8a5a2a", 2) for i in range(6))
+def bonhomme_neige(): return 90, 140, C(45, 100, 32, "#fff") + C(45, 52, 24, "#fff") + C(38, 48, 3, "#222", 0) + C(52, 48, 3, "#222", 0) + T([(46, 54), (66, 58), (46, 60)], "#f39c12", 2) + R(28, 22, 34, 6, "#333", 2) + R(34, 4, 22, 20, "#333", 2)
+def nenuphar(): return 100, 50, E(50, 30, 40, 14, "#4caf50") + P("M50 30 L66 20", "none", 2) + C(72, 18, 8, "#f2a0c8", 2)
+
 OBJETS = {
+ "oeuf": ("بيضة", oeuf, ["duckling"]), "nid_oeufs": ("عش وبيض", nid_oeufs, ["duckling"]), "roseaux": ("قصب البركة", roseaux, ["duckling"]),
+ "bonhomme_neige": ("رجل الثلج", bonhomme_neige, ["duckling"]), "nenuphar": ("زنبق الماء", nenuphar, ["duckling"]),
  "maison_paille": ("بيت من القش", maison_paille, ["pigs"]), "maison_bois": ("بيت من الخشب", maison_bois, ["pigs"]),
  "maison_brique": ("بيت من الآجر", maison_brique, ["pigs"]), "maison_effondree": ("بيت منهار", maison_effondree, ["pigs"]),
  "ney": ("ناي الراعي", ney, ["shepherd"]), "foin": ("قشّ", foin, ["shepherd"]),

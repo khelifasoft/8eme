@@ -161,6 +161,28 @@ def oiseau(aile=0):
     b += L(96, 140, 96, 168, "#d9731a", 4) + L(112, 140, 112, 168, "#d9731a", 4)
     return SVG(200, 190, b)
 
+def canard(ph=0, col="#f5d94a", petit=False, gris=False):
+    b = _legs([100, 128], 150, 184, "#e8872a", ph, 9)
+    body = E(116, 118, 60, 38, col) + E(100, 120, 34, 20, "#f0c030" if not gris else "#9a9a9a", 3, -12)
+    body += C(172, 84, 28, col) + E(204, 92, 16, 8, "#e8872a") + C(178, 78, 4.5, "#222", 0)
+    if gris: body += "".join(L(150 + i * 6, 64, 148 + i * 6, 50, "#888", 2.5) for i in range(3)) + P("M60 110 Q42 96 48 80", "none", 3)
+    else: body += P("M58 112 Q40 100 46 84", "none", 3)
+    b += G(body, 0, 0) if not petit else G(body, 40, 70, 0.6)
+    return SVG(230, 200, b)
+
+def cygne(ph=0):
+    b = T([(40, 100), (20, 82), (60, 118)], "#ffffff") + E(112, 128, 72, 32, "#ffffff") + P("M70 120 Q100 150 150 138", "none", 3)
+    b += '<path d="M168 118 C200 100 210 50 178 36 C158 28 150 44 164 52" fill="none" stroke="#333" stroke-width="20" stroke-linecap="round"/><path d="M168 118 C200 100 210 50 178 36 C158 28 150 44 164 52" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>'
+    b += C(160, 54, 12, "#ffffff") + T([(150, 52), (130, 58), (150, 62)], "#e8872a", 2.5) + C(160, 50, 2.5, "#111", 0)
+    b += '<path d="M20 160 q15 -8 30 0 t30 0 t30 0 t30 0 t30 0" fill="none" stroke="#4a90c8" stroke-width="4" stroke-linecap="round"/>'
+    return SVG(230, 200, b)
+
+def poule(ph=0):
+    b = _legs([100, 124], 150, 184, "#e8872a", ph, 8)
+    b += E(116, 116, 54, 38, "#c0703a") + E(110, 120, 30, 20, "#a85a2a", 3, -12) + P("M64 110 L36 90 L44 124Z", "#8a4a22")
+    b += C(166, 78, 24, "#c0703a") + P("M156 56 Q160 40 168 54 Q174 38 180 56Z", "#d93a3a") + T([(186, 80), (206, 86), (186, 92)], "#f2b030", 2.5) + C(172, 74, 4, "#222", 0) + P("M184 94 Q186 108 180 104", "#d93a3a", 2)
+    return SVG(230, 200, b)
+
 def cochon(ph=0, col="#f4a8b8"):
     b = P("M52 112 Q28 96 40 80 Q52 90 44 100 Q38 108 50 110", "none", 4)
     b += _legs([86, 104, 146, 164], 138, 184, "#d88a9a", ph, 13)
@@ -178,6 +200,9 @@ def mouton(ph=0):
     return SVG(250, 200, b)
 
 ANIMAUX = {
+    "canard": ("بطة", lambda: canard(), ["duckling"]), "caneton": ("فرخ بطة صغير", lambda: canard(0, "#e8e8d0", True), ["duckling"]),
+    "caneton_gris": ("البطة الصغيرة الرمادية", lambda: canard(0, "#b8b8b8", False, True), ["duckling"]),
+    "cygne": ("بجعة", lambda: cygne(), ["duckling"]), "poule": ("دجاجة", lambda: poule(), ["duckling"]),
     "cochon": ("خنزير", lambda: cochon(), ["pigs"]),
     "mouton": ("خروف", lambda: mouton(), ["shepherd"]),
     "loup": ("ذئب", lambda: loup(), ["layla", "shepherd", "pigs"]),

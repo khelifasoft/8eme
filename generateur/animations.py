@@ -101,7 +101,7 @@ for k, lab, tg in [("cendrillon_bal", "سندريلا تتكلم", ["cinderella"
     add("parle_" + k, lab, 2, talk_person(k), tg)
 for k, lab, fn, tg in [("loup", "الذئب يجري", an.loup, ["layla"]), ("ane", "الحمار يمشي", an.ane, ["djeha"]), ("lion", "الأسد يمشي", an.lion, ["lion"]),
                        ("renard", "الثعلب يجري", an.renard, ["crow"]), ("lievre", "الأرنب يجري", an.lievre, ["hare"]), ("tortue", "السلحفاة تمشي", an.tortue, ["hare"]),
-                       ("cheval", "الحصان يجري", an.cheval, []), ("chameau", "الجمل يمشي", an.chameau, ["alibaba"]), ("chien", "الكلب يجري", an.chien, []), ("mouton", "الخروف يمشي", an.mouton, ["shepherd"]), ("cochon", "الخنزير يمشي", an.cochon, ["pigs"]), ("souris", "الفأر يجري", an.souris, ["lion"])]:
+                       ("cheval", "الحصان يجري", an.cheval, []), ("chameau", "الجمل يمشي", an.chameau, ["alibaba"]), ("chien", "الكلب يجري", an.chien, []), ("mouton", "الخروف يمشي", an.mouton, ["shepherd"]), ("cochon", "الخنزير يمشي", an.cochon, ["pigs"]), ("canard", "البطة تمشي", an.canard, ["duckling"]), ("poule", "الدجاجة تمشي", an.poule, []), ("souris", "الفأر يجري", an.souris, ["lion"])]:
     add("marche_" + k, lab, 4, walk_animal(fn), tg)
 def maison_effondre(i, n):
     sy = [1, .85, .6, .35, .18][i]; rot = [0, -2, 3, -4, 0][i]
@@ -111,9 +111,18 @@ def maison_effondre(i, n):
         b += "".join(E(30 + k * 38, 150 - i * 3, 4 + i * 2, 3 + i, "#d8d0c0", 0) for k in range(4))
     return SVG(180, 170, b)
 add("maison_s_effondre", "بيت يتهدّم", 5, maison_effondre, ["pigs"])
+def oeuf_eclot(i, n):
+    b = E(100, 130, 40, 50, "#f4ecd8") if i < 2 else P("M60 130 Q60 80 100 78 Q140 80 140 130 L128 118 L116 132 L100 116 L86 132 L72 118Z", "#f4ecd8") if i == 2 else P("M60 134 Q60 120 100 118 Q140 120 140 134 Q130 182 100 182 Q70 182 60 134Z", "#f4ecd8")
+    if i == 1: b += P("M80 100 L92 114 L84 126 L98 140", "none", 3)
+    if i >= 2: b += C(100, 98 - (i - 2) * 6, 20, "#f2d04a") + C(94, 94 - (i - 2) * 6, 3, "#222", 0) + C(108, 94 - (i - 2) * 6, 3, "#222", 0) + T([(98, 104 - (i - 2) * 6), (108, 106 - (i - 2) * 6), (98, 110 - (i - 2) * 6)], "#e8872a", 2)
+    return SVG(200, 200, b)
+def cygne_nage(i, n):
+    dy = [0, 3, 0, -3][i]
+    return SVG(230, 210, f'<g transform="translate({i*3} {dy})">{inner(an.cygne())}</g>')
+add("oeuf_eclot", "بيضة تنفقس", 4, oeuf_eclot, ["duckling"]); add("cygne_nage", "بجعة تسبح", 4, cygne_nage, ["duckling"])
 add("oiseau_vole", "عصفور يطير", 4, oiseau_vol); add("poisson_nage", "سمكة تسبح", 4, poisson_nage, ["sindbad"])
 add("grenouille_saute", "ضفدع يقفز", 5, grenouille_saut, ["frog"]); add("baleine_plonge", "الحوت يغوص", 6, baleine_plonge, ["sindbad"])
 add("papillon", "فراشة", 4, papillon); add("porte_s_ouvre", "باب ينفتح", 5, porte, ["alibaba"]); add("feu", "نار تشتعل", 4, feu); add("vagues", "أمواج", 4, vagues, ["sindbad"])
 add("horloge_tourne", "ساعة تدور", 8, horloge, ["cinderella"]); add("piece_tourne", "قطعة نقود تدور", 6, piece, ["alibaba"]); add("etoile_scintille", "نجمة تلمع", 4, etoile)
-add("soleil_tourne", "شمس مشرقة", 4, soleil); add("pluie", "مطر", 4, pluie); add("neige", "ثلج", 4, neige); add("bateau_tangue", "سفينة تتمايل", 4, bateau, ["sindbad"])
+add("soleil_tourne", "شمس مشرقة", 4, soleil); add("pluie", "مطر", 4, pluie); add("neige", "ثلج", 4, neige, ["duckling"]); add("bateau_tangue", "سفينة تتمايل", 4, bateau, ["sindbad"])
 add("baguette_magique", "عصا سحرية", 5, baguette, ["cinderella"]); add("coeur_bat", "قلب ينبض", 4, coeur); add("nuage_passe", "سحابة تمرّ", 5, nuage_vent)

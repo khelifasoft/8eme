@@ -5,8 +5,8 @@
 Adresse publique (après activation de GitHub Pages) : **https://khelifasoft.github.io/8eme/**
 
 Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'élève y trouve :
-- les onze contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
-- une bibliothèque : lieux (31), décors (69), personnages (37), animaux (24), costumes et accessoires (79), images animées (50, en images successives) et sons (203 : effets, musiques, voix de synthèse).
+- les douze contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
+- une bibliothèque : lieux (34), décors (74), personnages (37), animaux (29), costumes et accessoires (79), images animées (54, en images successives) et sons (214 : effets, musiques, voix de synthèse).
 
 **Vidéos** : la section « فيديوهات » affiche des vidéos hébergées ailleurs (YouTube, Vimeo, Dailymotion, Internet Archive, Google Drive, TED, Facebook, fichiers `.mp4`, ou un code `<iframe>`), sans quitter la page et sans télécharger la vidéo. Pour qu'une vidéo apparaisse chez tous les élèves, ajouter une ligne dans `videos.js` (explications dans le fichier). Le bouton « + إضافة رابط فيديو » ajoute un lien seulement dans le navigateur de la personne qui l'utilise. YouTube refuse souvent l'affichage quand la page est ouverte comme simple fichier (`file://`) : utiliser GitHub Pages ou `lancer.bat` / `lancer.sh`. Certains propriétaires interdisent l'intégration de leurs vidéos ; la page propose alors le lien vers le site d'origine.
 
@@ -25,7 +25,7 @@ python3 generateur/page.py           # index.html
 
 Les sons sont synthétisés (numpy) : ce ne sont pas des enregistrements réels. Les voix viennent d'espeak-ng.
 
-Onze fiches A4 (fond blanc, en arabe) pour les élèves de niveau moyen ou faible.
+Douze fiches A4 (fond blanc, en arabe) pour les élèves de niveau moyen ou faible.
 Chaque fiche contient : résumé du conte, personnages et décors, scénario en six scènes, étapes de réalisation dans Scratch, liste de contrôle et espace d'avis personnel.
 
 | Fichier | Conte |
@@ -41,6 +41,7 @@ Chaque fiche contient : résumé du conte, personnages et décors, scénario en 
 | `fiches/frog.html` | La princesse et la grenouille (الأميرة والضفدع) |
 | `fiches/shepherd.html` | Le berger menteur (الراعي الكذاب) |
 | `fiches/pigs.html` | Les trois petits cochons (الخنازير الثلاثة والذئب) |
+| `fiches/duckling.html` | Le vilain petit canard (البطة القبيحة) |
 
 ## Régénérer les fiches
 

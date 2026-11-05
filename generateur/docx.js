@@ -58,7 +58,7 @@ function build(s){
 
   children.push(h2('٦. رأيي في القصة',s.main,s.accent));
   children.push(para([run('اكتب جملة أو جملتين: ماذا تعلمت من هذه القصة؟',{size:21,color:'666666'})],{spacing:{after:60}}));
-  children.push(new Table({width:{size:W,type:WidthType.DXA},columnWidths:[W],rows:[new TableRow({height:{value:800,rule:'atLeast'},children:[new TableCell({width:{size:W,type:WidthType.DXA},borders:{top:{style:BorderStyle.DASHED,size:4,color:'999999'},bottom:{style:BorderStyle.DASHED,size:4,color:'999999'},left:{style:BorderStyle.DASHED,size:4,color:'999999'},right:{style:BorderStyle.DASHED,size:4,color:'999999'}},children:[para([run('')])]})]})]}));
+  children.push(new Table({width:{size:W,type:WidthType.DXA},columnWidths:[W],rows:[new TableRow({height:{value:700,rule:'atLeast'},children:[new TableCell({width:{size:W,type:WidthType.DXA},borders:{top:{style:BorderStyle.DASHED,size:4,color:'999999'},bottom:{style:BorderStyle.DASHED,size:4,color:'999999'},left:{style:BorderStyle.DASHED,size:4,color:'999999'},right:{style:BorderStyle.DASHED,size:4,color:'999999'}},children:[para([run('')])]})]})]}));
 
   return new Document({
     creator:'khelifasoft',title:s.title,
@@ -69,7 +69,7 @@ function build(s){
     numbering:{config:[
       {reference:'steps',levels:[{level:0,format:LevelFormat.DECIMAL,text:'%1.',alignment:AlignmentType.START,style:{paragraph:{indent:{left:540,hanging:360}}}}]},
       {reference:'checks',levels:[{level:0,format:LevelFormat.BULLET,text:'☐',alignment:AlignmentType.START,style:{paragraph:{indent:{left:540,hanging:360}}}}]}]},
-    sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:540,bottom:540,left:720,right:720}}},children}]
+    sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:480,bottom:420,left:720,right:720}}},children}]
   });
 }
 (async()=>{for(const [k,s] of Object.entries(stories)){const b=await Packer.toBuffer(build(s));fs.writeFileSync(`${outDir}/${k}.docx`,b);}console.log('done');})();

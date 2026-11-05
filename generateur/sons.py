@@ -122,12 +122,16 @@ def _oink(f0, f1):
 def e_cochon(): return lp(place(1.2, [(0, _oink(220, 180)), (.25, _oink(210, 170))]), 1800)
 def e_souffle(): n = bp(noise(1.6), 300, 3000); return n * np.sin(np.linspace(0, np.pi, len(n))) ** 2
 def e_effondrement(): return A(lp(noise(1.6), 600) * decay(1.6, 3), place(1.6, [(i * .12, hp(noise(.07), 800) * decay(.07, 30)) for i in range(10)]))
+def _quack(f0, f1):
+    n = int(.2 * SR); return osc(np.linspace(f0, f1, n), .2, "saw") * (1 + .5 * osc(60, .2)) * env_ar(n, .01, .06) * .5
+def e_canard(): return lp(place(1.2, [(0, _quack(420, 300)), (.3, _quack(400, 290)), (.6, _quack(430, 310))]), 2600)
+def e_cygne(): n = int(.7 * SR); return lp(osc(np.linspace(260, 400, n), .7, "saw") * (1 + .3 * osc(14, .7)) * env_ar(n, .05, .2) * .6, 1800)
 def e_bulle(): return note(np.linspace(300, 1200, 3000), .15, "sine", .8, 6)
 
 EFFETS = [
  ("ding", "جرس صغير", "Clochette", e_ding, []), ("cloche", "ناقوس", "Cloche", e_cloche, ["cinderella"]), ("gong", "قرع الطبل الكبير", "Gong", e_gong, []),
  ("toctoc", "طَرْق على الباب", "Toc toc", e_toctoc, ["layla", "alibaba"]), ("grincement_porte", "صرير الباب", "Porte qui grince", e_grincement, ["alibaba", "layla"]),
- ("pas", "خطوات", "Pas", e_pas, []), ("course", "ركض", "Course", e_course, ["hare"]), ("vent", "ريح", "Vent", e_vent, []), ("pluie", "مطر", "Pluie", e_pluie, []),
+ ("pas", "خطوات", "Pas", e_pas, []), ("course", "ركض", "Course", e_course, ["hare"]), ("vent", "ريح", "Vent", e_vent, ["duckling"]), ("pluie", "مطر", "Pluie", e_pluie, []),
  ("tonnerre", "رعد", "Tonnerre", e_tonnerre, ["sindbad"]), ("eau", "ماء يجري", "Eau", e_eau, ["djeha"]), ("vagues", "أمواج البحر", "Vagues", e_vagues, ["sindbad"]),
  ("feu", "نار تشتعل", "Feu", e_feu, []), ("magie", "سحر", "Magie", e_magie, ["cinderella"]), ("baguette", "عصا سحرية", "Baguette magique", e_baguette, ["cinderella"]),
  ("fanfare", "نفير الاحتفال", "Fanfare", e_fanfare, ["cinderella", "frog"]), ("victoire", "فوز", "Victoire", e_victoire, ["hare"]), ("echec", "فشل", "Échec", e_echec, []),
@@ -141,7 +145,7 @@ EFFETS = [
  ("coffre", "فتح صندوق الكنز", "Coffre", e_coffre, ["alibaba"]), ("hache", "ضرب بالفأس", "Hache", e_hache, ["layla"]), ("cles", "مفاتيح", "Clés", e_cles, []),
  ("plouf", "قفزة في الماء", "Plouf", e_plouf, ["frog", "sindbad"]), ("galop", "عَدْو الحصان", "Galop", e_galop, []), ("sonnette", "جرس الباب", "Sonnette", e_sonnette, []),
  ("klaxon", "منبّه", "Klaxon", e_klaxon, []), ("etincelles", "شرارات", "Étincelles", e_etincelle, ["cinderella"]), ("pleurs", "بكاء", "Pleurs", e_pleurs, ["cinderella"]),
- ("soupir", "تنهيدة", "Soupir", e_soupir, []), ("cochon", "خرخرة الخنزير", "Cochon", e_cochon, ["pigs"]), ("souffle", "نفخ قوي", "Souffle", e_souffle, ["pigs"]), ("effondrement", "انهيار بيت", "Effondrement", e_effondrement, ["pigs"]), ("mouton", "ثغاء الخروف", "Mouton", e_mouton, ["shepherd"]), ("bulle", "فقاعة ماء", "Bulle", e_bulle, ["frog"]),
+ ("soupir", "تنهيدة", "Soupir", e_soupir, []), ("canard", "بطة تصيح", "Canard", e_canard, ["duckling"]), ("cygne", "بجعة تنادي", "Cygne", e_cygne, ["duckling"]), ("cochon", "خرخرة الخنزير", "Cochon", e_cochon, ["pigs"]), ("souffle", "نفخ قوي", "Souffle", e_souffle, ["pigs"]), ("effondrement", "انهيار بيت", "Effondrement", e_effondrement, ["pigs"]), ("mouton", "ثغاء الخروف", "Mouton", e_mouton, ["shepherd"]), ("bulle", "فقاعة ماء", "Bulle", e_bulle, ["frog"]),
 ]
 
 # ---------------- musiques ----------------
