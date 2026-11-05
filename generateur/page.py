@@ -8,6 +8,10 @@ TPL = r'''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ورشة القصص مع سكراتش</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f4aa8">
+<link rel="icon" href="icones/icone.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icones/icone-192.png">
 <style>
 :root{--ink:#1d2433;--muted:#5d6678;--line:#dfe3ec;--soft:#f4f6fb;--blue:#1f4aa8;--orange:#e8861c;--green:#1e8a5a;
  --font:'Segoe UI','Tahoma','Arial','Noto Sans Arabic',sans-serif}
@@ -19,6 +23,14 @@ a{color:inherit}
 header.top{border-bottom:3px solid var(--orange);padding:28px 0 20px}
 header.top h1{margin:0;font-size:clamp(28px,5vw,44px);color:var(--blue);line-height:1.2}
 header.top p{margin:6px 0 0;color:var(--muted);font-size:17px}
+.head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+#install{display:inline-flex;align-items:center;gap:8px;font-size:16px;padding:8px 18px;white-space:nowrap}
+#install[hidden]{display:none}
+dialog{border:1px solid var(--line);border-radius:14px;max-width:min(520px,92vw);padding:20px 22px;font-family:var(--font);direction:rtl;color:var(--ink)}
+dialog::backdrop{background:rgba(20,30,50,.45)}
+dialog h3{margin:0 0 8px;font-size:20px;color:var(--blue)}
+dialog ul{margin:8px 0 14px;padding-inline-start:20px}
+dialog li{margin:4px 0}
 nav.jump{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
 nav.jump a{border:1px solid var(--line);border-radius:999px;padding:4px 16px;text-decoration:none;font-size:15px;background:#fff}
 nav.jump a:hover,nav.jump a:focus-visible{border-color:var(--blue);color:var(--blue)}
@@ -83,7 +95,8 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <h1>ورشة القصص مع سكراتش</h1>
+  <div class="head"><h1>ورشة القصص مع سكراتش</h1>
+  <button type="button" class="btn main" id="install" hidden>⬇ تثبيت التطبيق على سطح المكتب</button></div>
   <p>كل ما تحتاجه لإنشاء مشروعك في صفحة واحدة: أوراق المشاريع، مشاريع جاهزة، أصوات، صور، أماكن وديكورات. لا حاجة إلى الإنترنت.</p>
   <nav class="jump" aria-label="التنقّل"><a href="#start">كيف أبدأ؟</a><a href="#stories">اختر قصتك</a><a href="#library">المكتبة</a><a href="#help">مساعدة</a></nav>
 </div></header>
@@ -132,6 +145,11 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   </div>
 </section>
 </main>
+<dialog id="installHelp" aria-labelledby="ihTitle">
+  <h3 id="ihTitle">تثبيت التطبيق</h3>
+  <div id="ihBody"></div>
+  <form method="dialog"><button class="btn main" style="margin-top:10px">حسنًا</button></form>
+</dialog>
 <footer><div class="wrap">الصور مرسومة خصيصًا لهذه الورشة، والأصوات والموسيقى مولَّدة بالحاسوب، ويمكنك استعمالها وتعديلها بحرّية في مشاريعك.</div></footer>
 
 <script>
@@ -221,6 +239,25 @@ function render(){
 }
 $("#subs").addEventListener("click", e => { const b=e.target.closest("[data-sub]"); if(!b) return; state.sub=b.dataset.sub; render(); });
 render();
+
+// ---- installation de l'application (PWA)
+const instBtn = $("#install"), dlg = $("#installHelp");
+let deferred = null;
+const standalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const secure = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+if (!standalone()) instBtn.hidden = false;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; instBtn.hidden = false; });
+window.addEventListener("appinstalled", () => { deferred = null; instBtn.hidden = true; });
+instBtn.addEventListener("click", async () => {
+  if (deferred) { deferred.prompt(); try { await deferred.userChoice; } catch(e){} deferred = null; return; }
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const body = $("#ihBody"); body.replaceChildren();
+  if (!secure) body.append(el("p",{text:"التثبيت يعمل فقط عندما تُفتح الصفحة من عنوان إنترنت (https). أنت تفتح الصفحة الآن من ملف على الحاسوب. اطلب من معلّمك رابط الموقع ثم افتحه وستظهر لك هذه الميزة."}));
+  else if (ios) body.append(el("p",{text:"في آيفون وآيباد:"}), el("ul",{}, el("li",{text:"اضغط على زر المشاركة في Safari."}), el("li",{text:"اختر «إضافة إلى الشاشة الرئيسية»."})));
+  else body.append(el("p",{text:"لم يعرض المتصفح نافذة التثبيت. جرّب إحدى الطرق:"}), el("ul",{}, el("li",{text:"في Chrome أو Edge: اضغط على أيقونة التثبيت في شريط العنوان، أو من القائمة اختر «تثبيت التطبيق»."}), el("li",{text:"في Firefox على الحاسوب: التثبيت غير متاح. أضف الصفحة إلى المفضّلة."}), el("li",{text:"إن كان التطبيق مثبّتًا من قبل، افتحه من سطح المكتب."})));
+  dlg.showModal();
+});
+if ("serviceWorker" in navigator && secure) navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>
 </body>
 </html>

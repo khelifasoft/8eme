@@ -6,6 +6,8 @@ Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'él
 - les neuf contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
 - une bibliothèque : lieux (28), décors (63), personnages (35), animaux (22), costumes et accessoires (79), images animées (46, en images successives) et sons (182 : effets, musiques, voix de synthèse).
 
+**Installer l'application** : le bouton « تثبيت التطبيق على سطح المكتب » en haut de la page ajoute un raccourci (Chrome, Edge ; Safari : « Ajouter à l'écran d'accueil »). L'installation exige que la page soit servie en HTTPS (par exemple avec GitHub Pages) : elle ne fonctionne pas depuis un fichier ouvert directement. Une fois installée, l'application fonctionne hors connexion pour les pages déjà ouvertes (`manifest.webmanifest`, `sw.js`, `icones/`).
+
 Tout est dessiné ou généré par les scripts de `generateur/` ; les fichiers sont dans `bibliotheque/` et `telechargements/`.
 
 ```bash
