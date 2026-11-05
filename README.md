@@ -6,7 +6,11 @@ Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'él
 - les neuf contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
 - une bibliothèque : lieux (28), décors (63), personnages (35), animaux (22), costumes et accessoires (79), images animées (46, en images successives) et sons (182 : effets, musiques, voix de synthèse).
 
-**Installer l'application** : le bouton « تثبيت التطبيق على سطح المكتب » en haut de la page ajoute un raccourci (Chrome, Edge ; Safari : « Ajouter à l'écran d'accueil »). L'installation exige que la page soit servie en HTTPS (par exemple avec GitHub Pages) : elle ne fonctionne pas depuis un fichier ouvert directement. Une fois installée, l'application fonctionne hors connexion pour les pages déjà ouvertes (`manifest.webmanifest`, `sw.js`, `icones/`).
+**Raccourci sur le bureau** : le bouton « ⬇ اختصار على سطح المكتب » en haut de la page a deux comportements.
+- Si la page est servie en HTTPS (GitHub Pages) ou sur `localhost`, et que le navigateur le permet, il installe l'application (Chrome, Edge). Elle fonctionne alors hors connexion pour les pages déjà ouvertes (`manifest.webmanifest`, `sw.js`, `icones/`).
+- Sinon, par exemple sur un réseau local en HTTP, il télécharge un petit fichier de raccourci (`.url` sous Windows, `.webloc` sous macOS, `.desktop` sous Linux) que l'élève place sur le bureau. Sur téléphone, il explique « Ajouter à l'écran d'accueil ».
+
+**Réseau local** : lancer `lancer.bat` (Windows) ou `./lancer.sh` (Linux, macOS) sur un poste. Le script affiche l'adresse à donner aux autres postes, par exemple `http://192.168.1.20:8000/`. Il demande Python.
 
 Tout est dessiné ou généré par les scripts de `generateur/` ; les fichiers sont dans `bibliotheque/` et `telechargements/`.
 

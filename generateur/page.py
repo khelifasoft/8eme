@@ -31,6 +31,7 @@ dialog::backdrop{background:rgba(20,30,50,.45)}
 dialog h3{margin:0 0 8px;font-size:20px;color:var(--blue)}
 dialog ul{margin:8px 0 14px;padding-inline-start:20px}
 dialog li{margin:4px 0}
+dialog .small{font-size:14px;color:var(--muted)}
 nav.jump{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
 nav.jump a{border:1px solid var(--line);border-radius:999px;padding:4px 16px;text-decoration:none;font-size:15px;background:#fff}
 nav.jump a:hover,nav.jump a:focus-visible{border-color:var(--blue);color:var(--blue)}
@@ -96,7 +97,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 <body>
 <header class="top"><div class="wrap">
   <div class="head"><h1>ورشة القصص مع سكراتش</h1>
-  <button type="button" class="btn main" id="install" hidden>⬇ تثبيت التطبيق على سطح المكتب</button></div>
+  <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div>
   <p>كل ما تحتاجه لإنشاء مشروعك في صفحة واحدة: أوراق المشاريع، مشاريع جاهزة، أصوات، صور، أماكن وديكورات. لا حاجة إلى الإنترنت.</p>
   <nav class="jump" aria-label="التنقّل"><a href="#start">كيف أبدأ؟</a><a href="#stories">اختر قصتك</a><a href="#library">المكتبة</a><a href="#help">مساعدة</a></nav>
 </div></header>
@@ -146,7 +147,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 </section>
 </main>
 <dialog id="installHelp" aria-labelledby="ihTitle">
-  <h3 id="ihTitle">تثبيت التطبيق</h3>
+  <h3 id="ihTitle">اختصار على سطح المكتب</h3>
   <div id="ihBody"></div>
   <form method="dialog"><button class="btn main" style="margin-top:10px">حسنًا</button></form>
 </dialog>
@@ -240,22 +241,40 @@ function render(){
 $("#subs").addEventListener("click", e => { const b=e.target.closest("[data-sub]"); if(!b) return; state.sub=b.dataset.sub; render(); });
 render();
 
-// ---- installation de l'application (PWA)
+// ---- installation / raccourci sur le bureau
 const instBtn = $("#install"), dlg = $("#installHelp");
 let deferred = null;
 const standalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 const secure = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const ua = navigator.userAgent;
+const OS = /android/i.test(ua) ? "android" : /iphone|ipad|ipod/i.test(ua) ? "ios" : /windows/i.test(ua) ? "windows" : /mac/i.test(ua) ? "mac" : "linux";
+const TITLE = "ورشة القصص", FILE = "Atelier-contes";
 if (!standalone()) instBtn.hidden = false;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; instBtn.hidden = false; });
 window.addEventListener("appinstalled", () => { deferred = null; instBtn.hidden = true; });
+
+// Fichier raccourci : fonctionne aussi en HTTP sur un réseau local (pas besoin de HTTPS).
+function shortcut(){
+  const url = location.href.split("#")[0];
+  const esc = x => x.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  if (OS === "windows") return {name: FILE + ".url", type: "application/octet-stream", text: "[InternetShortcut]\r\nURL=" + url + "\r\n"};
+  if (OS === "mac") return {name: FILE + ".webloc", type: "application/xml", text: '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict><key>URL</key><string>' + esc(url) + '</string></dict></plist>\n'};
+  return {name: FILE + ".desktop", type: "application/x-desktop", text: "[Desktop Entry]\nVersion=1.0\nType=Application\nName=" + TITLE + "\nExec=xdg-open " + url + "\nTerminal=false\nIcon=applications-education\nCategories=Education;\n"};
+}
+function download(f){
+  const a = el("a",{href:URL.createObjectURL(new Blob([f.text],{type:f.type})),download:f.name}); document.body.append(a); a.click(); a.remove();
+}
+function showHelp(kids){ const body = $("#ihBody"); body.replaceChildren(...kids); dlg.showModal(); }
 instBtn.addEventListener("click", async () => {
   if (deferred) { deferred.prompt(); try { await deferred.userChoice; } catch(e){} deferred = null; return; }
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const body = $("#ihBody"); body.replaceChildren();
-  if (!secure) body.append(el("p",{text:"التثبيت يعمل فقط عندما تُفتح الصفحة من عنوان إنترنت (https). أنت تفتح الصفحة الآن من ملف على الحاسوب. اطلب من معلّمك رابط الموقع ثم افتحه وستظهر لك هذه الميزة."}));
-  else if (ios) body.append(el("p",{text:"في آيفون وآيباد:"}), el("ul",{}, el("li",{text:"اضغط على زر المشاركة في Safari."}), el("li",{text:"اختر «إضافة إلى الشاشة الرئيسية»."})));
-  else body.append(el("p",{text:"لم يعرض المتصفح نافذة التثبيت. جرّب إحدى الطرق:"}), el("ul",{}, el("li",{text:"في Chrome أو Edge: اضغط على أيقونة التثبيت في شريط العنوان، أو من القائمة اختر «تثبيت التطبيق»."}), el("li",{text:"في Firefox على الحاسوب: التثبيت غير متاح. أضف الصفحة إلى المفضّلة."}), el("li",{text:"إن كان التطبيق مثبّتًا من قبل، افتحه من سطح المكتب."})));
-  dlg.showModal();
+  if (OS === "ios") return showHelp([el("p",{text:"في آيفون وآيباد:"}), el("ul",{}, el("li",{text:"اضغط على زر المشاركة في Safari."}), el("li",{text:"اختر «إضافة إلى الشاشة الرئيسية»."}))]);
+  if (OS === "android") return showHelp([el("p",{text:"في هاتف أندرويد:"}), el("ul",{}, el("li",{text:"اضغط على قائمة المتصفح (⋮)."}), el("li",{text:"اختر «إضافة إلى الشاشة الرئيسية»."}))]);
+  const f = shortcut(); download(f);
+  const where = OS === "windows" ? "اسحب الملف إلى سطح المكتب." : OS === "mac" ? "اسحب الملف إلى سطح المكتب أو إلى الـ Dock." : "انقله إلى سطح المكتب، ثم انقر عليه بالزر الأيمن واختر «السماح بالتشغيل».";
+  const kids = [el("p",{text:"تم تنزيل ملف الاختصار «" + f.name + "». " + where}),
+    el("p",{text:"عند النقر عليه يفتح الموقع في المتصفح مباشرة. إن ظهر تحذير أثناء التنزيل فاختر «الاحتفاظ بالملف»."})];
+  if (!secure) kids.push(el("p",{class:"small",text:"ملاحظة: التثبيت كتطبيق مستقل يتطلب HTTPS. على شبكة محلية بدون HTTPS يعمل الاختصار بالشكل الموضّح أعلاه."}));
+  showHelp(kids);
 });
 if ("serviceWorker" in navigator && secure) navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>
