@@ -1,5 +1,20 @@
 # Fiches élèves : contes en arabe à recréer avec Scratch
 
+## Page de l'élève
+
+Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'élève y trouve :
+- les neuf contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
+- une bibliothèque : lieux (28), décors (63), personnages (35), animaux (22), costumes et accessoires (79), images animées (46, en images successives) et sons (182 : effets, musiques, voix de synthèse).
+
+Tout est dessiné ou généré par les scripts de `generateur/` ; les fichiers sont dans `bibliotheque/` et `telechargements/`.
+
+```bash
+python3 generateur/bibliotheque.py   # images, sons, animations et .zip
+python3 generateur/page.py           # index.html
+```
+
+Les sons sont synthétisés (numpy) : ce ne sont pas des enregistrements réels. Les voix viennent d'espeak-ng.
+
 Neuf fiches A4 (fond blanc, en arabe) pour les élèves de niveau moyen ou faible.
 Chaque fiche contient : résumé du conte, personnages et décors, scénario en six scènes, étapes de réalisation dans Scratch, liste de contrôle et espace d'avis personnel.
 
