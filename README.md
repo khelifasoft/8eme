@@ -3,8 +3,8 @@
 ## Page de l'élève
 
 Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'élève y trouve :
-- les neuf contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
-- une bibliothèque : lieux (28), décors (63), personnages (35), animaux (22), costumes et accessoires (79), images animées (46, en images successives) et sons (182 : effets, musiques, voix de synthèse).
+- les dix contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
+- une bibliothèque : lieux (30), décors (65), personnages (37), animaux (23), costumes et accessoires (79), images animées (48, en images successives) et sons (192 : effets, musiques, voix de synthèse).
 
 **Raccourci sur le bureau** : le bouton « ⬇ اختصار على سطح المكتب » en haut de la page a deux comportements.
 - Si la page est servie en HTTPS (GitHub Pages) ou sur `localhost`, et que le navigateur le permet, il installe l'application (Chrome, Edge). Elle fonctionne alors hors connexion pour les pages déjà ouvertes (`manifest.webmanifest`, `sw.js`, `icones/`).
@@ -21,7 +21,7 @@ python3 generateur/page.py           # index.html
 
 Les sons sont synthétisés (numpy) : ce ne sont pas des enregistrements réels. Les voix viennent d'espeak-ng.
 
-Neuf fiches A4 (fond blanc, en arabe) pour les élèves de niveau moyen ou faible.
+Dix fiches A4 (fond blanc, en arabe) pour les élèves de niveau moyen ou faible.
 Chaque fiche contient : résumé du conte, personnages et décors, scénario en six scènes, étapes de réalisation dans Scratch, liste de contrôle et espace d'avis personnel.
 
 | Fichier | Conte |
@@ -35,6 +35,7 @@ Chaque fiche contient : résumé du conte, personnages et décors, scénario en 
 | `fiches/hare.html` | Le lièvre et la tortue (الأرنب والسلحفاة) |
 | `fiches/lion.html` | Le lion et le rat (الأسد والفأر) |
 | `fiches/frog.html` | La princesse et la grenouille (الأميرة والضفدع) |
+| `fiches/shepherd.html` | Le berger menteur (الراعي الكذاب) |
 
 ## Régénérer les fiches
 

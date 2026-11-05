@@ -116,6 +116,7 @@ def e_klaxon(): return osc(440, .5, "square") * .4 * env_ar(int(.5 * SR), .01, .
 def e_etincelle(): return place(1.2, [(rng.uniform(0, 1), note(rng.uniform(4000, 7000), .06, "sine", .4, 10)) for _ in range(22)])
 def e_pleurs(): return lp(osc(np.concatenate([np.linspace(500, 380, 4000), np.linspace(380, 500, 4000)] * 2), 1.4, "saw") * (1 + .3 * osc(6, 1.4)) * env_ar(int(1.4 * SR), .1, .3), 1500) * .5
 def e_soupir(): return lp(noise(1.2), 1200) * np.sin(np.linspace(0, np.pi, int(1.2 * SR))) ** 2 * .6
+def e_mouton(): return lp(place(2.4, [(0, osc(np.concatenate([np.linspace(330, 300, 3000), np.linspace(300, 340, 12000)]) * (1 + .04 * osc(30, 15000 / SR)), 15000 / SR, "saw") * env_ar(15000, .02, .1) * .5), (1.1, osc(np.linspace(320, 280, 12000) * (1 + .04 * osc(30, 12000 / SR)), 12000 / SR, "saw") * env_ar(12000, .02, .1) * .5)]), 2200)
 def e_bulle(): return note(np.linspace(300, 1200, 3000), .15, "sine", .8, 6)
 
 EFFETS = [
@@ -128,14 +129,14 @@ EFFETS = [
  ("roulement_tambour", "قرع الطبول", "Roulement de tambour", e_tambour, ["hare"]), ("tic_tac", "تك تك الساعة", "Tic-tac", e_tictac, ["cinderella"]), ("minuit", "الساعة تدقّ الثانية عشرة", "Minuit", e_minuit, ["cinderella"]),
  ("pop", "فقاعة", "Pop", e_pop, []), ("boing", "نطّة", "Boing", e_boing, ["frog"]), ("whoosh", "هواء سريع", "Whoosh", e_whoosh, []), ("piece", "قطعة نقود", "Pièce", e_piece, ["alibaba"]),
  ("alarme", "إنذار", "Alarme", e_alarme, []), ("coeur", "نبض القلب", "Cœur", e_coeur, ["layla"]), ("oiseau", "عصفور يغرّد", "Oiseau", e_oiseau, []),
- ("grenouille", "نقيق الضفدع", "Grenouille", e_grenouille, ["frog"]), ("loup", "عواء الذئب", "Loup", e_loup, ["layla"]), ("rugissement", "زئير الأسد", "Rugissement", e_rugissement, ["lion"]),
+ ("grenouille", "نقيق الضفدع", "Grenouille", e_grenouille, ["frog"]), ("loup", "عواء الذئب", "Loup", e_loup, ["layla", "shepherd"]), ("rugissement", "زئير الأسد", "Rugissement", e_rugissement, ["lion"]),
  ("ane", "نهيق الحمار", "Âne", e_ane, ["djeha"]), ("souris", "صرير الفأر", "Souris", e_souris, ["lion"]), ("corbeau", "نعيق الغراب", "Corbeau", e_corbeau, ["crow"]),
  ("rire", "ضحك", "Rire", e_rire, ["djeha"]), ("applaudissements", "تصفيق", "Applaudissements", e_applaudissements, ["hare", "cinderella"]), ("chute", "سقوط", "Chute", e_chute, ["sindbad", "crow"]),
  ("ronflement", "شخير", "Ronflement", e_ronflement, ["hare", "lion"]), ("boum", "انفجار", "Boum", e_boum, []), ("claquement_porte", "باب يُغلَق بقوة", "Porte qui claque", e_claque, ["alibaba"]),
  ("coffre", "فتح صندوق الكنز", "Coffre", e_coffre, ["alibaba"]), ("hache", "ضرب بالفأس", "Hache", e_hache, ["layla"]), ("cles", "مفاتيح", "Clés", e_cles, []),
  ("plouf", "قفزة في الماء", "Plouf", e_plouf, ["frog", "sindbad"]), ("galop", "عَدْو الحصان", "Galop", e_galop, []), ("sonnette", "جرس الباب", "Sonnette", e_sonnette, []),
  ("klaxon", "منبّه", "Klaxon", e_klaxon, []), ("etincelles", "شرارات", "Étincelles", e_etincelle, ["cinderella"]), ("pleurs", "بكاء", "Pleurs", e_pleurs, ["cinderella"]),
- ("soupir", "تنهيدة", "Soupir", e_soupir, []), ("bulle", "فقاعة ماء", "Bulle", e_bulle, ["frog"]),
+ ("soupir", "تنهيدة", "Soupir", e_soupir, []), ("mouton", "ثغاء الخروف", "Mouton", e_mouton, ["shepherd"]), ("bulle", "فقاعة ماء", "Bulle", e_bulle, ["frog"]),
 ]
 
 # ---------------- musiques ----------------

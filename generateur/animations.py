@@ -94,14 +94,14 @@ def add(key, label, n, fn, tags=()): ANIMS[key] = (label, n, fn, list(tags))
 
 for k, lab, tg in [("cendrillon_bal", "سندريلا تمشي", ["cinderella"]), ("laila", "ليلى تمشي", ["layla"]), ("djeha", "جحا يمشي", ["djeha"]), ("ali_baba", "علي بابا يمشي", ["alibaba"]),
                    ("sindbad", "السندباد يمشي", ["sindbad"]), ("prince", "الأمير يمشي", ["cinderella"]), ("fee", "الجنية تمشي", ["cinderella"]), ("bucheron", "الحطاب يمشي", ["layla"]),
-                   ("morgiane", "مرجانة تمشي", ["alibaba"]), ("princesse", "الأميرة تمشي", ["frog"]), ("garcon", "ولد يمشي", []), ("fille", "بنت تمشي", [])]:
+                   ("morgiane", "مرجانة تمشي", ["alibaba"]), ("berger", "الراعي يمشي", ["shepherd"]), ("princesse", "الأميرة تمشي", ["frog"]), ("garcon", "ولد يمشي", []), ("fille", "بنت تمشي", [])]:
     add("marche_" + k, lab, 4, walk_person(k), tg)
 for k, lab, tg in [("cendrillon_bal", "سندريلا تتكلم", ["cinderella"]), ("laila", "ليلى تتكلم", ["layla"]), ("djeha", "جحا يتكلم", ["djeha"]), ("ali_baba", "علي بابا يتكلم", ["alibaba"]),
                    ("grand_mere", "الجدة تتكلم", ["layla"]), ("roi", "الملك يتكلم", ["frog"])]:
     add("parle_" + k, lab, 2, talk_person(k), tg)
 for k, lab, fn, tg in [("loup", "الذئب يجري", an.loup, ["layla"]), ("ane", "الحمار يمشي", an.ane, ["djeha"]), ("lion", "الأسد يمشي", an.lion, ["lion"]),
                        ("renard", "الثعلب يجري", an.renard, ["crow"]), ("lievre", "الأرنب يجري", an.lievre, ["hare"]), ("tortue", "السلحفاة تمشي", an.tortue, ["hare"]),
-                       ("cheval", "الحصان يجري", an.cheval, []), ("chameau", "الجمل يمشي", an.chameau, ["alibaba"]), ("chien", "الكلب يجري", an.chien, []), ("souris", "الفأر يجري", an.souris, ["lion"])]:
+                       ("cheval", "الحصان يجري", an.cheval, []), ("chameau", "الجمل يمشي", an.chameau, ["alibaba"]), ("chien", "الكلب يجري", an.chien, []), ("mouton", "الخروف يمشي", an.mouton, ["shepherd"]), ("souris", "الفأر يجري", an.souris, ["lion"])]:
     add("marche_" + k, lab, 4, walk_animal(fn), tg)
 add("oiseau_vole", "عصفور يطير", 4, oiseau_vol); add("poisson_nage", "سمكة تسبح", 4, poisson_nage, ["sindbad"])
 add("grenouille_saute", "ضفدع يقفز", 5, grenouille_saut, ["frog"]); add("baleine_plonge", "الحوت يغوص", 6, baleine_plonge, ["sindbad"])

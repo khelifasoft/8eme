@@ -76,7 +76,11 @@ def pomme(): return 70, 70, C(35, 40, 24, "#d93a3a") + L(35, 18, 38, 6, "#6a3a1a
 def souche(): return 100, 70, E(50, 54, 38, 12, "#8a5a2a", 3) + R(14, 24, 72, 30, "#a8743a", 3) + E(50, 24, 36, 11, "#d8b070", 3)
 def tapis(): return 160, 70, P("M10 20 L150 20 L136 56 L24 56Z", "#b32a3a") + P("M22 26 L138 26 L128 50 L32 50Z", "none", 2.5) + "".join(L(10 + i * 14, 20, 6 + i * 14, 12, "#f1c40f", 2) for i in range(11))
 
+def ney(): return 160, 50, R(6, 18, 148, 16, "#c9a063", 8) + "".join(C(30 + i * 22, 26, 4, "#3a2a1a", 0) for i in range(6)) + L(130, 18, 130, 34, OUT, 3)
+def foin(): return 120, 90, E(60, 62, 52, 26, "#e8c860") + "".join(L(20 + i * 10, 62, 14 + i * 10, 28, "#d4aa40", 3) for i in range(9))
+
 OBJETS = {
+ "ney": ("ناي الراعي", ney, ["shepherd"]), "foin": ("قشّ", foin, ["shepherd"]),
  "arbre": ("شجرة", arbre, ["layla", "crow"]), "sapin": ("صنوبر", sapin, ["layla"]), "palmier": ("نخلة", palmier, ["sindbad", "alibaba"]),
  "buisson": ("شجيرة", buisson, []), "fleurs": ("زهور", fleurs, ["cinderella"]), "rocher": ("صخرة", rocher, ["alibaba"]),
  "maison": ("بيت", maison, ["layla", "djeha"]), "chateau": ("قصر", chateau, ["cinderella", "frog"]), "tour": ("برج", tour, []),

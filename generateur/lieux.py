@@ -103,7 +103,13 @@ def ville_nuit():
 def ecole_cour():
     return ciel("#bfe4f2", "#f6f0d8", 220) + sol(220, "#b0b0a8", "#98988e") + frag("maison", 120, 80, 1.8) + frag("arbre", 20, 80, 1.1) + frag("arbre", 410, 90, 1.1) + frag("barriere", 40, 270, 1.0) + frag("drapeau", 400, 120, .7)
 
+def colline_pature():
+    return (ciel("#bfe4f2", "#eaf6e0", 230) + colline(190, "#8bc870", 26, 40) + colline(240, "#6fba5e", 22) + sol(280, "#5aa84e", "#4a9040") + frag("arbre", 20, 70, 1.2) + frag("barriere", 300, 230, 1.2) + frag("rocher", 380, 280, 0.8) + frag("fleurs", 60, 300, 1.1) + sun(390, 12, .7) + cloud(150, 24, .7))
+def colline_soir():
+    return (ciel("#f2894a", "#f9dd9a", 250) + sun(200, 120, 1.1) + colline(230, "#6a8a4a", 20, 10) + colline(280, "#4a6a3a", 20) + frag("arbre", 24, 120, 1.1) + frag("barriere", 300, 250, 1.2) + frag("rocher", 400, 290, 0.8))
+
 LIEUX = {
+ "colline_pature": ("التل والمرعى", colline_pature, ["shepherd"]), "colline_soir": ("التل في المساء", colline_soir, ["shepherd"]),
  "foret": ("غابة", foret, ["layla", "crow", "lion", "hare"]), "foret_nuit": ("غابة في الليل", foret_nuit, ["layla"]), "foret_dense": ("غابة كثيفة", foret_dense, ["layla"]),
  "jardin": ("حديقة", jardin, ["cinderella"]), "jardin_puits": ("حديقة وبئر", jardin_puits, ["frog"]),
  "maison_interieur": ("داخل البيت", maison_int, ["cinderella", "layla"]), "chambre": ("غرفة نوم", chambre, ["layla"]), "cuisine": ("مطبخ", cuisine, ["cinderella"]),

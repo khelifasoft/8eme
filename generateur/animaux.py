@@ -161,8 +161,16 @@ def oiseau(aile=0):
     b += L(96, 140, 96, 168, "#d9731a", 4) + L(112, 140, 112, 168, "#d9731a", 4)
     return SVG(200, 190, b)
 
+def mouton(ph=0):
+    b = _legs([84, 100, 146, 162], 138, 184, "#3a3a40", ph, 11)
+    for cx, cy, r in [(70, 112, 30), (104, 96, 34), (140, 104, 34), (166, 122, 26), (96, 130, 32), (132, 132, 32), (60, 134, 22)]:
+        b += C(cx, cy, r, "#f4f4f4")
+    b += E(196, 108, 26, 24, "#3a3a40") + E(180, 92, 14, 8, "#3a3a40", 3, 30) + C(204, 104, 3.5, "#fff", 0) + C(205, 104, 1.8, "#111", 0) + P("M200 120 Q210 124 218 118", "none", 2)
+    return SVG(250, 200, b)
+
 ANIMAUX = {
-    "loup": ("ذئب", lambda: loup(), ["layla"]),
+    "mouton": ("خروف", lambda: mouton(), ["shepherd"]),
+    "loup": ("ذئب", lambda: loup(), ["layla", "shepherd"]),
     "loup_grand_mere": ("ذئب متنكّر في زي الجدة", lambda: loup(True), ["layla"]),
     "loup_gueule": ("ذئب فاتح فمه", lambda: loup(False, 0, True), ["layla"]),
     "ane": ("حمار", lambda: ane(), ["djeha"]),

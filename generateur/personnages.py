@@ -181,6 +181,8 @@ def catalogue():
     k["maitresse"] = ("المعلّمة", dict(hs="bun", hair="#4a2a1a", dress="#3a8a8a", glasses=True), [])
     k["vieux"] = ("رجل عجوز", dict(top="#8a8a6a", bottom="#5a5a4a", hs="gray", beard="full", hair="#ddd", extra="cane", skin=SKIN[1]), [])
     k["pecheur"] = ("صيّاد سمك", dict(top="#3a6a8a", bottom="#2a3a4a", hat="cap", hatcol="#e8c15a", hair="#3a2a1a", skin=SKIN[2]), ["sindbad"])
+    k["berger"] = ("الراعي", dict(top="#c9a063", vest="#6a4a2a", bottom="#5a4a3a", hat="cap", hatcol="#8a5a2a", extra="cane", hair="#3a2a1a", skin=SKIN[2]), ["shepherd"])
+    k["villageois"] = ("قروي", dict(top="#6a8a4a", bottom="#4a4a3a", hat="turban", hatcol="#e8e8d8", beard="mustache", hair="#333", skin=SKIN[1]), ["shepherd", "djeha"])
     return k
 
 def render_person(spec, **over):
