@@ -23,6 +23,17 @@ Le contenu de chaque conte est défini dans `generateur/make.py`.
 python3 generateur/make.py fiches
 ```
 
+## Versions Word
+
+Les mêmes fiches existent au format Word dans `word/` (une page A4 chacune, texte de droite à gauche).
+
+```bash
+npm install docx
+node generateur/docx.js word
+```
+
+Le contenu est lu dans `generateur/stories.json`. Si vous modifiez `make.py`, régénérez ce fichier avant de lancer `docx.js`.
+
 ## Impression
 
 Ouvrir un fichier dans le navigateur, puis imprimer en A4 portrait.
