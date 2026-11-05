@@ -34,6 +34,19 @@ node generateur/docx.js word
 
 Le contenu est lu dans `generateur/stories.json`. Si vous modifiez `make.py`, régénérez ce fichier avant de lancer `docx.js`.
 
+## Projets Scratch
+
+Dans `scratch/`, un projet `.sb3` par conte, déjà préparé pour les élèves :
+- les décors (fonds de couleur avec le nom du lieu) et les lutins (pastilles colorées avec leur nom, parfois deux costumes) ;
+- le scénario en six scènes : le décor lance « مشهد 1 », puis chaque réplique et chaque déplacement est un message reçu par le lutin concerné ;
+- le bandeau de la morale, affiché à la fin.
+
+Pour les utiliser : Scratch (en ligne ou hors ligne), **Fichier > Charger depuis votre ordinateur**, puis le drapeau vert. Les élèves peuvent ensuite dessiner leurs propres costumes, changer les répliques et enregistrer leur voix.
+
+```bash
+python3 generateur/scratch.py scratch
+```
+
 ## Impression
 
 Ouvrir un fichier dans le navigateur, puis imprimer en A4 portrait.
