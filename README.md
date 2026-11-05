@@ -8,6 +8,8 @@ Ouvrir **`index.html`** dans un navigateur (aucune connexion nécessaire). L'él
 - les douze contes : fiche Word, fiche à lire, projet Scratch et un paquet `.zip` avec tout ce qui concerne le conte ;
 - une bibliothèque : lieux (34), décors (74), personnages (37), animaux (29), costumes et accessoires (79), images animées (54, en images successives) et sons (214 : effets, musiques, voix de synthèse).
 
+**Scratch** : la page contient un lien vers le téléchargement officiel de Scratch 3 (`https://scratch.mit.edu/download`) et vers l'éditeur en ligne.
+
 **Vidéos** : la section « فيديوهات » affiche des vidéos hébergées ailleurs (YouTube, Vimeo, Dailymotion, Internet Archive, Google Drive, TED, Facebook, fichiers `.mp4`, ou un code `<iframe>`), sans quitter la page et sans télécharger la vidéo. Pour qu'une vidéo apparaisse chez tous les élèves, ajouter une ligne dans `videos.js` (explications dans le fichier). Le bouton « + إضافة رابط فيديو » ajoute un lien seulement dans le navigateur de la personne qui l'utilise. YouTube refuse souvent l'affichage quand la page est ouverte comme simple fichier (`file://`) : utiliser GitHub Pages ou `lancer.bat` / `lancer.sh`. Certains propriétaires interdisent l'intégration de leurs vidéos ; la page propose alors le lien vers le site d'origine.
 
 **Raccourci sur le bureau** : le bouton « ⬇ اختصار على سطح المكتب » en haut de la page a deux comportements.
