@@ -161,6 +161,15 @@ def oiseau(aile=0):
     b += L(96, 140, 96, 168, "#d9731a", 4) + L(112, 140, 112, 168, "#d9731a", 4)
     return SVG(200, 190, b)
 
+def cochon(ph=0, col="#f4a8b8"):
+    b = P("M52 112 Q28 96 40 80 Q52 90 44 100 Q38 108 50 110", "none", 4)
+    b += _legs([86, 104, 146, 164], 138, 184, "#d88a9a", ph, 13)
+    b += E(120, 116, 68, 40, col) + E(124, 134, 44, 18, "#f8c8d0", 0)
+    b += T([(168, 76), (178, 46), (196, 72)], "#e88aa0") + T([(190, 70), (210, 46), (218, 76)], "#e88aa0")
+    b += C(196, 98, 34, col) + E(224, 108, 18, 14, "#f0889c") + C(218, 108, 3.5, "#7a2a3a", 0) + C(230, 108, 3.5, "#7a2a3a", 0)
+    b += C(194, 90, 4.5, "#222", 0) + P("M200 124 Q212 130 222 122", "none", 2.5)
+    return SVG(250, 200, b)
+
 def mouton(ph=0):
     b = _legs([84, 100, 146, 162], 138, 184, "#3a3a40", ph, 11)
     for cx, cy, r in [(70, 112, 30), (104, 96, 34), (140, 104, 34), (166, 122, 26), (96, 130, 32), (132, 132, 32), (60, 134, 22)]:
@@ -169,8 +178,9 @@ def mouton(ph=0):
     return SVG(250, 200, b)
 
 ANIMAUX = {
+    "cochon": ("خنزير", lambda: cochon(), ["pigs"]),
     "mouton": ("خروف", lambda: mouton(), ["shepherd"]),
-    "loup": ("ذئب", lambda: loup(), ["layla", "shepherd"]),
+    "loup": ("ذئب", lambda: loup(), ["layla", "shepherd", "pigs"]),
     "loup_grand_mere": ("ذئب متنكّر في زي الجدة", lambda: loup(True), ["layla"]),
     "loup_gueule": ("ذئب فاتح فمه", lambda: loup(False, 0, True), ["layla"]),
     "ane": ("حمار", lambda: ane(), ["djeha"]),

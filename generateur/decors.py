@@ -79,7 +79,19 @@ def tapis(): return 160, 70, P("M10 20 L150 20 L136 56 L24 56Z", "#b32a3a") + P(
 def ney(): return 160, 50, R(6, 18, 148, 16, "#c9a063", 8) + "".join(C(30 + i * 22, 26, 4, "#3a2a1a", 0) for i in range(6)) + L(130, 18, 130, 34, OUT, 3)
 def foin(): return 120, 90, E(60, 62, 52, 26, "#e8c860") + "".join(L(20 + i * 10, 62, 14 + i * 10, 28, "#d4aa40", 3) for i in range(9))
 
+def maison_paille(): return 150, 130, R(20, 58, 110, 70, "#e8c860", 3) + T([(6, 62), (75, 8), (144, 62)], "#c9a030") + "".join(L(30 + i * 12, 66, 26 + i * 12, 122, "#c9a030", 2) for i in range(8)) + R(62, 84, 26, 44, "#8a5a2a", 3)
+def maison_bois(): return 150, 130, R(20, 58, 110, 70, "#b88850", 3) + T([(6, 62), (75, 8), (144, 62)], "#8a4a22") + "".join(L(20, 70 + i * 14, 130, 70 + i * 14, "#8a5a2a", 2) for i in range(4)) + R(62, 84, 26, 44, "#6a3a1a", 3) + R(30, 76, 20, 20, "#bfe0f0", 3)
+def maison_brique():
+    b = R(20, 58, 110, 70, "#c0563a", 3) + T([(6, 62), (75, 8), (144, 62)], "#6a3a2a")
+    for r in range(5):
+        b += L(20, 72 + r * 14, 130, 72 + r * 14, "#f0d8c0", 1.5)
+        for x in range(20 + (7 if r % 2 else 0), 130, 22): b += L(x, 72 + r * 14 - 14 if r else 58, x, 72 + r * 14, "#f0d8c0", 1.5)
+    return 150, 130, b + R(62, 84, 26, 44, "#4a2a1a", 3) + R(98, 76, 20, 20, "#bfe0f0", 3) + R(100, 10, 14, 30, "#a85a3a", 2)
+def maison_effondree(): return 170, 90, P("M10 84 L40 52 L60 70 L80 40 L108 66 L140 58 L160 84Z", "#a89070") + L(30, 78, 70, 56, "#8a5a2a", 6) + L(80, 64, 128, 72, "#8a5a2a", 6) + L(50, 48, 36, 30, "#c9a030", 4) + L(110, 56, 124, 36, "#c9a030", 4)
+
 OBJETS = {
+ "maison_paille": ("بيت من القش", maison_paille, ["pigs"]), "maison_bois": ("بيت من الخشب", maison_bois, ["pigs"]),
+ "maison_brique": ("بيت من الآجر", maison_brique, ["pigs"]), "maison_effondree": ("بيت منهار", maison_effondree, ["pigs"]),
  "ney": ("ناي الراعي", ney, ["shepherd"]), "foin": ("قشّ", foin, ["shepherd"]),
  "arbre": ("شجرة", arbre, ["layla", "crow"]), "sapin": ("صنوبر", sapin, ["layla"]), "palmier": ("نخلة", palmier, ["sindbad", "alibaba"]),
  "buisson": ("شجيرة", buisson, []), "fleurs": ("زهور", fleurs, ["cinderella"]), "rocher": ("صخرة", rocher, ["alibaba"]),

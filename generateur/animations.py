@@ -101,8 +101,16 @@ for k, lab, tg in [("cendrillon_bal", "سندريلا تتكلم", ["cinderella"
     add("parle_" + k, lab, 2, talk_person(k), tg)
 for k, lab, fn, tg in [("loup", "الذئب يجري", an.loup, ["layla"]), ("ane", "الحمار يمشي", an.ane, ["djeha"]), ("lion", "الأسد يمشي", an.lion, ["lion"]),
                        ("renard", "الثعلب يجري", an.renard, ["crow"]), ("lievre", "الأرنب يجري", an.lievre, ["hare"]), ("tortue", "السلحفاة تمشي", an.tortue, ["hare"]),
-                       ("cheval", "الحصان يجري", an.cheval, []), ("chameau", "الجمل يمشي", an.chameau, ["alibaba"]), ("chien", "الكلب يجري", an.chien, []), ("mouton", "الخروف يمشي", an.mouton, ["shepherd"]), ("souris", "الفأر يجري", an.souris, ["lion"])]:
+                       ("cheval", "الحصان يجري", an.cheval, []), ("chameau", "الجمل يمشي", an.chameau, ["alibaba"]), ("chien", "الكلب يجري", an.chien, []), ("mouton", "الخروف يمشي", an.mouton, ["shepherd"]), ("cochon", "الخنزير يمشي", an.cochon, ["pigs"]), ("souris", "الفأر يجري", an.souris, ["lion"])]:
     add("marche_" + k, lab, 4, walk_animal(fn), tg)
+def maison_effondre(i, n):
+    sy = [1, .85, .6, .35, .18][i]; rot = [0, -2, 3, -4, 0][i]
+    b = G(de.maison_paille()[2], 0, 130 * (1 - sy), 1, sy, rot, 75, 130)
+    if i:
+        b += "".join(L(20 + k * 30, 140, 10 + k * 34 + i * 6, 150 + i * 4, "#c9a030", 4) for k in range(5))
+        b += "".join(E(30 + k * 38, 150 - i * 3, 4 + i * 2, 3 + i, "#d8d0c0", 0) for k in range(4))
+    return SVG(180, 170, b)
+add("maison_s_effondre", "بيت يتهدّم", 5, maison_effondre, ["pigs"])
 add("oiseau_vole", "عصفور يطير", 4, oiseau_vol); add("poisson_nage", "سمكة تسبح", 4, poisson_nage, ["sindbad"])
 add("grenouille_saute", "ضفدع يقفز", 5, grenouille_saut, ["frog"]); add("baleine_plonge", "الحوت يغوص", 6, baleine_plonge, ["sindbad"])
 add("papillon", "فراشة", 4, papillon); add("porte_s_ouvre", "باب ينفتح", 5, porte, ["alibaba"]); add("feu", "نار تشتعل", 4, feu); add("vagues", "أمواج", 4, vagues, ["sindbad"])

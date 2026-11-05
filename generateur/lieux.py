@@ -108,7 +108,11 @@ def colline_pature():
 def colline_soir():
     return (ciel("#f2894a", "#f9dd9a", 250) + sun(200, 120, 1.1) + colline(230, "#6a8a4a", 20, 10) + colline(280, "#4a6a3a", 20) + frag("arbre", 24, 120, 1.1) + frag("barriere", 300, 250, 1.2) + frag("rocher", 400, 290, 0.8))
 
+def prairie_maisons():
+    return (ciel("#bfe4f2", "#eaf6e0", 230) + colline(200, "#8bc870", 20, 20) + sol(240, "#7acb6a", "#62b552") + frag("maison_paille", 10, 130, 0.9) + frag("maison_bois", 170, 130, 0.9) + frag("maison_brique", 330, 125, 0.95) + frag("fleurs", 40, 300, 1.0) + frag("buisson", 380, 280, 0.9) + sun(400, 10, .6) + cloud(180, 20, .7))
+
 LIEUX = {
+ "prairie_maisons": ("المرج وثلاثة بيوت", prairie_maisons, ["pigs"]),
  "colline_pature": ("التل والمرعى", colline_pature, ["shepherd"]), "colline_soir": ("التل في المساء", colline_soir, ["shepherd"]),
  "foret": ("غابة", foret, ["layla", "crow", "lion", "hare"]), "foret_nuit": ("غابة في الليل", foret_nuit, ["layla"]), "foret_dense": ("غابة كثيفة", foret_dense, ["layla"]),
  "jardin": ("حديقة", jardin, ["cinderella"]), "jardin_puits": ("حديقة وبئر", jardin_puits, ["frog"]),
