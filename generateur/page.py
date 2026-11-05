@@ -4,7 +4,9 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 man = json.load(open(os.path.join(HERE, "manifest.json"), encoding="utf-8"))
 import sys; sys.path.insert(0, HERE)
 import i18n_fr
-games = json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8"))
+games = json.load(open(os.path.join(HERE, "jeux2_manifest.json"), encoding="utf-8"))
+for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8")):
+    games.append(dict(g, cat="catch", cat_ar="التقاط الأشياء (لكل قصة لعبة)", cat_fr="Attrape-objets (un jeu par conte)"))
 man["games"] = games
 FR = i18n_fr.build(man, games)
 TPL = r'''<!doctype html>
@@ -150,6 +152,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .tlinks .btn.vid:hover{background:var(--orange);color:#fff}
 .tnote{margin:6px 0 0;font-size:13px;color:var(--muted)}
 .gamegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding:10px 0}
+.gcat{margin:26px 0 4px;font-size:22px;color:var(--blue);border-bottom:2px solid var(--orange);padding-bottom:2px;display:inline-block}
 .gcard{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
 .gcover{aspect-ratio:16/9;background:var(--soft);display:block;width:100%;object-fit:cover}
 .gbody{padding:10px 14px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
@@ -256,8 +259,8 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 <div id="viewGames" hidden>
 <section id="games">
   <h2>ألعاب سكراتش</h2>
-  <p class="lead">لعبة صغيرة لكل قصة: حرّك الفأرة والتقط الأشياء قبل أن تسقط. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
-  <div class="gamegrid" id="gameGrid"></div>
+  <p class="lead">ألعاب بسيطة وتعليمية: أسئلة وأجوبة، حساب، ذاكرة، وسرعة. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
+  <div id="gameGrid"></div>
   <div class="gamegrid" id="extGames"></div>
 </section>
 </div>
@@ -526,12 +529,19 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
 // ---- jeux
+const GAME_CATS = ["quiz", "math", "memory", "reflex", "catch"];
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
-  (DATA.games||[]).forEach(x => g.append(el("article",{class:"gcard"},
-    el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
-    el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
-      el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}))))));
+  GAME_CATS.forEach(cat => {
+    const list = (DATA.games||[]).filter(x => x.cat === cat); if (!list.length) return;
+    g.append(el("h3",{class:"gcat",text:list[0].cat_ar}));
+    const row = el("div",{class:"gamegrid"});
+    list.forEach(x => row.append(el("article",{class:"gcard"},
+      el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
+      el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
+        el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}))))));
+    g.append(row);
+  });
   // jeux Scratch publiés sur scratch.mit.edu (liste dans jeux.js) : joués ici, sans quitter la page
   const ext = $("#extGames"); ext.replaceChildren();
   (window.JEUX||[]).forEach(j => {

@@ -40,7 +40,7 @@ UI = {
  "⬇ تحميل سكراتش 3 للحاسوب (من الموقع الرسمي)": "⬇ Télécharger Scratch 3 pour ordinateur (site officiel)", "فتح سكراتش على الإنترنت": "Ouvrir Scratch en ligne",
  "النسخة المثبّتة تعمل دون إنترنت وتفتح ملفات المشاريع (.sb3) مباشرة. الروابط تفتح الموقع الرسمي لسكراتش في نافذة جديدة.": "La version installée fonctionne sans Internet et ouvre directement les fichiers de projet (.sb3). Les liens ouvrent le site officiel de Scratch dans un nouvel onglet.",
  "اختر قصتك": "Choisis ton conte", "لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.": "Chaque conte a sa fiche de projet, un projet Scratch prêt et un paquet unique qui rassemble tout ce qu'il te faut.",
- "لعبة صغيرة لكل قصة: حرّك الفأرة والتقط الأشياء قبل أن تسقط. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.": "Un petit jeu par conte : déplace la souris et attrape les objets avant qu'ils tombent. Télécharge le jeu, ouvre-le dans Scratch, puis modifie-le comme tu veux.",
+ "ألعاب بسيطة وتعليمية: أسئلة وأجوبة، حساب، ذاكرة، وسرعة. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.": "Des jeux simples et éducatifs : questions-réponses, calcul, mémoire et rapidité. Télécharge le jeu, ouvre-le dans Scratch, puis modifie-le comme tu veux.",
  "اضغط على لقطة الفيديو لمشاهدته هنا دون مغادرة الصفحة.": "Clique sur la capture d'une vidéo pour la regarder ici, sans quitter la page.",
  "صور متحركة وفيديوهات جاهزة": "Images animées et vidéos prêtes à l'emploi", "مواقع مجانية فيها آلاف الصور والفيديوهات. اختر موضوعًا ليفتح لك البحث الجاهز في الموقع الذي تريده.": "Des sites gratuits avec des milliers d'images et de vidéos. Choisis un thème pour ouvrir la recherche déjà prête sur le site de ton choix.",
  "الصور والفيديوهات تبقى في مواقعها الأصلية ولا تُنسخ في هذا المشروع. لكل موقع رخصته الخاصة، فاقرأ شروطه قبل التحميل، ولا تعد نشر الملفات كمكتبة مستقلة. نتائج البحث قد تتغير مع الوقت.": "Les images et les vidéos restent sur leurs sites d'origine et ne sont pas copiées ici. Chaque site a sa propre licence : lis ses conditions avant de télécharger et ne republie pas les fichiers comme une bibliothèque indépendante. Les résultats de recherche peuvent changer avec le temps.",
@@ -128,5 +128,5 @@ def build(man, games):
     for a in man["assets"]:
         if a["label"] not in M: M[a["label"]] = fr_label(a)
     for g in games:
-        M[g["title_ar"]] = g["title_fr"]; M[g["how_ar"]] = g["how_fr"]
+        M[g["title_ar"]] = g["title_fr"]; M[g["how_ar"]] = g["how_fr"]; M[g["cat_ar"]] = g["cat_fr"]
     return {"map": M, "rules": RULES}
