@@ -2,7 +2,7 @@
 
 ## Page de l'élève
 
-Titre : **قصص سكراتش / Histoires Scratch**. La page est en arabe et en français : les boutons AR / FR (en haut et dans le menu) changent la langue et le sens de lecture, et le choix est mémorisé ; `index.html?lang=fr` ouvre directement la version française. Le menu ☰ (barre fixe et panneau latéral) donne accès à toutes les sections : accueil, démarrage, contes, **jeux Scratch**, vidéos, bibliothèque, ressources, téléchargement de Scratch et aide. Les traductions sont dans `generateur/i18n_fr.py` ; les noms d'éléments de la bibliothèque sont déduits de leurs identifiants français et les voix prêtes restent en arabe. Les fiches (HTML, Word) et les dialogues des projets sont en arabe.
+Titre : **قصص سكراتش / Histoires Scratch**. La page est en arabe et en français : les boutons AR / FR (en haut et dans le menu) changent la langue et le sens de lecture, et le choix est mémorisé ; `index.html?lang=fr` ouvre directement la version française. La barre bleue du haut n'a que deux onglets : **القصص / Contes** et **الألعاب / Jeux**. Dans « Contes », chaque conte a sa carte ; un clic ouvre la page du conte avec tout ce qui le concerne (fiches Word / .doc / à lire, projet Scratch, paquet .zip, images, sons, animations, vidéos et liens de recherche d'images), et une carte « Ressources générales » regroupe ce qui sert à tous les contes. Les adresses sont `#stories`, `#story-<clé>` et `#games`. Les traductions sont dans `generateur/i18n_fr.py` ; les noms d'éléments de la bibliothèque sont déduits de leurs identifiants français et les voix prêtes restent en arabe. Les fiches (HTML, Word) et les dialogues des projets sont en arabe.
 
 Adresse publique (après activation de GitHub Pages) : **https://khelifasoft.github.io/8eme/**
 

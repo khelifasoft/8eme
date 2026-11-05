@@ -30,26 +30,26 @@ a{color:inherit}
 .hero p{margin:6px 0 0;color:var(--muted);font-size:17px}
 html{scroll-padding-top:68px}
 body{padding-top:56px}
-.topbar{position:fixed;top:0;inset-inline:0;height:56px;background:#141414;color:#fff;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 max(16px,env(safe-area-inset-left)) 0 max(16px,env(safe-area-inset-right))}
-.brand{color:#fff;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:.2px}
-.barbtns{display:flex;align-items:center;gap:8px}
-.langbtn{font:inherit;font-size:13px;font-weight:700;color:#fff;background:transparent;border:1px solid #666;border-radius:6px;padding:3px 10px;cursor:pointer}
-.langbtn[aria-pressed=true]{background:#ffd400;color:#111;border-color:#ffd400}
-.burger{width:44px;height:44px;background:transparent;border:0;display:grid;align-content:center;gap:6px;cursor:pointer;padding:10px}
-.burger span{display:block;height:3px;background:#fff;border-radius:2px;transition:transform .3s,opacity .3s}
-.burger[aria-expanded=true] span:nth-child(1){transform:translateY(9px) rotate(45deg)}
-.burger[aria-expanded=true] span:nth-child(2){opacity:0}
-.burger[aria-expanded=true] span:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
-.veil{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55}
-.side{position:fixed;top:0;bottom:0;width:min(300px,84vw);background:#111;color:#fff;z-index:60;padding:78px 26px 24px;display:flex;flex-direction:column;justify-content:space-between;overflow-y:auto;transition:transform .35s ease,visibility .35s;visibility:hidden}
-[dir=rtl] .side{right:0;transform:translateX(100%)}
-[dir=ltr] .side{left:0;transform:translateX(-100%)}
-.side.open{transform:none;visibility:visible}
-.side ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:22px}
-.side a{color:#fff;text-decoration:none;font-size:20px;font-weight:600;display:inline-block;padding-bottom:4px;border-bottom:3px solid #ffd400}
-.side a:hover,.side a:focus-visible{color:#ffd400}
-.sidelang{display:flex;gap:8px;margin-top:28px}
-.sidelang .langbtn{font-size:15px;padding:6px 16px}
+.topbar{position:fixed;top:0;inset-inline:0;height:56px;background:var(--blue);color:#fff;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 max(16px,env(safe-area-inset-left)) 0 max(16px,env(safe-area-inset-right));box-shadow:0 2px 8px rgba(20,40,100,.25)}
+.brand{color:#fff;text-decoration:none;font-weight:800;font-size:21px;white-space:nowrap}
+.tabsnav{display:flex;gap:6px;height:100%;align-items:stretch}
+.tabsnav a{color:rgba(255,255,255,.88);text-decoration:none;font-weight:700;font-size:17px;padding:0 20px;display:flex;align-items:center;border-bottom:4px solid transparent;border-top:4px solid transparent}
+.tabsnav a:hover,.tabsnav a:focus-visible{color:#fff;background:rgba(255,255,255,.14)}
+.tabsnav a[aria-current=page]{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.12)}
+.barbtns{display:flex;align-items:center;gap:6px}
+.langbtn{font:inherit;font-size:13px;font-weight:700;color:#fff;background:transparent;border:1px solid rgba(255,255,255,.65);border-radius:6px;padding:3px 10px;cursor:pointer}
+.langbtn[aria-pressed=true]{background:#fff;color:var(--blue);border-color:#fff}
+.back{display:inline-block;margin:16px 0 4px;color:var(--blue);font-weight:700;text-decoration:none}
+.back:hover{text-decoration:underline}
+.storyhead{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:8px 0 8px}
+.storyhead .sbar{height:10px}
+.storyhead .sbody{padding:16px 20px;display:flex;flex-direction:column;gap:8px}
+.storyhead h2{margin:0;font-size:30px}
+.storyhead p{margin:0;color:var(--muted)}
+.helpbox{margin:30px 0 0;border:1px solid var(--line);border-radius:12px;padding:10px 16px}
+.helpbox summary{cursor:pointer;font-size:20px;font-weight:700;color:var(--blue)}
+.helpbox .help{margin-top:12px}
+@media (max-width:560px){.brand{font-size:16px}.tabsnav a{padding:0 11px;font-size:15px}.langbtn{padding:2px 7px}}
 .hbtns{display:flex;gap:8px;flex-wrap:wrap}
 #getscratch{font-size:16px;padding:8px 18px;white-space:nowrap}
 .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
@@ -163,81 +163,79 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 </head>
 <body>
 <header class="topbar" id="top">
-  <a class="brand" href="#top">قصص سكراتش</a>
+  <a class="brand" href="#stories">قصص سكراتش</a>
+  <nav class="tabsnav" id="tabsnav" aria-label="القائمة الرئيسية">
+    <a href="#stories" data-view="stories">القصص</a>
+    <a href="#games" data-view="games">الألعاب</a>
+  </nav>
   <div class="barbtns">
     <button type="button" class="langbtn" data-lang="ar" aria-label="العربية">AR</button>
     <button type="button" class="langbtn" data-lang="fr" aria-label="Français">FR</button>
-    <button type="button" class="burger" id="burger" aria-label="القائمة" aria-expanded="false" aria-controls="side"><span></span><span></span><span></span></button>
   </div>
 </header>
-<div class="veil" id="veil" hidden></div>
-<nav class="side" id="side" aria-label="القائمة الرئيسية" aria-hidden="true">
-  <ul>
-    <li><a href="#top">الرئيسية</a></li>
-    <li><a href="#start">كيف أبدأ؟</a></li>
-    <li><a href="#stories">القصص</a></li>
-    <li><a href="#games">ألعاب سكراتش</a></li>
-    <li><a href="#videos">فيديوهات</a></li>
-    <li><a href="#library">المكتبة</a></li>
-    <li><a href="#sources">صور وفيديوهات جاهزة</a></li>
-    <li><a href="#scratch">تحميل سكراتش</a></li>
-    <li><a href="#help">مساعدة</a></li>
-  </ul>
-  <div class="sidelang"><button type="button" class="langbtn" data-lang="ar">العربية</button><button type="button" class="langbtn" data-lang="fr">Français</button></div>
-</nav>
-<section class="hero"><div class="wrap">
+<section class="hero" id="hero"><div class="wrap">
   <div class="head"><h1>قصص سكراتش</h1>
   <div class="hbtns"><a class="btn alt" id="getscratch" href="https://scratch.mit.edu/download" target="_blank" rel="noopener">⬇ تحميل برنامج سكراتش</a>
+  <a class="btn" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">فتح سكراتش على الإنترنت</a>
   <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div></div>
   <p>كل ما تحتاجه لإنشاء مشروعك في صفحة واحدة: أوراق المشاريع، مشاريع جاهزة، أصوات، صور، أماكن وديكورات. لا حاجة إلى الإنترنت.</p>
 </div></section>
 
 <main class="wrap">
+<div id="viewStories">
 <section id="start">
   <h2>كيف أبدأ؟</h2>
   <p class="lead">أربع خطوات بسيطة.</p>
   <ol class="steps">
     <li>اختر قصة من القائمة أدناه.</li>
     <li>حمّل <b>ورقة المشروع</b> واقرأها: فيها الملخص والسيناريو وخطوات العمل.</li>
-    <li>افتح <b>سكراتش</b> (<a href="#scratch">حمّله من هنا</a>) ثم «ملف ← تحميل من حاسوبك» واختر ملف المشروع (.sb3).</li>
+    <li>افتح <b>سكراتش</b> (<a href="https://scratch.mit.edu/download" target="_blank" rel="noopener">حمّله من هنا</a>) ثم «ملف ← تحميل من حاسوبك» واختر ملف المشروع (.sb3).</li>
     <li>غيّر الصور والأصوات والحوارات من <b>المكتبة</b> لتصنع مشروعك الخاص.</li>
   </ol>
 </section>
-
-<section id="scratch">
-  <h2>تحميل برنامج سكراتش 3</h2>
-  <p class="lead">لتشغيل المشاريع تحتاج إلى برنامج سكراتش. يمكنك استعماله على الإنترنت أو تثبيته على الحاسوب.</p>
-  <div class="btns" style="max-width:640px">
-    <a class="btn main" href="https://scratch.mit.edu/download" target="_blank" rel="noopener">⬇ تحميل سكراتش 3 للحاسوب (من الموقع الرسمي)</a>
-    <a class="btn" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">فتح سكراتش على الإنترنت</a>
-  </div>
-  <p class="small" style="margin:8px 0 0;font-size:14px;color:var(--muted)">النسخة المثبّتة تعمل دون إنترنت وتفتح ملفات المشاريع (.sb3) مباشرة. الروابط تفتح الموقع الرسمي لسكراتش في نافذة جديدة.</p>
-</section>
-
 <section id="stories">
   <h2>اختر قصتك</h2>
   <p class="lead">لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.</p>
   <div class="stories" id="storyGrid"></div>
 </section>
+<details class="helpbox" id="help"><summary>مساعدة</summary>
+  <div class="help">
+    <div><h3>أضيف صورة جديدة</h3><ol><li>في سكراتش، اضغط على «اختيار لاعب» ثم «رفع لاعب».</li><li>اختر ملف الصورة (.svg) من المجلد.</li></ol></div>
+    <div><h3>أضيف مكانًا (خلفية)</h3><ol><li>اضغط على «اختيار خلفية» ثم «رفع خلفية».</li><li>اختر ملفًا من «الأماكن».</li></ol></div>
+    <div><h3>أضيف صوتًا</h3><ol><li>افتح لسان «الأصوات» في اللاعب.</li><li>اضغط «رفع صوت» واختر ملف (.wav).</li><li>استعمل الكتلة «ابدأ الصوت».</li></ol></div>
+    <div><h3>أصنع حركة</h3><ol><li>حمّل «إطارات» الحركة من تبويب الصور المتحركة.</li><li>فك الضغط، ثم ارفع الصور كأزياء متتالية للاعب.</li><li>استعمل «التالي الزي» داخل حلقة مع «انتظر».</li></ol></div>
+    <div><h3>أسجّل صوتي</h3><p>الأصوات الجاهزة المسمّاة «أصوات جاهزة» مولَّدة آليًا. لتسجيل صوتك، افتح لسان «الأصوات» في سكراتش واضغط على الميكروفون.</p></div>
+  </div>
 
-<section id="games">
-  <h2>ألعاب سكراتش</h2>
-  <p class="lead">لعبة صغيرة لكل قصة: حرّك الفأرة والتقط الأشياء قبل أن تسقط. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
-  <div class="gamegrid" id="gameGrid"></div>
-  <div class="gamegrid" id="extGames"></div>
+</details>
+</div>
+<div id="viewStory" hidden>
+  <a class="back" href="#stories">← كل القصص</a>
+  <section id="storyHead"></section>
+<section id="library">
+  <h2>الصور والأصوات والحركات</h2>
+  <p class="lead">كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش.</p>
+  <div class="tools">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="row">
+      <input type="search" id="q" placeholder="ابحث بالعربية أو بالفرنسية…" aria-label="بحث">
+      <select id="story" hidden aria-label="تصفية حسب القصة"></select>
+      <div class="subs" id="subs"></div>
+    </div>
+  </div>
+  <div class="zipbar"><span id="count"></span><span id="zipwrap"></span></div>
+  <div id="out"></div>
 </section>
-
 <section id="videos">
   <h2>فيديوهات</h2>
   <p class="lead">اضغط على لقطة الفيديو لمشاهدته هنا دون مغادرة الصفحة.</p>
   <div class="row vtools" id="vtools">
     <input type="search" id="vq" placeholder="ابحث في الفيديوهات…" aria-label="بحث في الفيديوهات">
-    <select id="vstory" aria-label="تصفية الفيديوهات حسب القصة"></select>
+    <select id="vstory" hidden aria-label="تصفية الفيديوهات حسب القصة"></select>
     <span id="vcount" class="small"></span>
   </div>
   <div class="vgrid" id="vgrid"></div>
 </section>
-
 <section id="sources">
   <h2>صور متحركة وفيديوهات جاهزة</h2>
   <p class="lead">مواقع مجانية فيها آلاف الصور والفيديوهات. اختر موضوعًا ليفتح لك البحث الجاهز في الموقع الذي تريده.</p>
@@ -248,38 +246,21 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   </div>
   <div class="row srctools">
     <input type="search" id="tq" placeholder="ابحث عن موضوع (غابة، بحر، قصر…)" aria-label="بحث عن موضوع">
-    <select id="tstory" aria-label="مواضيع حسب القصة"></select>
+    <select id="tstory" hidden aria-label="مواضيع حسب القصة"></select>
     <span id="tcount" class="small"></span>
   </div>
   <div class="tgrid" id="tgrid"></div>
   <p class="small tnote">الصور والفيديوهات تبقى في مواقعها الأصلية ولا تُنسخ في هذا المشروع. لكل موقع رخصته الخاصة، فاقرأ شروطه قبل التحميل، ولا تعد نشر الملفات كمكتبة مستقلة. نتائج البحث قد تتغير مع الوقت.</p>
 </section>
-
-<section id="library">
-  <h2>المكتبة</h2>
-  <p class="lead">صور وأصوات ورسوم متحركة يمكنك استعمالها في أي قصة. اضغط «تحميل» ثم أضف الملف في سكراتش.</p>
-  <div class="tools">
-    <div class="tabs" role="tablist" id="tabs"></div>
-    <div class="row">
-      <input type="search" id="q" placeholder="ابحث بالعربية أو بالفرنسية…" aria-label="بحث">
-      <select id="story" aria-label="تصفية حسب القصة"></select>
-      <div class="subs" id="subs"></div>
-    </div>
-  </div>
-  <div class="zipbar"><span id="count"></span><span id="zipwrap"></span></div>
-  <div id="out"></div>
+</div>
+<div id="viewGames" hidden>
+<section id="games">
+  <h2>ألعاب سكراتش</h2>
+  <p class="lead">لعبة صغيرة لكل قصة: حرّك الفأرة والتقط الأشياء قبل أن تسقط. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
+  <div class="gamegrid" id="gameGrid"></div>
+  <div class="gamegrid" id="extGames"></div>
 </section>
-
-<section id="help">
-  <h2>مساعدة</h2>
-  <div class="help">
-    <div><h3>أضيف صورة جديدة</h3><ol><li>في سكراتش، اضغط على «اختيار لاعب» ثم «رفع لاعب».</li><li>اختر ملف الصورة (.svg) من المجلد.</li></ol></div>
-    <div><h3>أضيف مكانًا (خلفية)</h3><ol><li>اضغط على «اختيار خلفية» ثم «رفع خلفية».</li><li>اختر ملفًا من «الأماكن».</li></ol></div>
-    <div><h3>أضيف صوتًا</h3><ol><li>افتح لسان «الأصوات» في اللاعب.</li><li>اضغط «رفع صوت» واختر ملف (.wav).</li><li>استعمل الكتلة «ابدأ الصوت».</li></ol></div>
-    <div><h3>أصنع حركة</h3><ol><li>حمّل «إطارات» الحركة من تبويب الصور المتحركة.</li><li>فك الضغط، ثم ارفع الصور كأزياء متتالية للاعب.</li><li>استعمل «التالي الزي» داخل حلقة مع «انتظر».</li></ol></div>
-    <div><h3>أسجّل صوتي</h3><p>الأصوات الجاهزة المسمّاة «أصوات جاهزة» مولَّدة آليًا. لتسجيل صوتك، افتح لسان «الأصوات» في سكراتش واضغط على الميكروفون.</p></div>
-  </div>
-</section>
+</div>
 </main>
 <dialog id="vplayer" aria-labelledby="vpTitle" class="vdlg">
   <div class="vphead"><h3 id="vpTitle"></h3><button type="button" class="btn" id="vpClose" aria-label="إغلاق">✕ إغلاق</button></div>
@@ -309,27 +290,20 @@ const CATS = [
 const $ = s => document.querySelector(s);
 const el = (t, a={}, ...kids) => { const e = document.createElement(t); for (const k in a){ if(k==="class") e.className=a[k]; else if(k==="text") e.textContent=a[k]; else e.setAttribute(k,a[k]); } kids.flat().forEach(c=>c&&e.append(c)); return e; };
 const state = {cat:"lieux", sub:"", q:"", story:""};
-try { const h = location.hash.replace("#",""); if (CATS.some(c=>c.id===h)) state.cat = h; } catch(e){}
 
-// ---- histoires
+// ---- histoires : une carte par conte ; un clic ouvre le conte et tout ce qui le concerne
+const GENERAL = {key:"__general", title:"موارد عامة", summary:"صور وأصوات وحركات تصلح لأي قصة.", morale:"", main:"#44506a", accent:"#8a94aa"};
 const grid = $("#storyGrid");
-DATA.stories.forEach(s => {
-  const card = el("article",{class:"card"},
+DATA.stories.concat([GENERAL]).forEach(s => {
+  const link = "#story-" + (s.key === "__general" ? "general" : s.key);
+  grid.append(el("article",{class:"card"},
     el("div",{class:"bar",style:`background:${s.accent}`}),
     el("div",{class:"body"},
       el("h3",{text:s.title,style:`color:${s.main}`}),
       el("p",{text:s.summary}),
-      el("div",{class:"morale",text:s.morale}),
-      el("div",{class:"btns"},
-        el("a",{class:"btn main",href:s.docx,download:`ورقة ${s.title}.docx`,text:"ورقة المشروع (Word)"}),
-        el("a",{class:"btn",href:s.doc,download:`ورقة ${s.title}.doc`,title:"للإصدارات القديمة من Word (2003 و2007)",text:"Word قديم (.doc)"}),
-        el("a",{class:"btn",href:s.html,target:"_blank",rel:"noopener",text:"قراءة الورقة"}),
-        el("a",{class:"btn",href:s.sb3,download:`${s.title}.sb3`,text:"مشروع سكراتش"}),
-        el("button",{class:"btn alt",type:"button","data-story":s.key,text:`موارد القصة (${s.n})`}),
-        el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"}))));
-  grid.append(card);
+      s.morale && el("div",{class:"morale",text:s.morale}),
+      el("div",{class:"btns"}, el("a",{class:"btn main wide",href:link,text:"فتح القصة وكل ما يخصها"})))));
 });
-grid.addEventListener("click", e => { const b = e.target.closest("[data-story]"); if(!b) return; state.story = b.dataset.story; $("#story").value = state.story; render(); document.getElementById("library").scrollIntoView(); });
 
 // ---- bibliothèque
 const counts = {}; DATA.assets.forEach(a => counts[a.cat] = (counts[a.cat]||0)+1);
@@ -355,7 +329,7 @@ function render(){
   tabs.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b.dataset.cat===state.cat));
   const subs = $("#subs"); subs.replaceChildren();
   if(cat.subs){ subs.append(el("button",{class:"chip",type:"button","aria-pressed":String(!state.sub),"data-sub":"",text:"الكل"})); for(const k in cat.subs) subs.append(el("button",{class:"chip",type:"button","aria-pressed":String(state.sub===k),"data-sub":k,text:cat.subs[k]})); }
-  let items = DATA.assets.filter(a => a.cat===state.cat && (!state.sub || a.sub===state.sub) && (!state.story || a.tags.includes(state.story)) && (!state.q || (a.label+" "+(a.fr||"")+" "+a.id).toLowerCase().includes(state.q)));
+  let items = DATA.assets.filter(a => a.cat===state.cat && (!state.sub || a.sub===state.sub) && (!state.story || (state.story === "__general" ? !a.tags.length : a.tags.includes(state.story))) && (!state.q || (a.label+" "+(a.fr||"")+" "+a.id).toLowerCase().includes(state.q)));
   $("#count").textContent = items.length ? `${items.length} عنصر` : "";
   const zw = $("#zipwrap"); zw.replaceChildren();
   if(DATA.zips[state.cat]) zw.append(el("a",{class:"btn",href:DATA.zips[state.cat],download:`${cat.name}.zip`,text:`تحميل كل «${cat.name}» (.zip)`}));
@@ -458,7 +432,7 @@ $("#vpClose").addEventListener("click", closePlayer);
 function renderVideos(){
   const g = $("#vgrid"); g.replaceChildren();
   const q = vq.value.trim().toLowerCase();
-  const all = (window.VIDEOS||[]).filter(v => (!vsel.value || v.story === vsel.value) && (!q || ((v.title||"")+" "+(v.note||"")).toLowerCase().includes(q)));
+  const all = (window.VIDEOS||[]).filter(v => (!vsel.value || (vsel.value === "__general" ? !v.story : v.story === vsel.value)) && (!q || ((v.title||"")+" "+(v.note||"")).toLowerCase().includes(q)));
   $("#vcount").textContent = all.length ? `${all.length} فيديو` : "";
   $("#vtools").hidden = !(window.VIDEOS||[]).length;
   if (!all.length) { g.append(el("div",{class:"empty",text: (window.VIDEOS||[]).length ? "لا توجد فيديوهات مطابقة." : "لا توجد فيديوهات حاليًا."})); return; }
@@ -502,7 +476,7 @@ function themeLinks(q){
 function renderThemes(){
   const g = $("#tgrid"); g.replaceChildren();
   const q = tq.value.trim().toLowerCase();
-  const items = THEMES.filter(t => (!tsel.value || t[2].includes(tsel.value)) && (!q || (t[0]+" "+t[1]).toLowerCase().includes(q)));
+  const items = THEMES.filter(t => (!tsel.value || tsel.value === "__general" || t[2].includes(tsel.value)) && (!q || (t[0]+" "+t[1]).toLowerCase().includes(q)));
   $("#tcount").textContent = items.length ? `${items.length} موضوع` : "";
   if (!items.length) { g.append(el("div",{class:"empty",text:"لا توجد مواضيع مطابقة."})); return; }
   items.forEach(t => g.append(el("article",{class:"tcard"}, el("h3",{}, el("span",{text:t[0]}), el("small",{text:t[1]})),
@@ -551,14 +525,7 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
-// ---- menu latéral (☰) et jeux
-const burger = $("#burger"), side = $("#side"), veil = $("#veil");
-function menu(open){ side.classList.toggle("open", open); side.setAttribute("aria-hidden", String(!open)); burger.setAttribute("aria-expanded", String(open)); veil.hidden = !open; if (open) side.querySelector("a").focus(); }
-burger.addEventListener("click", () => menu(!side.classList.contains("open")));
-veil.addEventListener("click", () => menu(false));
-side.addEventListener("click", e => { if (e.target.closest("a")) menu(false); });
-document.addEventListener("keydown", e => { if (e.key === "Escape" && side.classList.contains("open")) { menu(false); burger.focus(); } });
-
+// ---- jeux
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
   (DATA.games||[]).forEach(x => g.append(el("article",{class:"gcard"},
@@ -578,6 +545,40 @@ function renderGames(){
   });
 }
 renderGames();
+
+// ---- vues : #stories (tous les contes), #story-<clé> (un conte et ses ressources), #games (jeux)
+function renderStoryHead(key){
+  const h = $("#storyHead"); h.replaceChildren();
+  const s = key === "__general" ? GENERAL : DATA.stories.find(x => x.key === key); if (!s) return;
+  const kids = [el("h2",{text:s.title,style:`color:${s.main}`}), el("p",{text:s.summary}), s.morale && el("div",{class:"morale",text:s.morale})];
+  if (key !== "__general") kids.push(el("div",{class:"btns",style:"grid-template-columns:repeat(auto-fit,minmax(160px,1fr))"},
+    el("a",{class:"btn main",href:s.docx,download:`ورقة ${s.title}.docx`,text:"ورقة المشروع (Word)"}),
+    el("a",{class:"btn",href:s.doc,download:`ورقة ${s.title}.doc`,title:"للإصدارات القديمة من Word (2003 و2007)",text:"Word قديم (.doc)"}),
+    el("a",{class:"btn",href:s.html,target:"_blank",rel:"noopener",text:"قراءة الورقة"}),
+    el("a",{class:"btn",href:s.sb3,download:`${s.title}.sb3`,text:"مشروع سكراتش"}),
+    el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"})));
+  h.append(el("div",{class:"storyhead"}, el("div",{class:"sbar",style:`background:${s.accent}`}), el("div",{class:"sbody"}, kids)));
+}
+function showStory(key){
+  state.story = key; state.sub = ""; state.q = ""; $("#q").value = ""; vq.value = ""; tq.value = "";
+  sel.value = vsel.value = tsel.value = key;
+  const has = c => DATA.assets.some(a => a.cat === c && (key === "__general" ? !a.tags.length : a.tags.includes(key)));
+  state.cat = (CATS.find(c => has(c.id)) || CATS[0]).id;
+  renderStoryHead(key); render(); renderVideos(); renderThemes();
+}
+function route(){
+  const h = decodeURIComponent(location.hash.replace(/^#/, ""));
+  let view = "stories", key = null;
+  if (h === "games") view = "games";
+  else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) view = "story"; }
+  $("#viewStories").hidden = view !== "stories"; $("#hero").hidden = view !== "stories";
+  $("#viewStory").hidden = view !== "story"; $("#viewGames").hidden = view !== "games";
+  if (view === "story") showStory(key);
+  document.querySelectorAll("#tabsnav a").forEach(a => { if ((a.dataset.view === "games" && view === "games") || (a.dataset.view === "stories" && view !== "games")) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
 
 // ---- اللغة : العربية / Français (traduction de tout le texte de la page)
 const FRMAP = __FRMAP__, FRRULES = __FRRULES__.map(([a,b]) => [new RegExp(a), b]);

@@ -22,6 +22,10 @@ THEMES_FR = {"غابة": "Forêt", "قصر": "Château", "بحر": "Mer", "سف�
  "بجعة": "Cygne", "خروف وغنم": "Mouton", "خنزير": "Cochon", "حمار": "Âne", "جمل": "Chameau", "حصان": "Cheval", "فراشة": "Papillon", "عصفور": "Oiseau", "سباق": "Course",
  "شجرة": "Arbre", "شمس وغيوم": "Soleil et nuages", "أطفال يقرؤون": "Enfants qui lisent", "كتاب وقصص": "Livre de contes"}
 UI = {
+ "الألعاب": "Jeux", "← كل القصص": "← Tous les contes", "فتح القصة وكل ما يخصها": "Ouvrir le conte et tout ce qui le concerne", "موارد عامة": "Ressources générales",
+ "صور وأصوات وحركات تصلح لأي قصة.": "Images, sons et animations qui conviennent à n'importe quel conte.",
+ "الصور والأصوات والحركات": "Images, sons et animations", "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش.": "Tout ce qui concerne ce conte. Clique sur « Télécharger », puis ajoute le fichier dans Scratch.",
+
  "قصص سكراتش": "Histoires Scratch", "الرئيسية": "Accueil", "كيف أبدأ؟": "Comment commencer ?", "القصص": "Contes", "ألعاب سكراتش": "Jeux Scratch", "فيديوهات": "Vidéos",
  "المكتبة": "Bibliothèque", "صور وفيديوهات جاهزة": "Images et vidéos prêtes à l'emploi", "تحميل سكراتش": "Télécharger Scratch", "مساعدة": "Aide",
  "القائمة": "Menu", "القائمة الرئيسية": "Menu principal",
