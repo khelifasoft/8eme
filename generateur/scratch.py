@@ -4,6 +4,7 @@ import json, hashlib, zipfile, sys, os, subprocess, wave, tempfile, shutil
 from xml.sax.saxutils import escape
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
 STORIES = json.load(open(os.path.join(HERE, "stories.json"), encoding="utf-8"))
 OUT = sys.argv[1]
 
@@ -168,6 +169,22 @@ def voice(zf, store, text):
     _voice_cache[text] = (md5, rate, frames, frames / rate)
     return _voice_cache[text]
 
+import scratch_art as art, sons as sonlib
+_sfx_cache = {}
+def sfx(zf, store, key):
+    """effet de la bibliothèque -> entrée « sounds » de Scratch (nom arabe)"""
+    if key in _sfx_cache: return _sfx_cache[key]
+    for k, ar, fr, fn, tg in sonlib.EFFETS + sonlib.MUSIQUES:
+        if k == key:
+            with tempfile.TemporaryDirectory() as td:
+                f = os.path.join(td, "s.wav"); sonlib.save(f, fn()); data = open(f, "rb").read()
+                w = wave.open(f); rate, frames = w.getframerate(), w.getnframes(); w.close()
+            md5 = hashlib.md5(data).hexdigest()
+            if md5 not in store: zf.writestr(md5 + ".wav", data); store.add(md5)
+            _sfx_cache[key] = {"assetId": md5, "name": ar, "dataFormat": "wav", "rate": rate, "sampleCount": frames, "md5ext": md5 + ".wav"}
+            return _sfx_cache[key]
+    raise KeyError(key)
+
 class Blocks:
     def __init__(self): self.b = {}; self.n = 0
     def nid(self): self.n += 1; return f"b{self.n}"
@@ -202,6 +219,13 @@ class Blocks:
     def costume(self, name):
         m = self.add("looks_costume", fields={"COSTUME": [name, None]}, shadow=True)
         return self.add("looks_switchcostumeto", inputs={"COSTUME": [1, m]})
+    def direction(self, d): return self.add("motion_pointindirection", inputs={"DIRECTION": [1, [8, str(d)]]})
+    def volume(self, v): return self.add("sound_setvolumeto", inputs={"VOLUME": [1, [4, str(v)]]})
+    def play_wait(self, name):
+        m = self.add("sound_sounds_menu", fields={"SOUND_MENU": [name, None]}, shadow=True)
+        return self.add("sound_playuntildone", inputs={"SOUND_MENU": [1, m]})
+    def forever(self, inner):
+        f = self.add("control_forever", inputs={"SUBSTACK": [2, inner]}); self.b[inner]["parent"] = f; return f
     def backdrop(self, name):
         m = self.add("looks_backdrops", fields={"BACKDROP": [name, None]}, shadow=True)
         return self.add("looks_switchbackdropto", inputs={"BACKDROP": [1, m]})
@@ -247,17 +271,23 @@ def build(key):
         sb.chain(ids, 0, 200 * si)
     bd_costumes = []
     for (n, c) in d["backdrops"]:
-        md5 = asset(zf, svg_backdrop(n, c), store)
+        lk = art.BACK.get(key, {}).get(n)
+        md5 = asset(zf, art.art_svg("l", lk) if lk else svg_backdrop(n, c), store)
         bd_costumes.append({"assetId": md5, "name": n, "md5ext": md5 + ".svg", "dataFormat": "svg", "rotationCenterX": 240, "rotationCenterY": 180})
+    music = art.MUSIC.get(key); stage_sounds = []
+    if music:
+        ms = sfx(zf, store, music); stage_sounds.append(ms)
+        m_ids = [sb.hat_flag(), sb.volume(20)]; fe = sb.forever(sb.play_wait(ms["name"])); m_ids.append(fe)
+        sb.chain(m_ids, 400, 0)
     stage = {"isStage": True, "name": "Stage", "variables": {}, "lists": {}, "broadcasts": {}, "blocks": sb.b, "comments": {},
-             "currentCostume": 0, "costumes": bd_costumes, "sounds": [], "volume": 100, "layerOrder": 0, "tempo": 60,
+             "currentCostume": 0, "costumes": bd_costumes, "sounds": stage_sounds, "volume": 100, "layerOrder": 0, "tempo": 60,
              "videoTransparency": 50, "videoState": "on", "textToSpeechLanguage": None}
     targets = [stage]
     # --- Sprites
-    def sprite(name, costumes, w, h, hs, layer):
+    def sprite(name, costumes, w, h, hs, layer, sizepct=None, flip=False):
         b = Blocks()
         first = costumes[0][0]
-        ids = [b.hat_flag(), b.hide(), b.size(80 if w == 100 else 100), b.costume(first)]
+        ids = [b.hat_flag(), b.hide(), b.size(sizepct or (80 if w == 100 else 100)), b.direction(90), b.costume(first)]
         b.chain(ids, 0, 0)
         y = 160
         sounds = []; snames = {}
@@ -265,31 +295,51 @@ def build(key):
             if st[0] == "say" and st[2] not in snames:
                 v = voice(zf, store, st[2])
                 if v: snames[st[2]] = f"صوت {len(snames)+1}"; sounds.append({"assetId": v[0], "name": snames[st[2]], "dataFormat": "wav", "rate": v[1], "sampleCount": v[2], "md5ext": v[0] + ".wav"})
+        # effets sonores de la bibliothèque
+        for (m, st) in hs:
+            fx = (art.SFX_SHOW.get((key, name)) if st[0] == "show" else art.SFX_COSTUME.get((key, st[2])) if st[0] == "costume" else None)
+            if fx and fx not in snames: e = dict(sfx(zf, store, fx)); e["name"] = e["name"]; snames[fx] = e["name"]; sounds.append(e)
+        cur = None
         for (m, st) in hs:
             ids = [b.hat_recv(m, mid(m))]
             op = st[0]
-            if op == "show": ids += [b.goto(st[2], st[3]), b.show()]
+            if op == "show":
+                ids += [b.goto(st[2], st[3])] + ([b.direction(90)] if flip else []) + [b.show()]
+                fx = art.SFX_SHOW.get((key, name))
+                if fx: ids.append(b.play(snames[fx]))
+                cur = st[2]
             elif op == "hide": ids += [b.hide()]
             elif op == "say":
                 if st[2] in snames:
                     dur = _voice_cache[st[2]][3]
                     ids += [b.play(snames[st[2]]), b.say(st[2], max(2, round(dur + 0.5, 1)))]
                 else: ids += [b.say(st[2], 2)]
-            elif op == "glide": ids += [b.glide(st[2], st[3], st[4])]
-            elif op == "goto": ids += [b.goto(st[2], st[3])]
-            elif op == "costume": ids += [b.costume(st[2])]
+            elif op == "glide":
+                if flip and cur is not None: ids.append(b.direction(90 if st[2] >= cur else -90))
+                ids.append(b.glide(st[2], st[3], st[4])); cur = st[2]
+            elif op == "goto": ids += [b.goto(st[2], st[3])]; cur = st[2]
+            elif op == "costume":
+                ids.append(b.costume(st[2]))
+                fx = art.SFX_COSTUME.get((key, st[2]))
+                if fx: ids.append(b.play(snames[fx]))
             b.chain(ids, 0, y); y += 160
         cs = []
         for (n, svg) in costumes:
-            md5 = asset(zf, svg, store)
-            cs.append({"assetId": md5, "name": n, "md5ext": md5 + ".svg", "dataFormat": "svg", "rotationCenterX": w // 2, "rotationCenterY": h // 2})
+            md5 = asset(zf, svg, store); cw, ch = art.svg_size(svg)
+            cs.append({"assetId": md5, "name": n, "md5ext": md5 + ".svg", "dataFormat": "svg", "rotationCenterX": cw // 2, "rotationCenterY": ch // 2})
         return {"isStage": False, "name": name, "variables": {}, "lists": {}, "broadcasts": {}, "blocks": b.b, "comments": {},
                 "currentCostume": 0, "costumes": cs, "sounds": sounds, "volume": 100, "layerOrder": layer, "visible": False,
-                "x": 0, "y": 0, "size": 80 if w == 100 else 100, "direction": 90, "draggable": False, "rotationStyle": "all around"}
+                "x": 0, "y": 0, "size": sizepct or (80 if w == 100 else 100), "direction": 90, "draggable": False, "rotationStyle": "left-right" if flip else "don't rotate"}
     layer = 1
     for (n, col, alts) in d["sprites"]:
-        cos = [(n, svg_sprite(n, col))] + [(an, svg_sprite(an.split(" · ")[-1] if " · " in an else an, ac)) for an, ac in alts]
-        targets.append(sprite(n, cos, 100, 100, handlers[n], layer)); layer += 1
+        a = art.ART.get(key, {}).get(n)
+        if a:
+            kind, ak, size_, flip_, alt_art = a
+            cos = [(n, art.art_svg(kind, ak, art.TINT.get((key, n))))] + [(an, art.art_svg(*alt_art[an])) for an, ac in alts if an in alt_art]
+            targets.append(sprite(n, cos, 200, 200, handlers[n], layer, size_, flip_)); layer += 1
+        else:
+            cos = [(n, svg_sprite(n, col))] + [(an, svg_sprite(an.split(" · ")[-1] if " · " in an else an, ac)) for an, ac in alts]
+            targets.append(sprite(n, cos, 100, 100, handlers[n], layer)); layer += 1
     # bandeau de la morale
     morale = s["morale"]
     bb = Blocks()
