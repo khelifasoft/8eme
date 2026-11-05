@@ -217,7 +217,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <div id="ihBody"></div>
   <form method="dialog"><button class="btn main" style="margin-top:10px">حسنًا</button></form>
 </dialog>
-<footer><div class="wrap">الصور مرسومة خصيصًا لهذه الورشة، والأصوات والموسيقى مولَّدة بالحاسوب، ويمكنك استعمالها وتعديلها بحرّية في مشاريعك.</div></footer>
+<footer><div class="wrap"><span dir="ltr" style="float:left">__BUILD__</span>الصور مرسومة خصيصًا لهذه الورشة، والأصوات والموسيقى مولَّدة بالحاسوب، ويمكنك استعمالها وتعديلها بحرّية في مشاريعك.</div></footer>
 
 <script src="videos.js"></script>
 <script>
@@ -456,10 +456,15 @@ instBtn.addEventListener("click", async () => {
   if (!secure) kids.push(el("p",{class:"small",text:"ملاحظة: التثبيت كتطبيق مستقل يتطلب HTTPS. على شبكة محلية بدون HTTPS يعمل الاختصار بالشكل الموضّح أعلاه."}));
   showHelp(kids);
 });
-if ("serviceWorker" in navigator && secure) navigator.serviceWorker.register("sw.js").catch(() => {});
+if ("serviceWorker" in navigator && secure) {
+  const had = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
+}
 </script>
 </body>
 </html>
 '''
-open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8").write(TPL.replace("__DATA__", json.dumps(man, ensure_ascii=False)))
+import datetime
+open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8").write(TPL.replace("__DATA__", json.dumps(man, ensure_ascii=False)).replace("__BUILD__", "نسخة " + datetime.date.today().isoformat()))
 print("index.html", os.path.getsize(os.path.join(ROOT, "index.html")) // 1024, "Ko")
