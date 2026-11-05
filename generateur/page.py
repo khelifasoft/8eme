@@ -91,10 +91,8 @@ h2+.lead{margin:0 0 18px;color:var(--muted)}
 .help p,.help ol{margin:0;font-size:15px;padding-inline-start:20px}
 .help p{padding:0}
 footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;color:var(--muted);font-size:14px}
+[hidden]{display:none!important}
 .vtools{margin:8px 0}
-.vform{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:10px;background:var(--soft);margin-bottom:14px}
-.vform label{display:grid;gap:4px;font-size:15px}
-.vform input,.vform select{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;min-width:0}
 .vhint{margin:0;font-size:13px;color:var(--muted)}
 .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;padding:10px 0 6px}
 .vcard{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
@@ -110,7 +108,6 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .vinfo p{margin:0;font-size:13px;color:var(--muted)}
 .vbadge{display:inline-block;font-size:12px;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:0 10px;align-self:flex-start}
 .vdel{align-self:flex-start;font:inherit;font-size:13px;color:#a33;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
-.vprev img{max-width:220px;border-radius:8px;border:1px solid var(--line)}
 .vdlg{width:min(960px,96vw);max-width:96vw;padding:12px 14px;border-radius:14px}
 .vphead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .vphead h3{margin:0;font-size:19px;color:var(--ink)}
@@ -161,23 +158,12 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 
 <section id="videos">
   <h2>فيديوهات</h2>
-  <p class="lead">شاهد الفيديو هنا دون مغادرة الصفحة. الفيديوهات تبقى في موقعها الأصلي (يوتيوب وغيره) ولا تُحمَّل في المشروع.</p>
-  <div class="row vtools">
+  <p class="lead">اضغط على لقطة الفيديو لمشاهدته هنا دون مغادرة الصفحة.</p>
+  <div class="row vtools" id="vtools">
     <input type="search" id="vq" placeholder="ابحث في الفيديوهات…" aria-label="بحث في الفيديوهات">
     <select id="vstory" aria-label="تصفية الفيديوهات حسب القصة"></select>
-    <button type="button" class="btn" id="vadd">+ إضافة رابط فيديو</button>
     <span id="vcount" class="small"></span>
   </div>
-  <form id="vform" class="vform" hidden>
-    <label>رابط الفيديو أو كود التضمين
-      <input type="text" id="vurl" placeholder="https://www.youtube.com/watch?v=… أو https://vimeo.com/…" dir="ltr" required></label>
-    <label>العنوان (اختياري)<input type="text" id="vtitle"></label>
-    <label>القصة<select id="vst"></select></label>
-    <label>لقطة شاشة للفيديو (اختياري)<input type="file" id="vimg" accept="image/*"></label>
-    <div id="vprev" class="vprev"></div>
-    <div class="row"><button class="btn main" type="submit">إضافة</button><button class="btn" type="button" id="vcancel">إلغاء</button></div>
-    <p class="vhint">الرابط يُحفَظ في هذا المتصفح فقط. لإظهاره للجميع، أضِفه في الملف <b dir="ltr">videos.js</b>.</p>
-  </form>
   <div class="vgrid" id="vgrid"></div>
 </section>
 
@@ -337,14 +323,12 @@ function embedInfo(raw){
   if (/\/embed\//i.test(p) || /^player\./.test(h)) return {kind:"iframe", host:h, src:u.href};
   return {kind:"link", host:h, src:u.href};
 }
-const VKEY = "ateliers-contes-videos", TKEY = "ateliers-contes-thumbs";
-const userVideos = () => { try { return JSON.parse(localStorage.getItem(VKEY)||"[]"); } catch(e){ return []; } };
-const saveUserVideos = a => { try { localStorage.setItem(VKEY, JSON.stringify(a)); return true; } catch(e){ return false; } };
+const TKEY = "ateliers-contes-thumbs";
 const thumbCache = () => { try { return JSON.parse(localStorage.getItem(TKEY)||"{}"); } catch(e){ return {}; } };
 const setThumbCache = (k,v) => { try { const c = thumbCache(); c[k] = v; localStorage.setItem(TKEY, JSON.stringify(c)); } catch(e){} };
-const vsel = $("#vstory"), vst = $("#vst"), vq = $("#vq");
-vsel.append(el("option",{value:"",text:"كل القصص"})); vst.append(el("option",{value:"",text:"بدون قصة"}));
-DATA.stories.forEach(s => { vsel.append(el("option",{value:s.key,text:s.title})); vst.append(el("option",{value:s.key,text:s.title})); });
+const vsel = $("#vstory"), vq = $("#vq");
+vsel.append(el("option",{value:"",text:"كل القصص"}));
+DATA.stories.forEach(s => vsel.append(el("option",{value:s.key,text:s.title})));
 
 // image de couverture : capture fournie > miniature du site > aperçu local > cadre neutre
 async function remoteThumb(info){
@@ -384,11 +368,11 @@ $("#vpClose").addEventListener("click", closePlayer);
 
 function renderVideos(){
   const g = $("#vgrid"); g.replaceChildren();
-  const mine = userVideos().map((v,i)=>({...v,mine:i}));
   const q = vq.value.trim().toLowerCase();
-  const all = (window.VIDEOS||[]).concat(mine).filter(v => (!vsel.value || v.story === vsel.value) && (!q || ((v.title||"")+" "+(v.note||"")).toLowerCase().includes(q)));
+  const all = (window.VIDEOS||[]).filter(v => (!vsel.value || v.story === vsel.value) && (!q || ((v.title||"")+" "+(v.note||"")).toLowerCase().includes(q)));
   $("#vcount").textContent = all.length ? `${all.length} فيديو` : "";
-  if (!all.length) { g.append(el("div",{class:"empty",text: (window.VIDEOS||[]).length+mine.length ? "لا توجد فيديوهات مطابقة." : "لا توجد فيديوهات بعد. اضغط «إضافة رابط فيديو» والصق رابطًا من يوتيوب أو غيره."})); return; }
+  $("#vtools").hidden = !(window.VIDEOS||[]).length;
+  if (!all.length) { g.append(el("div",{class:"empty",text: (window.VIDEOS||[]).length ? "لا توجد فيديوهات مطابقة." : "لا توجد فيديوهات حاليًا."})); return; }
   all.forEach(v => {
     const info = embedInfo(v.url); const st = DATA.stories.find(s=>s.key===v.story);
     const title = v.title || (info ? info.host : "فيديو");
@@ -397,28 +381,10 @@ function renderVideos(){
     const trigger = canPlay ? el("button",{class:"vopen",type:"button","aria-label":"مشاهدة: "+title}, thumb, el("span",{class:"vplay",text:"▶"})) : el("a",{class:"vopen",href:v.url,target:"_blank",rel:"noopener","aria-label":"فتح: "+title}, thumb, el("span",{class:"vplay link",text:"↗"}));
     if (canPlay) trigger.addEventListener("click", () => openPlayer(v, info, title));
     const meta = el("div",{class:"vinfo"}, st && el("span",{class:"vbadge",text:st.title}), el("h3",{text:title}), v.note && el("p",{text:v.note}));
-    if (v.mine !== undefined) { const r = el("button",{type:"button",class:"vdel",text:"حذف"}); r.addEventListener("click", () => { const a = userVideos(); a.splice(v.mine,1); saveUserVideos(a); renderVideos(); }); meta.append(r); }
     g.append(el("article",{class:"vcard"}, trigger, meta));
   });
 }
 vsel.addEventListener("change", renderVideos); vq.addEventListener("input", renderVideos);
-$("#vadd").addEventListener("click", () => { const f = $("#vform"); f.hidden = !f.hidden; if (!f.hidden) $("#vurl").focus(); });
-$("#vcancel").addEventListener("click", () => { $("#vform").hidden = true; });
-// capture d'écran fournie par l'utilisateur : réduite puis gardée dans ce navigateur
-let vimage = "";
-$("#vimg").addEventListener("change", e => {
-  const f = e.target.files[0]; vimage = ""; $("#vprev").replaceChildren(); if (!f) return;
-  const im = new Image(); const r = new FileReader();
-  r.onload = () => { im.onload = () => { const k = Math.min(1, 480 / im.width), c = document.createElement("canvas"); c.width = Math.round(im.width*k); c.height = Math.round(im.height*k); c.getContext("2d").drawImage(im,0,0,c.width,c.height); vimage = c.toDataURL("image/jpeg",0.72); $("#vprev").append(el("img",{src:vimage,alt:"معاينة اللقطة"})); }; im.src = r.result; };
-  r.readAsDataURL(f);
-});
-$("#vform").addEventListener("submit", e => {
-  e.preventDefault(); const url = $("#vurl").value.trim(); const info = embedInfo(url);
-  if (!info) { $("#vurl").setCustomValidity("الرابط غير صحيح"); $("#vurl").reportValidity(); setTimeout(()=>$("#vurl").setCustomValidity(""),2500); return; }
-  const a = userVideos(); a.push({title:$("#vtitle").value.trim(), url: (info.kind==="iframe" && /<iframe/i.test(url)) ? info.src : url, story:$("#vst").value, image:vimage||undefined});
-  if (!saveUserVideos(a)) alert("تعذّر حفظ الفيديو في هذا المتصفح.");
-  vimage = ""; $("#vprev").replaceChildren(); $("#vform").reset(); $("#vform").hidden = true; renderVideos();
-});
 renderVideos();
 
 // ---- installation / raccourci sur le bureau
