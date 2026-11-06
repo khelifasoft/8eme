@@ -1,0 +1,737 @@
+{
+ "7": [
+  {
+   "n": 1,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "decouverte",
+   "title": "Découvrir l'environnement informatique de la classe",
+   "obj": "identifier les éléments matériels et logiciels d'un poste de travail"
+  },
+  {
+   "n": 2,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "decouverte",
+   "title": "Périphériques d'entrée et de sortie",
+   "obj": "distinguer les périphériques d'entrée des périphériques de sortie"
+  },
+  {
+   "n": 3,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "decouverte",
+   "title": "Les composants internes de l'ordinateur",
+   "obj": "identifier le processeur, la mémoire RAM, la carte graphique et associer chacun à sa fonction"
+  },
+  {
+   "n": 4,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "decouverte",
+   "title": "Les supports de stockage et leur capacité",
+   "obj": "identifier les supports de stockage et situer octet, Ko, Mo, Go et To"
+  },
+  {
+   "n": 5,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "decouverte",
+   "title": "Le système d'exploitation",
+   "obj": "reconnaître un système d'exploitation pour ordinateur et pour mobile"
+  },
+  {
+   "n": 6,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "manip",
+   "title": "Gérer fichiers et dossiers",
+   "obj": "créer, renommer, déplacer, copier et supprimer fichiers et dossiers"
+  },
+  {
+   "n": 7,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "projet",
+   "title": "Organiser ses ressources : l'arborescence",
+   "obj": "construire une arborescence simple et reconnaître le nom et l'extension d'un fichier"
+  },
+  {
+   "n": 8,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "eval",
+   "title": "Évaluation : environnement informatique",
+   "obj": "mobiliser les acquis sur les composants, le stockage et les fichiers"
+  },
+  {
+   "n": 9,
+   "tri": 1,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "decouverte",
+   "title": "Rechercher une information : mots-clés et requête",
+   "obj": "identifier des mots-clés pertinents et formuler une requête"
+  },
+  {
+   "n": 10,
+   "tri": 2,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "manip",
+   "title": "Affiner une requête et lire une adresse URL",
+   "obj": "affiner une requête et repérer les parties d'une adresse URL"
+  },
+  {
+   "n": 11,
+   "tri": 2,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "decouverte",
+   "title": "Comparer les résultats : source, date, fiabilité",
+   "obj": "comparer des résultats de recherche selon leur source, leur date et leur fiabilité"
+  },
+  {
+   "n": 12,
+   "tri": 2,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "manip",
+   "title": "Chercher avec un outil d'IA",
+   "obj": "formuler une instruction simple à un outil d'IA et comparer avec un moteur de recherche"
+  },
+  {
+   "n": 13,
+   "tri": 2,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "decouverte",
+   "title": "Télécharger une ressource : droits d'auteur et licences",
+   "obj": "télécharger une ressource dans le respect de l'éthique et des droits d'auteur"
+  },
+  {
+   "n": 14,
+   "tri": 2,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "manip",
+   "title": "Citer et réutiliser une ressource",
+   "obj": "citer la source et réutiliser correctement une ressource"
+  },
+  {
+   "n": 15,
+   "tri": 2,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "projet",
+   "title": "Partager un contenu de manière responsable",
+   "obj": "partager un contenu numérique dans un espace sécurisé"
+  },
+  {
+   "n": 16,
+   "tri": 2,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "eval",
+   "title": "Évaluation : rechercher, réutiliser, partager",
+   "obj": "mobiliser les acquis sur la recherche, les droits d'auteur et le partage"
+  },
+  {
+   "n": 17,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "decouverte",
+   "title": "Concevoir une création avec texte et image",
+   "obj": "planifier une création numérique pour communiquer une idée"
+  },
+  {
+   "n": 18,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "manip",
+   "title": "Insérer et mettre en forme texte et images",
+   "obj": "produire une création intégrant du texte et des images"
+  },
+  {
+   "n": 19,
+   "tri": 3,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "manip",
+   "title": "Images libres de droits et formats d'export",
+   "obj": "choisir des images libres de droits et exporter la production dans un format adapté"
+  },
+  {
+   "n": 20,
+   "tri": 3,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "projet",
+   "title": "Enrichir avec un outil d'IA et comparer",
+   "obj": "utiliser un outil d'IA pour enrichir une production et justifier ses choix"
+  },
+  {
+   "n": 21,
+   "tri": 3,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "eval",
+   "title": "Présentation des productions et évaluation",
+   "obj": "présenter sa création et justifier ses choix"
+  },
+  {
+   "n": 22,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "decouverte",
+   "title": "Résoudre un problème sans ordinateur",
+   "obj": "identifier le problème, les données utiles, le résultat attendu et dégager les étapes"
+  },
+  {
+   "n": 23,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "decouverte",
+   "title": "Découvrir Scratch : lutin, scène, blocs",
+   "obj": "reconnaître l'environnement de programmation visuelle et construire une séquence d'instructions"
+  },
+  {
+   "n": 24,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Déclencher un script : les événements",
+   "obj": "déclencher un script à partir d'un événement"
+  },
+  {
+   "n": 25,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Répéter : les boucles",
+   "obj": "utiliser « répéter indéfiniment » et « répéter n fois »"
+  },
+  {
+   "n": 26,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Décider : les conditions simples",
+   "obj": "utiliser « si… alors » et « si… alors… sinon » sans opérateur logique"
+  },
+  {
+   "n": 27,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "projet",
+   "title": "Projet : créer et présenter un conte interactif",
+   "obj": "réaliser un projet intégrant personnages, arrière-plans, événements, conditions et répétitions ; le tester et le corriger"
+  }
+ ],
+ "8": [
+  {
+   "n": 1,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "decouverte",
+   "title": "Les logiciels malveillants",
+   "obj": "reconnaître les principaux logiciels malveillants (virus, ver, cheval de Troie)"
+  },
+  {
+   "n": 2,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "decouverte",
+   "title": "Hameçonnage, vol d'identité et indicateurs de menace",
+   "obj": "repérer des indicateurs d'une menace de sécurité"
+  },
+  {
+   "n": 3,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "manip",
+   "title": "Des mots de passe robustes",
+   "obj": "utiliser des mots de passe robustes pour protéger ses données"
+  },
+  {
+   "n": 4,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "decouverte",
+   "title": "Protéger son environnement : antivirus, pare-feu, session",
+   "obj": "choisir des mesures de protection adaptées à une situation"
+  },
+  {
+   "n": 5,
+   "tri": 1,
+   "module": "env",
+   "mod_fr": "Environnement informatique de travail",
+   "type": "eval",
+   "title": "Évaluation : risques et protection",
+   "obj": "mobiliser les acquis sur les menaces et les comportements de protection"
+  },
+  {
+   "n": 6,
+   "tri": 1,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "decouverte",
+   "title": "Communiquer en ligne : outils et nétiquette",
+   "obj": "exploiter un outil de communication en ligne et respecter la nétiquette"
+  },
+  {
+   "n": 7,
+   "tri": 1,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "manip",
+   "title": "L'écriture collaborative",
+   "obj": "utiliser un dispositif d'écriture collaborative pour coproduire un contenu"
+  },
+  {
+   "n": 8,
+   "tri": 1,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "decouverte",
+   "title": "Identité numérique et données personnelles",
+   "obj": "distinguer données personnelles et identité numérique"
+  },
+  {
+   "n": 9,
+   "tri": 1,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "decouverte",
+   "title": "Réputation numérique et communautés virtuelles",
+   "obj": "identifier les risques liés aux communautés virtuelles et préserver sa réputation"
+  },
+  {
+   "n": 10,
+   "tri": 2,
+   "module": "net",
+   "mod_fr": "Technologies : Internet",
+   "type": "eval",
+   "title": "Évaluation : communiquer et préserver son identité",
+   "obj": "mobiliser les acquis sur la communication, la collaboration et l'identité numérique"
+  },
+  {
+   "n": 11,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "decouverte",
+   "title": "Planifier un projet multimédia",
+   "obj": "inscrire une production dans un projet et planifier son scénario"
+  },
+  {
+   "n": 12,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "manip",
+   "title": "Audio : enregistrer, découper, nettoyer",
+   "obj": "créer et modifier un fichier audio"
+  },
+  {
+   "n": 13,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "manip",
+   "title": "Audio : effets, fondus et mixage",
+   "obj": "appliquer des effets et des fondus adaptés et mixer des pistes"
+  },
+  {
+   "n": 14,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "manip",
+   "title": "Vidéo : importer, découper, assembler",
+   "obj": "concevoir et modifier une courte vidéo"
+  },
+  {
+   "n": 15,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "manip",
+   "title": "Vidéo : titres, générique, transitions, bande-son",
+   "obj": "ajouter titres, générique, transitions et bande sonore"
+  },
+  {
+   "n": 16,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "projet",
+   "title": "Enrichir avec l'IA et exporter",
+   "obj": "utiliser l'IA pour enrichir une production et l'exporter dans un format adapté à sa diffusion"
+  },
+  {
+   "n": 17,
+   "tri": 2,
+   "module": "create",
+   "mod_fr": "Création de contenus numériques",
+   "type": "eval",
+   "title": "Présentation des productions et évaluation",
+   "obj": "présenter sa production et justifier ses choix"
+  },
+  {
+   "n": 18,
+   "tri": 2,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "decouverte",
+   "title": "Analyser et décomposer un problème",
+   "obj": "décomposer un problème en sous-problèmes et représenter la stratégie par un diagramme"
+  },
+  {
+   "n": 19,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Rappel de Scratch : scripts, événements, boucles, conditions",
+   "obj": "consolider les acquis de programmation visuelle"
+  },
+  {
+   "n": 20,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "decouverte",
+   "title": "Les variables : nom, valeur, initialisation, incrémentation",
+   "obj": "utiliser une variable numérique pour répondre à un besoin (le score)"
+  },
+  {
+   "n": 21,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Un programme avec variable : le jeu",
+   "obj": "concevoir un programme intégrant une variable"
+  },
+  {
+   "n": 22,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Les modules : créer et appeler",
+   "obj": "créer et appeler un module (« Mon bloc »)"
+  },
+  {
+   "n": 23,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Modules et paramètres",
+   "obj": "utiliser un paramètre dans un module"
+  },
+  {
+   "n": 24,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Tester, identifier les erreurs, corriger",
+   "obj": "tester un programme, identifier les erreurs et les corriger"
+  },
+  {
+   "n": 25,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "manip",
+   "title": "Améliorer la solution",
+   "obj": "améliorer la solution en fonction des résultats obtenus"
+  },
+  {
+   "n": 26,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "projet",
+   "title": "Projet : concevoir un jeu structuré",
+   "obj": "concevoir un programme avec variable et module (trois modules au maximum)"
+  },
+  {
+   "n": 27,
+   "tri": 3,
+   "module": "prog",
+   "mod_fr": "Pensée logique et programmation",
+   "type": "eval",
+   "title": "Évaluation du projet",
+   "obj": "présenter et évaluer son projet"
+  }
+ ],
+ "9": [
+  {
+   "n": 1,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "decouverte",
+   "title": "Choisir un environnement de travail",
+   "obj": "faire un choix réfléchi entre un environnement de programmation visuelle et un environnement de robotique"
+  },
+  {
+   "n": 2,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "decouverte",
+   "title": "Analyser un problème : entrées, sorties, traitement",
+   "obj": "analyser un problème par ses entrées, ses sorties et ses étapes de traitement"
+  },
+  {
+   "n": 3,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "manip",
+   "title": "Notions fondamentales : séquence, événements, conditions, boucles",
+   "obj": "appliquer les notions fondamentales de la programmation"
+  },
+  {
+   "n": 4,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "manip",
+   "title": "Variables et modules",
+   "obj": "structurer un programme avec variables et modules"
+  },
+  {
+   "n": 5,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "decouverte",
+   "title": "Programmer un objet : les capteurs",
+   "obj": "exploiter les données d'un capteur"
+  },
+  {
+   "n": 6,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "manip",
+   "title": "Programmer un objet : les actionneurs",
+   "obj": "contrôler un actionneur"
+  },
+  {
+   "n": 7,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "manip",
+   "title": "Commander un objet à partir d'un programme",
+   "obj": "commander un objet via un programme"
+  },
+  {
+   "n": 8,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "manip",
+   "title": "Tester et optimiser une solution",
+   "obj": "tester une solution et l'optimiser"
+  },
+  {
+   "n": 9,
+   "tri": 1,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "decouverte",
+   "title": "Argumenter les choix de solutions",
+   "obj": "argumenter le choix d'une solution"
+  },
+  {
+   "n": 10,
+   "tri": 2,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "projet",
+   "title": "Projet : concevoir un projet de programmation",
+   "obj": "choisir un problème et concevoir une solution"
+  },
+  {
+   "n": 11,
+   "tri": 2,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "projet",
+   "title": "Projet : réaliser et tester",
+   "obj": "réaliser et tester son projet"
+  },
+  {
+   "n": 12,
+   "tri": 2,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "projet",
+   "title": "Projet : améliorer et argumenter",
+   "obj": "améliorer son projet et argumenter ses choix"
+  },
+  {
+   "n": 13,
+   "tri": 2,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "eval",
+   "title": "Évaluation : programmation visuelle et objets",
+   "obj": "mobiliser les acquis de programmation"
+  },
+  {
+   "n": 14,
+   "tri": 2,
+   "module": "prog",
+   "mod_fr": "Initiation à la logique et à la programmation",
+   "type": "eval",
+   "title": "Publier et partager le projet",
+   "obj": "choisir un espace adéquat pour partager ses projets"
+  },
+  {
+   "n": 15,
+   "tri": 2,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "decouverte",
+   "title": "Découvrir le tableur : cellules, lignes, colonnes",
+   "obj": "identifier les éléments d'un tableur"
+  },
+  {
+   "n": 16,
+   "tri": 2,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "manip",
+   "title": "Saisir et mettre en forme des données",
+   "obj": "saisir et présenter des données dans un tableur"
+  },
+  {
+   "n": 17,
+   "tri": 2,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "decouverte",
+   "title": "Choisir un tableur pour répondre à un besoin",
+   "obj": "faire un choix réfléchi pour répondre à un besoin donné"
+  },
+  {
+   "n": 18,
+   "tri": 2,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "manip",
+   "title": "Formules de calcul simples",
+   "obj": "intégrer des formules de calcul simples"
+  },
+  {
+   "n": 19,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "manip",
+   "title": "Références de cellules",
+   "obj": "utiliser les références de cellules dans une formule"
+  },
+  {
+   "n": 20,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "manip",
+   "title": "Fonctions de base : somme, moyenne, minimum, maximum",
+   "obj": "utiliser les fonctions de base"
+  },
+  {
+   "n": 21,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "decouverte",
+   "title": "Analyser les données d'une feuille de calcul",
+   "obj": "analyser les données d'une feuille de calcul"
+  },
+  {
+   "n": 22,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "manip",
+   "title": "Créer un graphique",
+   "obj": "créer un graphique à partir de données"
+  },
+  {
+   "n": 23,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "decouverte",
+   "title": "Choisir et argumenter un type de graphique",
+   "obj": "argumenter le choix d'un type de graphique"
+  },
+  {
+   "n": 24,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "projet",
+   "title": "Projet : un document d'aide à la décision",
+   "obj": "produire un document avec tableur pour aider à décider"
+  },
+  {
+   "n": 25,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "projet",
+   "title": "Présenter et partager le document",
+   "obj": "présenter sa production et la publier dans un espace adapté"
+  },
+  {
+   "n": 26,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "manip",
+   "title": "Révision générale",
+   "obj": "consolider les acquis de l'année"
+  },
+  {
+   "n": 27,
+   "tri": 3,
+   "module": "prod",
+   "mod_fr": "Production numérique (tableur)",
+   "type": "eval",
+   "title": "Évaluation finale",
+   "obj": "mobiliser les acquis de l'année"
+  }
+ ]
+}

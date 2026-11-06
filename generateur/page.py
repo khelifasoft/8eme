@@ -11,7 +11,28 @@ for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-
 man["games"] = games
 man["programme"] = json.load(open(os.path.join(HERE, "programme.json"), encoding="utf-8"))
 man["curriculum"] = json.load(open(os.path.join(HERE, "axes.json"), encoding="utf-8"))
+import exercices
+man["exo"] = exercices.EXO; man["act"] = exercices.ACT
+man["seances"] = json.load(open(os.path.join(HERE, "seances.json"), encoding="utf-8"))
 FR = i18n_fr.build(man, games)
+for _l in list(exercices.EXO.values()):
+    for _q in _l:
+        FR["map"][_q["q"]] = _q["q_fr"]
+        for _a, _f in zip(_q["o"], _q["o_fr"]): FR["map"][_a] = _f
+for _l in exercices.ACT.values():
+    for _a in _l:
+        FR["map"][_a["t"]] = _a["t_fr"]; FR["map"][_a["d"]] = _a["d_fr"]
+        if _a.get("ex"): FR["map"][_a["ex"]] = _a["ex_fr"]
+FR["map"].update({"فضاء التلميذ": "Espace élève", "فضاء الأستاذ": "Espace enseignant", "تمارين تفاعلية": "Exercices interactifs", "أنشطة للإنجاز": "Activités à réaliser",
+ "اختر الإجابة الصحيحة. يظهر التصحيح مباشرة.": "Choisis la bonne réponse. La correction s'affiche tout de suite.", "إجابة صحيحة ✓": "Bonne réponse ✓", "إجابة خاطئة ✗": "Mauvaise réponse ✗",
+ "إعادة المحاولة": "Recommencer", "للتلميذ: تمارين وأنشطة لإنجازها مع أمثلة وموارد.": "Pour l'élève : exercices et activités à réaliser, avec exemples et ressources.",
+ "للأستاذ: التوزيع السنوي المقترح وبطاقات الحصص.": "Pour l'enseignant : répartition annuelle proposée et fiches de séance.",
+ "فتح فضاء الأستاذ": "Ouvrir l'espace enseignant", "فتح فضاء التلميذ": "Ouvrir l'espace élève", "مثال: ": "Exemple : ", "الموارد": "Ressources", "فتح الموارد": "Ouvrir les ressources",
+ "التوزيع السنوي المقترح": "Répartition annuelle proposée", "اقتراح غير رسمي قابل للتعديل: حصة واحدة مدتها 60 دقيقة في الأسبوع (27 حصة، 9 في كل ثلاثي).": "Proposition non officielle à adapter : une séance de 60 minutes par semaine (27 séances, 9 par trimestre).",
+ "طباعة التوزيع وبطاقات الحصص": "Imprimer la répartition et les fiches de séance", "الحصة": "Séance", "الثلاثي": "Trimestre", "المجال": "Module", "العنوان": "Titre", "النوع": "Type", "بطاقة": "Fiche",
+ "لم تُدرج بعد وثيقة منهاج هذا المستوى. ستتوفر بطاقات الأستاذ عند إضافتها.": "Le programme de ce niveau n'est pas encore intégré. Les fiches enseignant seront disponibles à son ajout.",
+ "لتعديل التوزيع: غيّر الملف generateur/seances.py ثم أعد توليد الصفحات.": "Pour modifier la répartition : éditer le fichier generateur/seances.py puis régénérer les pages.",
+ "← الأستاذ": "← Espace enseignant"})
 TPL = r'''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -209,6 +230,12 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .sr{position:absolute;left:-9999px}
 :focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 @media (max-width:560px){.btns{grid-template-columns:1fr}}
+.spaces{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:10px 0}
+.space{border:1px solid var(--line);border-radius:12px;padding:12px 16px;background:#fff;display:flex;flex-direction:column;gap:8px}.space.t{border-color:#1e6fd6;background:#f4f8ff}
+.qz{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0;background:#fff}.qz p{margin:0 0 6px;font-weight:600}
+.qz .opts{display:flex;flex-direction:column;gap:6px}.qz button.o{font:inherit;text-align:start;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
+.qz button.o:disabled{cursor:default}.qz button.o.ok{background:#e4f6e8;border-color:#2e9b4e}.qz button.o.ko{background:#fdeaea;border-color:#d33}.qz .fb{margin-top:6px;font-size:14px}
+.score{font-weight:700;color:#1e3a6e;margin:6px 0}.sctable{width:100%;border-collapse:collapse;font-size:14px}.sctable th,.sctable td{border:1px solid var(--line);padding:4px 8px;text-align:start}.sctable th{background:#eaf1fb}.sctable tr.ev td{background:#fde8e8}.sctable tr.pr td{background:#e8f5e9}
 </style>
 </head>
 <body>
@@ -661,7 +688,7 @@ function showStory(key){
 const ynav = $("#yearnav");
 YEARS.forEach(y => {
   const Y = CUR.years[y];
-  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
+  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
   const btn = el("button",{class:"ybtn",type:"button","aria-expanded":"false","aria-haspopup":"true"}, el("span",{class:"yl",text:Y.ar}), el("span",{class:"ys",text:Y.short_ar}), el("i",{class:"car",text:"▾"}));
   const d = el("div",{class:"ydrop","data-year":y}, btn, ul);
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
@@ -681,6 +708,40 @@ renderHome();
 const RES = {"7-prog":["stories"], "8-prog":["games"], "9-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
 const RESCAT = {"7-create":"personnages", "8-create":"sons"};
 function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => $("#pool").append(n))); }
+function quiz(list){
+  let done = 0, good = 0; const sc = el("p",{class:"score"}); const box = el("div",{});
+  const qs = list.map(q => {
+    const fb = el("p",{class:"fb"}), ord = q.o.map((_, i) => i).sort(() => Math.random() - .5), opts = ord.map(i => el("button",{type:"button",class:"o",text:q.o[i]}));
+    opts.forEach((b, i) => b.addEventListener("click", () => {
+      opts.forEach((x, j) => { x.disabled = true; if (ord[j] === q.a) x.classList.add("ok"); });
+      if (ord[i] === q.a) { good++; fb.textContent = "إجابة صحيحة ✓"; } else { b.classList.add("ko"); fb.textContent = "إجابة خاطئة ✗"; }
+      if (++done === list.length) { sc.textContent = good + " / " + list.length; const rb = el("button",{type:"button",class:"btn",text:"إعادة المحاولة"}); rb.addEventListener("click", () => box.replaceWith(quiz(list))); box.append(rb); }
+    }));
+    return el("div",{class:"qz"}, el("p",{text:q.q}), el("div",{class:"opts"}, opts), fb);
+  });
+  box.append(sc, ...qs); return box;
+}
+function axisExtras(y, k){
+  const id = `${y}-${k}`, out = [], ex = (DATA.exo || {})[id], ac = (DATA.act || {})[id];
+  out.push(el("h2",{text:"فضاء التلميذ",style:"font-size:20px;margin-top:18px"}));
+  if (ex) out.push(el("h3",{text:"تمارين تفاعلية"}), el("p",{class:"pnote",text:"اختر الإجابة الصحيحة. يظهر التصحيح مباشرة."}), quiz(ex));
+  if (ac) { out.push(el("h3",{text:"أنشطة للإنجاز"})); ac.forEach(a => out.push(el("div",{class:"qz"}, el("p",{text:a.t}), el("p",{style:"font-weight:400",text:a.d}), a.ex ? el("p",{class:"pnote",text:a.ex}) : null, a.link ? el("a",{class:"btn",href:a.link,text:"الموارد"}) : null))); }
+  return out;
+}
+function renderTeacher(y){
+  const Y = CUR.years[y]; $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar; park(); $("#resArea").replaceChildren();
+  const L = (DATA.seances || {})[y], kids = [el("span",{class:"lvl",text:Y.ar}), el("h2",{text:"فضاء الأستاذ"})];
+  if (!L) { kids.push(el("p",{class:"pnote",text:"لم تُدرج بعد وثيقة منهاج هذا المستوى. ستتوفر بطاقات الأستاذ عند إضافتها."})); }
+  else {
+    kids.push(el("h3",{text:"التوزيع السنوي المقترح"}), el("p",{class:"pnote",text:"اقتراح غير رسمي قابل للتعديل: حصة واحدة مدتها 60 دقيقة في الأسبوع (27 حصة، 9 في كل ثلاثي)."}),
+      el("p",{}, el("a",{class:"btn main",href:`enseignant/niveau-${y}.html`,target:"_blank",rel:"noopener",text:"طباعة التوزيع وبطاقات الحصص"})),
+      el("div",{style:"overflow-x:auto",dir:"ltr"}, el("table",{class:"sctable"}, el("tr",{}, ["Séance","Trim.","Module","Titre","Type",""].map(h => el("th",{text:h}))),
+        L.map(s => el("tr",{class:s.type === "eval" ? "ev" : s.type === "projet" ? "pr" : ""}, el("td",{text:"S" + s.n}), el("td",{text:"T" + s.tri}), el("td",{text:s.mod_fr}), el("td",{text:s.title}), el("td",{text:s.type}),
+          el("td",{}, el("a",{href:`enseignant/niveau-${y}.html#s${s.n}`,target:"_blank",rel:"noopener",text:"Fiche"})))))),
+      el("p",{class:"pnote",text:"لتعديل التوزيع: غيّر الملف generateur/seances.py ثم أعد توليد الصفحات."}));
+  }
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
+}
 function renderAxis(y, k){
   const P = CUR.pages[`${y}-${k}`], Y = CUR.years[y];
   $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar;
@@ -700,6 +761,7 @@ function renderAxis(y, k){
     kids.push(el("details",{}, d));
   }
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
+  $("#axisHead").firstChild.append(...axisExtras(y, k));
   park(); const res = $("#resArea"); const list = RES[`${y}-${k}`] || [];
   if (!list.length) res.append(el("p",{class:"empty",text:"ستُضاف موارد هذا المحور لاحقا."}));
   list.forEach(id => res.append($("#" + id)));
@@ -711,9 +773,9 @@ function renderAxis(y, k){
 }
 function renderYear(y){
   const Y = CUR.years[y]; $("#axisBack").href = "#home"; $("#axisBack").textContent = "← الرئيسية"; park();
-  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("span",{class:"lvl",text:Y.ar}), el("h2",{text:"المحاور الدراسية"}),
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("span",{class:"lvl",text:Y.ar}), el("h2",{text:"فضاء التلميذ"}), el("p",{class:"pnote",text:"للتلميذ: تمارين وأنشطة لإنجازها مع أمثلة وموارد."}),
     CUR.by_year[y].length ? null : el("p",{class:"pnote",text:"لم تُدرج بعد وثيقة منهاج هذا المستوى. يمكنك الاطلاع على المراجع المتاحة."}),
-    el("div",{class:"axcards"}, CUR.by_year[y].map(k => { const P = CUR.pages[`${y}-${k}`]; return el("article",{class:"axcard"}, el("h3",{text:P.title_ar}), el("p",{text:P.comps_ar[0]}), el("div",{class:"btns"}, el("a",{class:"btn main wide",href:`#y${y}-${k}`,text:"فتح المحور"}))); }).concat([el("article",{class:"axcard"}, el("h3",{text:"المراجع"}), el("p",{text:"مراجع التلميذ ومراجع الأستاذ لهذا المستوى."}), el("div",{class:"btns"}, el("a",{class:"btn wide",href:`#y${y}-refs`,text:"فتح المراجع"})))]))));
+    el("div",{class:"axcards"}, CUR.by_year[y].map(k => { const P = CUR.pages[`${y}-${k}`]; return el("article",{class:"axcard"}, el("h3",{text:P.title_ar}), el("p",{text:P.comps_ar[0]}), el("div",{class:"btns"}, el("a",{class:"btn main wide",href:`#y${y}-${k}`,text:"فتح المحور"}))); }).concat([el("article",{class:"axcard"}, el("h3",{text:"فضاء الأستاذ"}), el("p",{text:"للأستاذ: التوزيع السنوي المقترح وبطاقات الحصص."}), el("div",{class:"btns"}, el("a",{class:"btn main wide",href:`#y${y}-ens`,text:"فتح فضاء الأستاذ"}))), el("article",{class:"axcard"}, el("h3",{text:"المراجع"}), el("p",{text:"مراجع التلميذ ومراجع الأستاذ لهذا المستوى."}), el("div",{class:"btns"}, el("a",{class:"btn wide",href:`#y${y}-refs`,text:"فتح المراجع"})))]))));
   $("#resArea").replaceChildren();
 }
 const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};
@@ -737,14 +799,14 @@ function route(){
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
-  else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|refs)$/))) { view = "axis"; y = m[1]; k = m[2]; }
+  else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
   $("#viewAxis").hidden = !(view === "year" || view === "axis"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "year") renderYear(y);
-  if (view === "axis") { if (k === "refs") renderRefs(y); else renderAxis(y, k); }
+  if (view === "axis") { if (k === "refs") renderRefs(y); else if (k === "ens") renderTeacher(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
   ynav.querySelectorAll(".sub a").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   window.scrollTo(0, 0);

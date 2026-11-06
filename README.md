@@ -61,6 +61,20 @@ Chaque fiche contient : résumé du conte, personnages et décors, scénario en 
 | `fiches/pigs.html` | Les trois petits cochons (الخنازير الثلاثة والذئب) |
 | `fiches/duckling.html` | Le vilain petit canard (البطة القبيحة) |
 
+## Espace élève et espace enseignant (par niveau)
+
+Chaque niveau (7e, 8e, 9e) a deux accès : **Espace élève** (pages de modules) et **Espace enseignant** (menu du niveau → « فضاء الأستاذ »).
+
+- **Élève** : sous chaque module, des exercices à choix multiples auto-corrigés (options mélangées à chaque essai, bilingues AR/FR) et des activités à réaliser, avec exemples et liens vers les ressources du site. Données : `generateur/exercices.py` (`EXO`, `ACT`).
+- **Enseignant** : répartition annuelle **proposée (non officielle, à adapter)**, à raison d'**une séance de 60 min par semaine** (27 séances, 9 par trimestre), et une **fiche pédagogique par séance** (objectif, matériel, démarche minutée sur 60 min, trace écrite, évaluation/différenciation). Pages imprimables : `enseignant/niveau-7.html`, `niveau-8.html`, `niveau-9.html`.
+  - Modifier la répartition ou le contenu des séances : `generateur/seances.py`, puis régénérer.
+  - Les niveaux secondaires (1S à 4S) restent vides tant que les programmes ne sont pas fournis.
+
+```bash
+python3 generateur/enseignant.py   # fiches enseignant + seances.json
+python3 generateur/page.py         # index.html
+```
+
 ## Régénérer les fiches
 
 Le contenu de chaque conte est défini dans `generateur/make.py`.
