@@ -22,6 +22,13 @@ THEMES_FR = {"غابة": "Forêt", "قصر": "Château", "بحر": "Mer", "سف�
  "بجعة": "Cygne", "خروف وغنم": "Mouton", "خنزير": "Cochon", "حمار": "Âne", "جمل": "Chameau", "حصان": "Cheval", "فراشة": "Papillon", "عصفور": "Oiseau", "سباق": "Course",
  "شجرة": "Arbre", "شمس وغيوم": "Soleil et nuages", "أطفال يقرؤون": "Enfants qui lisent", "كتاب وقصص": "Livre de contes"}
 UI = {
+ "نظرة عامة": "Aperçu de l'année", "المحاور الدراسية حسب السنة": "Les axes d'étude par année", "اختر سنتك، ثم المحور الذي تريد دراسته.": "Choisis ton année, puis l'axe que tu veux étudier.",
+ "اختر سنتك ثم المحور الذي تريد دراسته من القائمة أعلاه.": "Choisis ton année, puis l'axe que tu veux étudier dans le menu ci-dessus.",
+ "← الرئيسية": "← Accueil", "المحاور الدراسية": "Axes d'étude", "فتح المحور": "Ouvrir l'axe", "المكوّنات والقدرات": "Composantes et capacités",
+ "ستُضاف موارد هذا المحور لاحقا.": "Les ressources de cet axe seront ajoutées plus tard.",
+ "في هذا المستوى تُستعمل بيئة تطوير بالكتل مثل App Inventor. لم تُنجَز موارد لهذا المحور بعد.": "À ce niveau, on utilise un environnement de développement par blocs tel qu'App Inventor. Aucune ressource n'est encore réalisée pour cet axe.",
+ "٧": "7e", "٨": "8e", "٩": "9e",
+
  "الربط بالمنهاج: الفكر المنطقي والبرمجة": "Lien avec le programme : pensée logique et programmation", "الربط بالمنهاج:": "Lien avec le programme :", "بطاقة النشاط (بالفرنسية)": "Fiche d'activité (en français)",
  "المعارف المرتبطة": "Savoirs associés", "توجيهات الإطار": "Directives de cadrage",
  "النص منقول من صور الوثيقة الرسمية «المساعدة البيداغوجية: الإعلامية» (سبتمبر 2025)، فيُراجَع مع الوثيقة الأصلية.": "Texte transcrit à partir de photographies du document officiel « Aide pédagogique : Informatique » (septembre 2025) ; à relire avec le document d'origine.",
@@ -73,6 +80,7 @@ UI = {
  "تحميل اللعبة (.sb3)": "Télécharger le jeu (.sb3)", "العب هنا": "Jouer ici", "فتح في سكراتش": "Ouvrir dans Scratch",
 }
 RULES = [
+ [r"^← (.+)$", "← $1"],
  [r"^(\d+) عنصر$", "$1 éléments"], [r"^(\d+) فيديو$", "$1 vidéos"], [r"^(\d+) موضوع$", "$1 thèmes"],
  [r"^تحميل الإطارات \((\d+)\)$", "Télécharger les images ($1)"], [r"^موارد القصة \((\d+)\)$", "Ressources du conte ($1)"],
  [r"^تحميل كل «(.+)» \(\.zip\)$", "Tout télécharger : « $1 » (.zip)"], [r"^استمع: (.+)$", "Écouter : $1"], [r"^مشاهدة: (.+)$", "Regarder : $1"], [r"^فتح: (.+)$", "Ouvrir : $1"],
@@ -124,6 +132,18 @@ def fr_label(a):
 
 def build(man, games):
     M = dict(UI)
+    cur = man.get("curriculum")
+    if cur:
+        for a in cur["axes"].values(): M[a["ar"]] = a["fr"]
+        for y in cur["years"].values(): M[y["ar"]] = y["fr"]
+        for pg in cur["pages"].values():
+            if pg["comp_ar"]: M[pg["comp_ar"]] = pg["comp_fr"]
+            for a, b in zip(pg["know_ar"], pg["know_fr"]): M[a] = b
+            for a, b in zip(pg["cad_ar"], pg["cad_fr"]): M[a] = b
+            for x in pg["parts"]:
+                M[x["t_ar"]] = x["t_fr"]
+                for a, b in zip(x["i_ar"], x["i_fr"]): M[a] = b
+            if pg.get("note_ar"): M[pg["note_ar"]] = pg["note_fr"]
     prg = man.get("programme")
     if prg:
         for c in prg["concepts"].values(): M[c["ar"]] = c["fr"]

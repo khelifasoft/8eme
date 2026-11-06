@@ -10,6 +10,7 @@ for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-
     games.append(dict(g, cat="catch", cat_ar="التقاط الأشياء (لكل قصة لعبة)", cat_fr="Attrape-objets (un jeu par conte)"))
 man["games"] = games
 man["programme"] = json.load(open(os.path.join(HERE, "programme.json"), encoding="utf-8"))
+man["curriculum"] = json.load(open(os.path.join(HERE, "axes.json"), encoding="utf-8"))
 FR = i18n_fr.build(man, games)
 TPL = r'''<!doctype html>
 <html lang="ar" dir="rtl">
@@ -36,10 +37,36 @@ html{scroll-padding-top:68px}
 body{padding-top:56px}
 .topbar{position:fixed;top:0;inset-inline:0;height:56px;background:var(--blue);color:#fff;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 max(16px,env(safe-area-inset-left)) 0 max(16px,env(safe-area-inset-right));box-shadow:0 2px 8px rgba(20,40,100,.25)}
 .brand{color:#fff;text-decoration:none;font-weight:800;font-size:21px;white-space:nowrap}
-.tabsnav{display:flex;gap:6px;height:100%;align-items:stretch}
-.tabsnav a{color:rgba(255,255,255,.88);text-decoration:none;font-weight:700;font-size:17px;padding:0 20px;display:flex;align-items:center;border-bottom:4px solid transparent;border-top:4px solid transparent}
-.tabsnav a:hover,.tabsnav a:focus-visible{color:#fff;background:rgba(255,255,255,.14)}
-.tabsnav a[aria-current=page]{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.12)}
+.yearnav{display:flex;gap:2px;height:100%;align-items:stretch}
+.ydrop{position:relative;display:flex}
+.ybtn{font:inherit;font-weight:700;font-size:17px;color:rgba(255,255,255,.9);background:transparent;border:0;border-top:4px solid transparent;border-bottom:4px solid transparent;padding:0 16px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.ybtn .ys{display:none}.ybtn .car{font-style:normal;font-size:12px;opacity:.8}
+.ybtn:hover,.ybtn:focus-visible,.ydrop[data-open] .ybtn{color:#fff;background:rgba(255,255,255,.14)}
+.ydrop[data-current] .ybtn{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.12)}
+.sub{display:none;position:absolute;top:100%;inset-inline-start:0;min-width:290px;margin:0;padding:6px;list-style:none;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:0 0 12px 12px;box-shadow:0 10px 24px rgba(20,40,100,.22);z-index:60}
+.ydrop[data-open] .sub{display:block}
+@media (hover:hover){.ydrop:hover .sub{display:block}}
+.sub a{display:block;padding:9px 12px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:16px;line-height:1.35}
+.sub a:hover,.sub a:focus-visible{background:var(--soft);color:var(--blue)}
+.sub a[aria-current=page]{background:#e6edfb;color:var(--blue);font-weight:700}
+.sub li+li{border-top:1px solid var(--line)}
+.sub .ov a{font-weight:700;color:var(--blue)}
+@media (max-width:640px){.ybtn{padding:0 10px;font-size:15px}.ybtn .yl{display:none}.ybtn .ys{display:inline}.sub{position:fixed;top:56px;inset-inline:8px;min-width:0}.brand{font-size:15px}}
+.yearcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.ycard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.ycard .yh{background:var(--blue);color:#fff;padding:10px 16px;font-size:20px;font-weight:800}
+.ycard ul{list-style:none;margin:0;padding:6px 10px 10px}
+.ycard li{border-bottom:1px solid var(--line)}.ycard li:last-child{border:0}
+.ycard a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;font-size:16px}
+.ycard a:hover,.ycard a:focus-visible{color:var(--blue);background:var(--soft)}
+.axcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:12px}
+.axcard{border:1px solid var(--line);border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:6px;background:#fff}
+.axcard h3{margin:0;font-size:18px;color:var(--blue)}.axcard p{margin:0;font-size:14px;color:var(--muted)}
+.axhead{border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin:6px 0 10px;background:#fff}
+.axhead h2{margin:4px 0 6px;font-size:28px}.axhead .comp{font-size:17px;margin:0 0 6px}
+.axhead h3{font-size:17px;margin:12px 0 2px;color:var(--ink)}.axhead ul{margin:2px 0 4px;padding-inline-start:22px}
+.axhead details{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}.axhead summary{cursor:pointer;font-weight:700;color:var(--blue)}
+.axhead .pnote{font-size:13px;color:var(--muted)}
 .barbtns{display:flex;align-items:center;gap:6px}
 .langbtn{font:inherit;font-size:13px;font-weight:700;color:#fff;background:transparent;border:1px solid rgba(255,255,255,.65);border-radius:6px;padding:3px 10px;cursor:pointer}
 .langbtn[aria-pressed=true]{background:#fff;color:var(--blue);border-color:#fff}
@@ -53,7 +80,6 @@ body{padding-top:56px}
 .helpbox{margin:30px 0 0;border:1px solid var(--line);border-radius:12px;padding:10px 16px}
 .helpbox summary{cursor:pointer;font-size:20px;font-weight:700;color:var(--blue)}
 .helpbox .help{margin-top:12px}
-@media (max-width:560px){.brand{font-size:16px}.tabsnav a{padding:0 11px;font-size:15px}.langbtn{padding:2px 7px}}
 .hbtns{display:flex;gap:8px;flex-wrap:wrap}
 #getscratch{font-size:16px;padding:8px 18px;white-space:nowrap}
 .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
@@ -179,11 +205,8 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 </head>
 <body>
 <header class="topbar" id="top">
-  <a class="brand" href="#stories">قصص سكراتش</a>
-  <nav class="tabsnav" id="tabsnav" aria-label="القائمة الرئيسية">
-    <a href="#stories" data-view="stories">القصص</a>
-    <a href="#games" data-view="games">الألعاب</a>
-  </nav>
+  <a class="brand" href="#home">قصص سكراتش</a>
+  <nav class="yearnav" id="yearnav" aria-label="القائمة الرئيسية"></nav>
   <div class="barbtns">
     <button type="button" class="langbtn" data-lang="ar" aria-label="العربية">AR</button>
     <button type="button" class="langbtn" data-lang="fr" aria-label="Français">FR</button>
@@ -198,21 +221,17 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 </div></section>
 
 <main class="wrap">
-<div id="viewStories">
+<div id="viewHome">
+<section id="years"><h2>المحاور الدراسية حسب السنة</h2><p class="lead">اختر سنتك، ثم المحور الذي تريد دراسته.</p><div class="yearcards" id="yearCards"></div></section>
 <section id="start">
   <h2>كيف أبدأ؟</h2>
   <p class="lead">أربع خطوات بسيطة.</p>
   <ol class="steps">
-    <li>اختر قصة من القائمة أدناه.</li>
+    <li>اختر سنتك ثم المحور الذي تريد دراسته من القائمة أعلاه.</li>
     <li>حمّل <b>ورقة المشروع</b> واقرأها: فيها الملخص والسيناريو وخطوات العمل.</li>
     <li>افتح <b>سكراتش</b> (<a href="https://scratch.mit.edu/download" target="_blank" rel="noopener">حمّله من هنا</a>) ثم «ملف ← تحميل من حاسوبك» واختر ملف المشروع (.sb3).</li>
     <li>غيّر الصور والأصوات والحوارات من <b>المكتبة</b> لتصنع مشروعك الخاص.</li>
   </ol>
-</section>
-<section id="stories">
-  <h2>اختر قصتك</h2>
-  <p class="lead">لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.</p>
-  <div class="stories" id="storyGrid"></div>
 </section>
 <details class="helpbox" id="help"><summary>مساعدة</summary>
   <div class="help">
@@ -225,9 +244,29 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 
 </details>
 </div>
+<div id="viewAxis" hidden>
+  <a class="back" id="axisBack" href="#home">← الرئيسية</a>
+  <section id="axisHead"></section>
+  <div id="resArea"></div>
+</div>
 <div id="viewStory" hidden>
-  <a class="back" href="#stories">← كل القصص</a>
+  <a class="back" href="#y7-prog">← كل القصص</a>
   <section id="storyHead"></section>
+  <div id="storyRes"></div>
+</div>
+<div id="pool" hidden>
+<section id="stories">
+  <h2>اختر قصتك</h2>
+  <p class="lead">لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.</p>
+  <div class="stories" id="storyGrid"></div>
+</section>
+<section id="games">
+  <h2>ألعاب سكراتش</h2>
+  <p class="lead">ألعاب بسيطة وتعليمية: أسئلة وأجوبة، حساب، ذاكرة، وسرعة. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
+  <details class="progbox" id="progBox"><summary>الربط بالمنهاج: الفكر المنطقي والبرمجة</summary><div id="progBody"></div></details>
+  <div id="gameGrid"></div>
+  <div class="gamegrid" id="extGames"></div>
+</section>
 <section id="library">
   <h2>الصور والأصوات والحركات</h2>
   <p class="lead">كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش.</p>
@@ -267,15 +306,6 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   </div>
   <div class="tgrid" id="tgrid"></div>
   <p class="small tnote">الصور والفيديوهات تبقى في مواقعها الأصلية ولا تُنسخ في هذا المشروع. لكل موقع رخصته الخاصة، فاقرأ شروطه قبل التحميل، ولا تعد نشر الملفات كمكتبة مستقلة. نتائج البحث قد تتغير مع الوقت.</p>
-</section>
-</div>
-<div id="viewGames" hidden>
-<section id="games">
-  <h2>ألعاب سكراتش</h2>
-  <p class="lead">ألعاب بسيطة وتعليمية: أسئلة وأجوبة، حساب، ذاكرة، وسرعة. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
-  <details class="progbox" id="progBox"><summary>الربط بالمنهاج: الفكر المنطقي والبرمجة</summary><div id="progBody"></div></details>
-  <div id="gameGrid"></div>
-  <div class="gamegrid" id="extGames"></div>
 </section>
 </div>
 </main>
@@ -591,7 +621,8 @@ function renderGames(){
 renderGames();
 
 
-// ---- vues : #stories (tous les contes), #story-<clé> (un conte et ses ressources), #games (jeux)
+// ---- navigation : #home, #y7 / #y8 / #y9, #y7-env … #y9-prog, #story-<clé>
+const CUR = DATA.curriculum, YEARS = ["7","8","9"], AXKEYS = ["env","net","create","prog"];
 function renderStoryHead(key){
   const h = $("#storyHead"); h.replaceChildren();
   const s = key === "__general" ? GENERAL : DATA.stories.find(x => x.key === key); if (!s) return;
@@ -605,22 +636,83 @@ function renderStoryHead(key){
   if (key !== "__general") kids.push(el("div",{class:"box2"}, el("b",{text:"الربط بالمنهاج: "}), el("a",{class:"ficheln",href:"fiches-activite/contes.html",target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"}), chipsFor("conte_" + key)));
   h.append(el("div",{class:"storyhead"}, el("div",{class:"sbar",style:`background:${s.accent}`}), el("div",{class:"sbody"}, kids)));
 }
-function showStory(key){
+
+function setScope(key, cat){
   state.story = key; state.sub = ""; state.q = ""; $("#q").value = ""; vq.value = ""; tq.value = "";
-  sel.value = vsel.value = tsel.value = key;
+  sel.value = vsel.value = tsel.value = key; state.cat = cat;
+  render(); renderVideos(); renderThemes();
+}
+function showStory(key){
   const has = c => DATA.assets.some(a => a.cat === c && (key === "__general" ? !a.tags.length : a.tags.includes(key)));
-  state.cat = (CATS.find(c => has(c.id)) || CATS[0]).id;
-  renderStoryHead(key); render(); renderVideos(); renderThemes();
+  setScope(key, (CATS.find(c => has(c.id)) || CATS[0]).id);
+  renderStoryHead(key);
+}
+// menu : une entrée par année, avec ses quatre axes
+const ynav = $("#yearnav");
+YEARS.forEach(y => {
+  const Y = CUR.years[y];
+  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), AXKEYS.map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.axes[k].ar}))));
+  const btn = el("button",{class:"ybtn",type:"button","aria-expanded":"false","aria-haspopup":"true"}, el("span",{class:"yl",text:Y.ar}), el("span",{class:"ys",text:Y.short_ar}), el("i",{class:"car",text:"▾"}));
+  const d = el("div",{class:"ydrop","data-year":y}, btn, ul);
+  btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
+  ynav.append(d);
+});
+function closeMenus(){ ynav.querySelectorAll(".ydrop").forEach(d => { d.removeAttribute("data-open"); d.querySelector(".ybtn").setAttribute("aria-expanded","false"); }); }
+document.addEventListener("click", e => { if (!e.target.closest(".ydrop")) closeMenus(); else if (e.target.closest(".sub a")) closeMenus(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenus(); });
+
+function axisLinks(y){ return AXKEYS.map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,text:CUR.axes[k].ar}))); }
+function renderHome(){
+  const c = $("#yearCards"); c.replaceChildren();
+  YEARS.forEach(y => c.append(el("article",{class:"ycard"}, el("a",{class:"yh",href:"#y"+y,style:"text-decoration:none",text:CUR.years[y].ar}), el("ul",{}, axisLinks(y)))));
+}
+renderHome();
+// ressources proposées dans chaque axe
+const RES = {"7-prog":["stories"], "8-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
+const RESCAT = {"7-create":"personnages", "8-create":"sons"};
+function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => $("#pool").append(n))); }
+function renderAxis(y, k){
+  const P = CUR.pages[`${y}-${k}`], Y = CUR.years[y], A = CUR.axes[k];
+  $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar;
+  const kids = [el("span",{class:"lvl",text:Y.ar}), el("h2",{text:A.ar})];
+  if (P.comp_ar) kids.push(el("p",{class:"comp",text:P.comp_ar}));
+  if (P.note_ar) kids.push(el("p",{class:"pnote",text:P.note_ar}));
+  if (P.parts.length) kids.push(el("h3",{text:"المكوّنات والقدرات"}));
+  P.parts.forEach(x => kids.push(el("h3",{text:x.t_ar,style:"font-size:16px"}), el("ul",{}, x.i_ar.map(t => el("li",{text:t})))));
+  if (P.know_ar.length) kids.push(el("h3",{text:"المعارف المرتبطة"}), el("ul",{}, P.know_ar.map(t => el("li",{text:t}))));
+  if (P.cad_ar.length) kids.push(el("details",{}, el("summary",{text:"توجيهات الإطار"}), el("ul",{}, P.cad_ar.map(t => el("li",{text:t})))));
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
+  park(); const res = $("#resArea"); const list = RES[`${y}-${k}`] || [];
+  const ctx = (id, cond) => { const n = $("#" + id); res.append(n); return n; };
+  if (!list.length) res.append(el("p",{class:"empty",text: y === "9" && k === "prog" ? "في هذا المستوى تُستعمل بيئة تطوير بالكتل مثل App Inventor. لم تُنجَز موارد لهذا المحور بعد." : "ستُضاف موارد هذا المحور لاحقا."}));
+  list.forEach(id => ctx(id));
+  if (list.includes("library")) {
+    [sel, vsel, tsel].forEach(x => x.hidden = false);
+    $("#library .lead").textContent = "صور وأصوات ورسوم متحركة يمكنك استعمالها في أي قصة. اضغط «تحميل» ثم أضف الملف في سكراتش.";
+    setScope("", RESCAT[`${y}-${k}`] || "lieux");
+  } else if (list.includes("sources")) { [vsel, tsel].forEach(x => x.hidden = false); setScope("", state.cat); }
+}
+function renderYear(y){
+  const Y = CUR.years[y]; $("#axisBack").href = "#home"; $("#axisBack").textContent = "← الرئيسية"; park();
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("span",{class:"lvl",text:Y.ar}), el("h2",{text:"المحاور الدراسية"}),
+    el("div",{class:"axcards"}, AXKEYS.map(k => { const P = CUR.pages[`${y}-${k}`]; return el("article",{class:"axcard"}, el("h3",{text:CUR.axes[k].ar}), el("p",{text:P.comp_ar || P.note_ar || ""}), el("div",{class:"btns"}, el("a",{class:"btn main wide",href:`#y${y}-${k}`,text:"فتح المحور"}))); }))));
+  $("#resArea").replaceChildren();
 }
 function route(){
-  const h = decodeURIComponent(location.hash.replace(/^#/, ""));
-  let view = "stories", key = null;
-  if (h === "games") view = "games";
-  else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) view = "story"; }
-  $("#viewStories").hidden = view !== "stories"; $("#hero").hidden = view !== "stories";
-  $("#viewStory").hidden = view !== "story"; $("#viewGames").hidden = view !== "games";
-  if (view === "story") showStory(key);
-  document.querySelectorAll("#tabsnav a").forEach(a => { if ((a.dataset.view === "games" && view === "games") || (a.dataset.view === "stories" && view !== "games")) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  let h = decodeURIComponent(location.hash.replace(/^#/, "")) || "home";
+  if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
+  let view = "home", y = null, k = null, key = null, m;
+  if ((m = h.match(/^y([789])$/))) { view = "year"; y = m[1]; }
+  else if ((m = h.match(/^y([789])-(env|net|create|prog)$/))) { view = "axis"; y = m[1]; k = m[2]; }
+  else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
+  $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis"); $("#viewStory").hidden = view !== "story";
+  park();
+  if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
+  if (view === "year") renderYear(y);
+  if (view === "axis") renderAxis(y, k);
+  ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
+  ynav.querySelectorAll(".sub a").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
