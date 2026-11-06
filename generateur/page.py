@@ -12,10 +12,11 @@ man["games"] = games
 man["programme"] = json.load(open(os.path.join(HERE, "programme.json"), encoding="utf-8"))
 man["curriculum"] = json.load(open(os.path.join(HERE, "axes.json"), encoding="utf-8"))
 import exercices
-man["exo"] = exercices.EXO; man["act"] = exercices.ACT
+import secondaire
+man["exo"] = {**exercices.EXO, **secondaire.EXO}; man["act"] = exercices.ACT
 man["seances"] = json.load(open(os.path.join(HERE, "seances.json"), encoding="utf-8"))
 FR = i18n_fr.build(man, games)
-for _l in list(exercices.EXO.values()):
+for _l in list({**exercices.EXO, **secondaire.EXO}.values()):
     for _q in _l:
         FR["map"][_q["q"]] = _q["q_fr"]
         for _a, _f in zip(_q["o"], _q["o_fr"]): FR["map"][_a] = _f
@@ -32,7 +33,7 @@ FR["map"].update({"فضاء التلميذ": "Espace élève", "فضاء الأ�
  "طباعة التوزيع وبطاقات الحصص": "Imprimer la répartition et les fiches de séance", "الحصة": "Séance", "الثلاثي": "Trimestre", "المجال": "Module", "العنوان": "Titre", "النوع": "Type", "بطاقة": "Fiche",
  "لم تُدرج بعد وثيقة منهاج هذا المستوى. ستتوفر بطاقات الأستاذ عند إضافتها.": "Le programme de ce niveau n'est pas encore intégré. Les fiches enseignant seront disponibles à son ajout.",
  "لتعديل التوزيع: غيّر الملف generateur/seances.py ثم أعد توليد الصفحات.": "Pour modifier la répartition : éditer le fichier generateur/seances.py puis régénérer les pages.",
- "← الأستاذ": "← Espace enseignant"})
+ "← الأستاذ": "← Espace enseignant", "تمارين مقترحة غير رسمية: لم تُقدَّم بعد وثيقة منهاج رسمية لهذا المستوى، فالمواضيع عامة وتُكيَّف مع المنهاج الفعلي.": "Exercices proposés à titre non officiel : aucun programme officiel n'a encore été fourni pour ce niveau ; les thèmes sont généraux et à adapter au programme réel."})
 TPL = r'''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -724,6 +725,7 @@ function quiz(list){
 function axisExtras(y, k){
   const id = `${y}-${k}`, out = [], ex = (DATA.exo || {})[id], ac = (DATA.act || {})[id];
   out.push(el("h2",{text:"فضاء التلميذ",style:"font-size:20px;margin-top:18px"}));
+  if (/^s/.test(y)) out.push(el("p",{class:"pnote",text:"تمارين مقترحة غير رسمية: لم تُقدَّم بعد وثيقة منهاج رسمية لهذا المستوى، فالمواضيع عامة وتُكيَّف مع المنهاج الفعلي."}));
   if (ex) out.push(el("h3",{text:"تمارين تفاعلية"}), el("p",{class:"pnote",text:"اختر الإجابة الصحيحة. يظهر التصحيح مباشرة."}), quiz(ex));
   if (ac) { out.push(el("h3",{text:"أنشطة للإنجاز"})); ac.forEach(a => out.push(el("div",{class:"qz"}, el("p",{text:a.t}), el("p",{style:"font-weight:400",text:a.d}), a.ex ? el("p",{class:"pnote",text:a.ex}) : null, a.link ? el("a",{class:"btn",href:a.link,text:"الموارد"}) : null))); }
   return out;
@@ -751,7 +753,7 @@ function renderAxis(y, k){
   if (P.life_ar) kids.push(el("p",{},el("b",{text:"الكفاية الحياتية المستهدفة: "}), P.life_ar));
   if (P.prat_ar.length) kids.push(el("h3",{text:"الممارسات المنتظرة"}), el("ul",{}, P.prat_ar.map(t => el("li",{text:t}))));
   if (P.pist_ar.length) kids.push(el("h3",{text:"مسالك مقترحة"}), el("ul",{}, P.pist_ar.map(t => el("li",{text:t}))));
-  kids.push(el("p",{class:"pnote",text:CUR.src_ar}));
+  if (!/^s/.test(y)) kids.push(el("p",{class:"pnote",text:CUR.src_ar}));
   if (P.aide) {
     const A2 = P.aide, d = [el("summary",{text:"تفاصيل من المساعدة البيداغوجية (2025)"}), el("p",{text:A2.comp_ar})];
     A2.parts.forEach(x => d.push(el("h3",{text:x.t_ar,style:"font-size:16px"}), el("ul",{}, x.i_ar.map(t => el("li",{text:t})))));
@@ -799,7 +801,7 @@ function route(){
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
-  else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
+  else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
   $("#viewAxis").hidden = !(view === "year" || view === "axis"); $("#viewStory").hidden = view !== "story";

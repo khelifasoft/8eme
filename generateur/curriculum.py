@@ -125,8 +125,13 @@ def build():
                       aide=({kk: aide[kk] for kk in ("comp_fr", "comp_ar", "parts", "know_fr", "know_ar", "cad_fr", "cad_ar")} if aide and aide.get("parts") else None))
             pages[f"{y}-{k}"] = pg
     by_year = {str(y): v for y, v in AXES_BY_YEAR.items()}
-    for y in ("s1", "s2", "s3", "s4"): by_year[y] = []
-    data = dict(order=["7", "8", "9", "s1", "s2", "s3", "s4"], axes={k: dict(fr=v[0], ar=v[1]) for k, v in AX.items()}, by_year=by_year,
+    import secondaire as S
+    for y in ("s1", "s2", "s3", "s4"):
+        by_year[y] = list(S.DOM)
+        for k, t in S.DOM.items():
+            c = S.COMPS[y][k]
+            pages[f"{y}-{k}"] = dict(year=y, axis=k, title_fr=t[0], title_ar=t[1], comps_fr=[c[0]], comps_ar=[c[1]], life_fr="", life_ar="", champ_fr="", champ_ar="", prat_fr=[], prat_ar=[], pist_fr=[], pist_ar=[], aide=None)
+    data = dict(order=["7", "8", "9", "s1", "s2", "s3", "s4"], axes={k: dict(fr=v[0], ar=v[1]) for k, v in {**AX, **__import__("secondaire").DOM}.items()}, by_year=by_year,
                 years={str(y): dict(fr=v[0], ar=v[1], short_fr=v[2], short_ar=v[3]) for y, v in YEARS.items()}, pages=pages,
                 src_fr=SRC[0], src_ar=SRC[1], aide_fr=AIDE_SRC[0], aide_ar=AIDE_SRC[1])
     json.dump(data, open(os.path.join(HERE, "axes.json"), "w", encoding="utf-8"), ensure_ascii=False)
