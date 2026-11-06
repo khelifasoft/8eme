@@ -24,7 +24,8 @@ for _l in exercices.ACT.values():
     for _a in _l:
         FR["map"][_a["t"]] = _a["t_fr"]; FR["map"][_a["d"]] = _a["d_fr"]
         if _a.get("ex"): FR["map"][_a["ex"]] = _a["ex_fr"]
-FR["map"].update({"فضاء التلميذ": "Espace élève", "فضاء الأستاذ": "Espace enseignant", "تمارين تفاعلية": "Exercices interactifs", "أنشطة للإنجاز": "Activités à réaliser",
+FR["map"].update({"التحميلات": "Téléchargements", "كل المستويات": "Tous les niveaux", "⬇ تحميل": "⬇ Télécharger", "⬇ التحميلات: سكراتش وبقية البرمجيات": "⬇ Téléchargements : Scratch et autres logiciels", "حمّله من صفحة التحميلات": "téléchargez-le depuis la page Téléchargements",
+ "البرمجيات المستعملة في كل المستويات. الروابط تؤدي إلى المواقع الرسمية للبرمجيات.": "Les logiciels utilisés dans tous les niveaux. Les liens mènent aux sites officiels.", "لإضافة برنامج: عدّل الملف logiciels.js.": "Pour ajouter un logiciel : modifier le fichier logiciels.js.","فضاء التلميذ": "Espace élève", "فضاء الأستاذ": "Espace enseignant", "تمارين تفاعلية": "Exercices interactifs", "أنشطة للإنجاز": "Activités à réaliser",
  "اختر الإجابة الصحيحة. يظهر التصحيح مباشرة.": "Choisis la bonne réponse. La correction s'affiche tout de suite.", "إجابة صحيحة ✓": "Bonne réponse ✓", "إجابة خاطئة ✗": "Mauvaise réponse ✗",
  "إعادة المحاولة": "Recommencer", "للتلميذ: تمارين وأنشطة لإنجازها مع أمثلة وموارد.": "Pour l'élève : exercices et activités à réaliser, avec exemples et ressources.",
  "للأستاذ: التوزيع السنوي المقترح وبطاقات الحصص.": "Pour l'enseignant : répartition annuelle proposée et fiches de séance.",
@@ -237,6 +238,9 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .qz .opts{display:flex;flex-direction:column;gap:6px}.qz button.o{font:inherit;text-align:start;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
 .qz button.o:disabled{cursor:default}.qz button.o.ok{background:#e4f6e8;border-color:#2e9b4e}.qz button.o.ko{background:#fdeaea;border-color:#d33}.qz .fb{margin-top:6px;font-size:14px}
 .score{font-weight:700;color:#1e3a6e;margin:6px 0}.sctable{width:100%;border-collapse:collapse;font-size:14px}.sctable th,.sctable td{border:1px solid var(--line);padding:4px 8px;text-align:start}.sctable th{background:#eaf1fb}.sctable tr.ev td{background:#fde8e8}.sctable tr.pr td{background:#e8f5e9}
+.dlchips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.chip{font:inherit;border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 14px;cursor:pointer}.chip[aria-pressed=true]{background:#1e4fa8;color:#fff;border-color:#1e4fa8}
+.dlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}.dlcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;display:flex;flex-direction:column;gap:6px}.dlcard h4{margin:0;font-size:17px}.dlcard p{margin:0;font-size:14px;flex:1}
+.dlmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.dlmeta .os{font-size:12px;color:#666}
 </style>
 </head>
 <body>
@@ -250,7 +254,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 </header>
 <section class="hero" id="hero"><div class="wrap">
   <div class="head"><h1>Curriculum Informatique en Tunisie</h1>
-  <div class="hbtns"><a class="btn alt" id="getscratch" href="https://scratch.mit.edu/download" target="_blank" rel="noopener">⬇ تحميل برنامج سكراتش</a>
+  <div class="hbtns"><a class="btn alt" id="getscratch" href="#downloads">⬇ التحميلات: سكراتش وبقية البرمجيات</a>
   <a class="btn" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">فتح سكراتش على الإنترنت</a>
   <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div></div>
   <p>المنهاج والمراجع والموارد التعليمية لمادة الإعلامية في تونس، من السنة السابعة إلى السنة الرابعة ثانوي.</p>
@@ -265,7 +269,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <ol class="steps">
     <li>اختر سنتك ثم المحور الذي تريد دراسته من القائمة أعلاه.</li>
     <li>حمّل <b>ورقة المشروع</b> واقرأها: فيها الملخص والسيناريو وخطوات العمل.</li>
-    <li>افتح <b>سكراتش</b> (<a href="https://scratch.mit.edu/download" target="_blank" rel="noopener">حمّله من هنا</a>) ثم «ملف ← تحميل من حاسوبك» واختر ملف المشروع (.sb3).</li>
+    <li>افتح <b>سكراتش</b> (<a href="#downloads">حمّله من صفحة التحميلات</a>) ثم «ملف ← تحميل من حاسوبك» واختر ملف المشروع (.sb3).</li>
     <li>غيّر الصور والأصوات والحوارات من <b>المكتبة</b> لتصنع مشروعك الخاص.</li>
   </ol>
 </section>
@@ -360,6 +364,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 <script src="videos.js"></script>
 <script src="jeux.js"></script>
 <script src="references.js"></script>
+<script src="logiciels.js"></script>
 <script>
 const DATA = __DATA__;
 const FRMAP = __FRMAP__, FRRULES = __FRRULES__.map(([a,b]) => [new RegExp(a), b]);
@@ -695,6 +700,7 @@ YEARS.forEach(y => {
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
   ynav.append(d);
 });
+{ const a = el("a",{class:"ybtn dl",href:"#downloads",text:"التحميلات"}); a.style.textDecoration = "none"; ynav.append(a); }
 function closeMenus(){ ynav.querySelectorAll(".ydrop").forEach(d => { d.removeAttribute("data-open"); d.querySelector(".ybtn").setAttribute("aria-expanded","false"); }); }
 document.addEventListener("click", e => { if (!e.target.closest(".ydrop")) closeMenus(); else if (e.target.closest(".sub a")) closeMenus(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenus(); });
@@ -780,6 +786,22 @@ function renderYear(y){
     el("div",{class:"axcards"}, CUR.by_year[y].map(k => { const P = CUR.pages[`${y}-${k}`]; return el("article",{class:"axcard"}, el("h3",{text:P.title_ar}), el("p",{text:P.comps_ar[0]}), el("div",{class:"btns"}, el("a",{class:"btn main wide",href:`#y${y}-${k}`,text:"فتح المحور"}))); }).concat([el("article",{class:"axcard"}, el("h3",{text:"فضاء الأستاذ"}), el("p",{text:"للأستاذ: التوزيع السنوي المقترح وبطاقات الحصص."}), el("div",{class:"btns"}, el("a",{class:"btn main wide",href:`#y${y}-ens`,text:"فتح فضاء الأستاذ"}))), el("article",{class:"axcard"}, el("h3",{text:"المراجع"}), el("p",{text:"مراجع التلميذ ومراجع الأستاذ لهذا المستوى."}), el("div",{class:"btns"}, el("a",{class:"btn wide",href:`#y${y}-refs`,text:"فتح المراجع"})))]))));
   $("#resArea").replaceChildren();
 }
+let dlLevel = "all";
+function renderDownloads(){
+  $("#axisBack").href = "#home"; $("#axisBack").textContent = "← الرئيسية"; park(); $("#resArea").replaceChildren();
+  const L = window.LOGICIELS || [], C = window.LOGICIEL_CATS || {};
+  L.forEach(s => { FRMAP[s.ar] = s.desc_fr; });
+  Object.values(C).forEach(c => { FRMAP[c[0]] = c[1]; });
+  YEARS.forEach(y => { FRMAP[CUR.years[y].short_ar] = CUR.years[y].short_fr; });
+  const ok = s => dlLevel === "all" || s.levels === "all" || s.levels.includes(dlLevel);
+  const chips = el("div",{class:"dlchips"}, [["all","كل المستويات"], ...YEARS.map(y => [y, CUR.years[y].ar])].map(([v, t]) => { const b = el("button",{type:"button",class:"chip",text:t,"aria-pressed":String(dlLevel === v)}); b.addEventListener("click", () => { dlLevel = v; renderDownloads(); }); return b; }));
+  const groups = Object.keys(C).map(c => { const items = L.filter(s => s.cat === c && ok(s)); if (!items.length) return null;
+    return el("section",{}, el("h3",{text:C[c][0]}), el("div",{class:"dlgrid"}, items.map(s => el("article",{class:"dlcard"}, el("h4",{text:s.name}), el("p",{text:s.ar}),
+      el("div",{class:"dlmeta"}, s.levels === "all" ? el("span",{class:"lvl",text:"كل المستويات"}) : s.levels.map(y => el("span",{class:"lvl",text:CUR.years[y].short_ar})), el("span",{class:"os",dir:"ltr",text:s.os})),
+      el("a",{class:"btn main",href:s.url,target:"_blank",rel:"noopener",text:"⬇ تحميل"}))))); });
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"التحميلات"}), el("p",{class:"pnote",text:"البرمجيات المستعملة في كل المستويات. الروابط تؤدي إلى المواقع الرسمية للبرمجيات."}), chips, groups,
+    el("p",{class:"pnote",text:"لإضافة برنامج: عدّل الملف logiciels.js."})));
+}
 const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};
 function renderRefs(y){
   const Y = CUR.years[y]; $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar; park(); $("#resArea").replaceChildren();
@@ -800,16 +822,19 @@ function route(){
   let h = decodeURIComponent(location.hash.replace(/^#/, "")) || "home";
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
+  if (h === "downloads") view = "dl";
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
-  $("#viewAxis").hidden = !(view === "year" || view === "axis"); $("#viewStory").hidden = view !== "story";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
+  if (view === "dl") renderDownloads();
   if (view === "year") renderYear(y);
   if (view === "axis") { if (k === "refs") renderRefs(y); else if (k === "ens") renderTeacher(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
+  ynav.querySelectorAll(".dl").forEach(a => { if (view === "dl") a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   ynav.querySelectorAll(".sub a").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   window.scrollTo(0, 0);
 }

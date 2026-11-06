@@ -75,6 +75,10 @@ python3 generateur/enseignant.py   # fiches enseignant + seances.json
 python3 generateur/page.py         # index.html
 ```
 
+## Téléchargements
+
+Rubrique « Téléchargements » (barre bleue, ou bouton de l'accueil) : logiciels utilisés dans tous les niveaux (Scratch, App Inventor, mBlock, Python, LibreOffice, Audacity, Shotcut, GIMP, SQLite, Filius…), filtrables par niveau, avec liens vers les sites officiels. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire).
+
 ## Régénérer les fiches
 
 Le contenu de chaque conte est défini dans `generateur/make.py`.
