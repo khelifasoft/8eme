@@ -150,7 +150,7 @@ def mc_game(gid, questions, layout="row", bg=("#e8f0ff", "#c9dcff"), music="joye
     P = Proj(gid); N = len(questions); sb = P.stage
     P.stage_costumes.append(P.costume("fond", bg_svg(*bg), 240, 180))
     q, qi = P.V("السؤال"); sco, si = P.V("النقاط"); lk, li = P.V("قفل")
-    lname, lid = P.L("الإجابات", [x["ans"] for x in questions])
+    okv, oki = P.V("الصحيح")
     ding, bad = P.sfx("ding"), P.sfx("echec")
     # scène : démarrage
     for hatname in ("flag", "إعادة"):
@@ -161,7 +161,8 @@ def mc_game(gid, questions, layout="row", bg=("#e8f0ff", "#c9dcff"), music="joye
     for qi_, it in enumerate(questions):
         a = it.get("art"); asvg = art.art_svg(*a) if a else it.get("art_svg")
         qc.append(P.costume(f"q{qi_+1}", card(420, it.get("h", 150 if layout == "row" else 120), it["lines"], "#ffffff", size=28 if len(it["lines"]) < 3 else 22, art_svg=asvg, art_w=it.get("art_w", 120) if asvg else 0, art_mode=it.get("art_mode", "left"))))
-    qb.script(P.hat(qb, "عرض"), qb.costume_n(qb.R(qb.var(q, qi))), qb.show(), y=0)
+    chain = [qb.if_(qb.eq(qb.R(qb.var(q, qi)), qb.N(k + 1)), qb.setv(okv, oki, it["ans"])) for k, it in enumerate(questions)]
+    qb.script(P.hat(qb, "عرض"), qb.costume_n(qb.R(qb.var(q, qi))), qb.show(), *chain, y=0)
     qb.script(P.hat(qb, "نهاية"), qb.hide(), y=160)
     P.sprite("السؤال", qb, qc, x=0, y=(85 if layout == "row" else 120), size=100)
     # options
@@ -174,7 +175,7 @@ def mc_game(gid, questions, layout="row", bg=("#e8f0ff", "#c9dcff"), music="joye
         ob.script(P.hat(ob, "عرض"), ob.costume_n(ob.R(ob.var(q, qi))), ob.show(), y=0)
         ob.script(P.hat(ob, "نهاية"), ob.hide(), y=160)
         good = [P.bc(ob, "صح")]; bad_ = [P.bc(ob, "خطأ")]
-        hit = ob.eq(ob.R(ob.item(lname, lid, ob.R(ob.var(q, qi)))), ob.N(k + 1))
+        hit = ob.eq(ob.R(ob.var(okv, oki)), ob.N(k + 1))
         body = ob.if_(ob.eq(ob.R(ob.var(lk, li)), ob.N(0)),
             ob.setv(lk, li, 1),
             ob.ifelse(hit, [ob.chg(sco, si, 1), ob.play(ding["name"]), good[0]], [ob.play(bad["name"]), bad_[0]]),
@@ -232,12 +233,14 @@ def memory_game(gid, pairs, bg=("#e9f7ea", "#cdebd0"), music="joyeuse"):
                  b.if_(b.eq(b.R(b.var(mt, mi)), b.N(6)), P.bc(b, "فوز"))],
                 [b.play(bad["name"]), b.wait(0.9), flip("ظهر"), P.bc(b, "رجوع", True), b.setv(first, fi, 0), b.setv(lock, li, 0)])]
         first_branch = [b.setv(first, fi, k + 1), b.setv(pair1, pi1, b.RS(L(lp, lpi)))]
-        click = b.if_(b.and_(b.and_(b.eq(b.R(b.var(lock, li)), b.N(0)), b.eq(b.R(L(lm, lmi)), b.N(0))), b.eq(b.R(b.add("looks_costumenumbername", fields={"NUMBER_NAME": ["number", None]})), b.N(1))),
-            flip("وجه"),
-            b.ifelse(b.eq(b.R(b.var(first, fi)), b.N(0)), first_branch, second_branch))
+        click = b.if_(b.eq(b.R(b.var(lock, li)), b.N(0)),
+            b.if_(b.eq(b.R(L(lm, lmi)), b.N(0)),
+                b.if_(b.eq(b.R(b.add("looks_costumenumbername", fields={"NUMBER_NAME": ["number", None]})), b.N(1)),
+                    flip("وجه"),
+                    b.ifelse(b.eq(b.R(b.var(first, fi)), b.N(0)), first_branch, second_branch))))
         b.script(b.when_clicked(), click, y=200)
         b.script(P.hat(b, "نجاح"), b.if_(b.eq(b.R(b.var(first, fi)), b.N(k + 1)), b.setv(lm, lmi, 1)), y=360)
-        b.script(P.hat(b, "رجوع"), b.if_(b.and_(b.eq(b.R(b.var(first, fi)), b.N(k + 1)), b.eq(b.R(L(lm, lmi)), b.N(0))), flip("ظهر")), y=480)
+        b.script(P.hat(b, "رجوع"), b.if_(b.eq(b.R(b.var(first, fi)), b.N(k + 1)), b.if_(b.eq(b.R(L(lm, lmi)), b.N(0)), flip("ظهر"))), y=480)
         P.sprite(f"بطاقة {k+1}", b, cos, [ding, bad], x=pos[k][0], y=pos[k][1], visible=True,
                  local_vars=[(lp, lpi, pr + 1), (lm, lmi, 0)])
     eb = B()
@@ -300,8 +303,7 @@ def dodge_game(gid, hero, obstacle, bg_lieu, music="aventure"):
     hero_x = ob.add("sensing_of", fields={"PROPERTY": ["x position", None]}, inputs={"OBJECT": [1, menu]})
     diff = ob.sub_(ob.R(ob.xpos()), ob.R(hero_x)); ab = ob.absv(ob.R(diff))
     near = ob.lt(ob.R(ab), ob.N(48))
-    hit = ob.and_(near, ob.lt(ob.R(ob.ypos()), ob.N(-95)))
-    c_hit = ob.if_(hit, ob.chg(lv, lvi, -1), ob.play(ouch["name"]), go_top())
+    c_hit = ob.if_(near, ob.if_(ob.lt(ob.R(ob.ypos()), ob.N(-95)), ob.chg(lv, lvi, -1), ob.play(ouch["name"]), go_top()))
     c_pass = ob.if_(ob.lt(ob.R(ob.ypos()), ob.N(-170)), ob.chg(sco, si, 1), ob.chg(sp, spi, 0.15), go_top())
     c_end = ob.if_(ob.lt(ob.R(ob.var(lv, lvi)), ob.N(1)), ob.sayfor(ob.join(ob.S("انتهت اللعبة! نقاطك: "), ob.RS(ob.var(sco, si))), 3), ob.stop_all())
     ob.script(ob.hat_flag(), ob.setv(sco, si, 0), ob.setv(lv, lvi, 3), ob.setv(sp, spi, 3), ob.size(osize), go_top(), ob.show(), ob.forever_(fall, c_hit, c_pass, c_end), y=0)

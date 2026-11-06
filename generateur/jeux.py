@@ -72,11 +72,11 @@ def build(key):
     c1 = b.add("operator_lt", inputs={"OPERAND1": [3, ab, [10, ""]], "OPERAND2": [1, [10, "55"]]}); b.b[ab]["parent"] = c1
     iy = b.add("motion_yposition")
     c2 = b.add("operator_lt", inputs={"OPERAND1": [3, iy, [10, ""]], "OPERAND2": [1, [10, "-90"]]}); b.b[iy]["parent"] = c2
-    both = b.add("operator_and", inputs={"OPERAND1": [2, c1], "OPERAND2": [2, c2]}); b.b[c1]["parent"] = both; b.b[c2]["parent"] = both
     pl = b.play(snd["name"]); sc1 = chgv(b, "score", 1); sp1 = chgv(b, "speed", 0.25); top1 = go_top()
     for a, c in zip([pl, sc1, sp1, top1], [sc1, sp1, top1, None]):
         if c: b.b[a]["next"] = c; b.b[c]["parent"] = a
-    if_catch = b.add("control_if", inputs={"CONDITION": [2, both], "SUBSTACK": [2, pl]}); b.b[both]["parent"] = if_catch; b.b[pl]["parent"] = if_catch
+    if_low = b.add("control_if", inputs={"CONDITION": [2, c2], "SUBSTACK": [2, pl]}); b.b[c2]["parent"] = if_low; b.b[pl]["parent"] = if_low
+    if_catch = b.add("control_if", inputs={"CONDITION": [2, c1], "SUBSTACK": [2, if_low]}); b.b[c1]["parent"] = if_catch; b.b[if_low]["parent"] = if_catch
     # 3) manqué : y < -165
     iy2 = b.add("motion_yposition")
     c3 = b.add("operator_lt", inputs={"OPERAND1": [3, iy2, [10, ""]], "OPERAND2": [1, [10, "-165"]]}); b.b[iy2]["parent"] = c3

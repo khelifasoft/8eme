@@ -22,6 +22,10 @@ THEMES_FR = {"غابة": "Forêt", "قصر": "Château", "بحر": "Mer", "سف�
  "بجعة": "Cygne", "خروف وغنم": "Mouton", "خنزير": "Cochon", "حمار": "Âne", "جمل": "Chameau", "حصان": "Cheval", "فراشة": "Papillon", "عصفور": "Oiseau", "سباق": "Course",
  "شجرة": "Arbre", "شمس وغيوم": "Soleil et nuages", "أطفال يقرؤون": "Enfants qui lisent", "كتاب وقصص": "Livre de contes"}
 UI = {
+ "الربط بالمنهاج: الفكر المنطقي والبرمجة": "Lien avec le programme : pensée logique et programmation", "الربط بالمنهاج:": "Lien avec le programme :", "بطاقة النشاط (بالفرنسية)": "Fiche d'activité (en français)",
+ "المعارف المرتبطة": "Savoirs associés", "توجيهات الإطار": "Directives de cadrage",
+ "النص منقول من صور الوثيقة الرسمية «المساعدة البيداغوجية: الإعلامية» (سبتمبر 2025)، فيُراجَع مع الوثيقة الأصلية.": "Texte transcrit à partir de photographies du document officiel « Aide pédagogique : Informatique » (septembre 2025) ; à relire avec le document d'origine.",
+
  "الألعاب": "Jeux", "← كل القصص": "← Tous les contes", "فتح القصة وكل ما يخصها": "Ouvrir le conte et tout ce qui le concerne", "موارد عامة": "Ressources générales",
  "صور وأصوات وحركات تصلح لأي قصة.": "Images, sons et animations qui conviennent à n'importe quel conte.",
  "الصور والأصوات والحركات": "Images, sons et animations", "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش.": "Tout ce qui concerne ce conte. Clique sur « Télécharger », puis ajoute le fichier dans Scratch.",
@@ -120,6 +124,17 @@ def fr_label(a):
 
 def build(man, games):
     M = dict(UI)
+    prg = man.get("programme")
+    if prg:
+        for c in prg["concepts"].values(): M[c["ar"]] = c["fr"]
+        for L in prg["levels"].values():
+            M[L["year_ar"]] = L["year_fr"]; M[L["comp_ar"]] = L["comp_fr"]
+            for a, b in zip(L["know_ar"], L["know_fr"]): M[a] = b
+            for a, b in zip(L["cad_ar"], L["cad_fr"]): M[a] = b
+            for x in L["parts"]:
+                M[x["t_ar"]] = x["t_fr"]
+                for a, b in zip(x["i_ar"], x["i_fr"]): M[a] = b
+        M[prg["general_ar"]] = prg["general_fr"]
     for k, (t, s, m) in STORIES_FR.items(): pass
     for st in man["stories"]:
         t, s, m = STORIES_FR[st["key"]]

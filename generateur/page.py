@@ -9,6 +9,7 @@ games += json.load(open(os.path.join(HERE, "jeux3_manifest.json"), encoding="utf
 for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8")):
     games.append(dict(g, cat="catch", cat_ar="التقاط الأشياء (لكل قصة لعبة)", cat_fr="Attrape-objets (un jeu par conte)"))
 man["games"] = games
+man["programme"] = json.load(open(os.path.join(HERE, "programme.json"), encoding="utf-8"))
 FR = i18n_fr.build(man, games)
 TPL = r'''<!doctype html>
 <html lang="ar" dir="rtl">
@@ -153,6 +154,17 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .tlinks .btn.vid:hover{background:var(--orange);color:#fff}
 .tnote{margin:6px 0 0;font-size:13px;color:var(--muted)}
 .gamegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding:10px 0}
+.progbox{margin:10px 0 4px;border:1px solid var(--line);border-radius:12px;padding:10px 16px;background:var(--soft)}
+.progbox summary{cursor:pointer;font-size:18px;font-weight:700;color:var(--blue)}
+.progbox h4{margin:14px 0 2px;font-size:17px;color:var(--ink)}
+.progbox h5{margin:8px 0 2px;font-size:15px}
+.progbox ul{margin:2px 0 6px;padding-inline-start:22px}
+.progbox .pnote{font-size:13px;color:var(--muted);margin:8px 0 0}
+.lvl{display:inline-block;background:var(--blue);color:#fff;border-radius:999px;padding:0 10px;font-size:12px;margin-inline-end:4px}
+.chips2{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0}
+.chips2 span{font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:0 8px;background:#fff;color:var(--muted)}
+.box2{border-top:1px dashed var(--line);padding-top:8px;margin-top:4px}
+.ficheln{font-size:14px;margin-inline-start:12px;font-weight:400}
 .gcat{margin:26px 0 4px;font-size:22px;color:var(--blue);border-bottom:2px solid var(--orange);padding-bottom:2px;display:inline-block}
 .gcard{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
 .gcover{aspect-ratio:16/9;background:var(--soft);display:block;width:100%;object-fit:cover}
@@ -261,6 +273,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 <section id="games">
   <h2>ألعاب سكراتش</h2>
   <p class="lead">ألعاب بسيطة وتعليمية: أسئلة وأجوبة، حساب، ذاكرة، وسرعة. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
+  <details class="progbox" id="progBox"><summary>الربط بالمنهاج: الفكر المنطقي والبرمجة</summary><div id="progBody"></div></details>
   <div id="gameGrid"></div>
   <div class="gamegrid" id="extGames"></div>
 </section>
@@ -294,6 +307,26 @@ const CATS = [
 const $ = s => document.querySelector(s);
 const el = (t, a={}, ...kids) => { const e = document.createElement(t); for (const k in a){ if(k==="class") e.className=a[k]; else if(k==="text") e.textContent=a[k]; else e.setAttribute(k,a[k]); } kids.flat().forEach(c=>c&&e.append(c)); return e; };
 const state = {cat:"lieux", sub:"", q:"", story:""};
+// ---- lien avec le programme (Pensée logique et programmation)
+const PRG = DATA.programme;
+function chipsFor(pk){
+  const p = PRG.projects[pk]; if (!p) return null;
+  return el("div",{}, el("span",{class:"lvl",text: PRG.levels[String(p.level)].year_ar}), el("div",{class:"chips2"}, p.concepts.map(c => el("span",{text:PRG.concepts[c].ar}))));
+}
+function renderProgramme(){
+  const b = $("#progBody"); b.replaceChildren();
+  for (const n of ["7","8"]) {
+    const L = PRG.levels[n];
+    b.append(el("h4",{text:L.year_ar}), el("p",{text:L.comp_ar}));
+    L.parts.forEach(x => b.append(el("h5",{text:x.t_ar}), el("ul",{}, x.i_ar.map(t => el("li",{text:t})))));
+    b.append(el("h5",{text:"المعارف المرتبطة"}), el("ul",{}, L.know_ar.map(t => el("li",{text:t}))));
+    b.append(el("h5",{text:"توجيهات الإطار"}), el("ul",{}, L.cad_ar.map(t => el("li",{text:t}))));
+  }
+  b.append(el("p",{class:"pnote",text:PRG.general_ar}), el("p",{class:"pnote",text:"النص منقول من صور الوثيقة الرسمية «المساعدة البيداغوجية: الإعلامية» (سبتمبر 2025)، فيُراجَع مع الوثيقة الأصلية."}));
+}
+renderProgramme();
+
+
 
 // ---- histoires : une carte par conte ; un clic ouvre le conte et tout ce qui le concerne
 const GENERAL = {key:"__general", title:"موارد عامة", summary:"صور وأصوات وحركات تصلح لأي قصة.", morale:"", main:"#44506a", accent:"#8a94aa"};
@@ -535,11 +568,11 @@ function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
   GAME_CATS.forEach(cat => {
     const list = (DATA.games||[]).filter(x => x.cat === cat); if (!list.length) return;
-    g.append(el("h3",{class:"gcat",text:list[0].cat_ar}));
+    g.append(el("h3",{class:"gcat"}, el("span",{text:list[0].cat_ar}), el("a",{class:"ficheln",href:`fiches-activite/${cat}.html`,target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"})));
     const row = el("div",{class:"gamegrid"});
     list.forEach(x => row.append(el("article",{class:"gcard"},
       el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
-      el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
+      el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}), chipsFor("jeu_" + x.key),
         el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}))))));
     g.append(row);
   });
@@ -557,6 +590,7 @@ function renderGames(){
 }
 renderGames();
 
+
 // ---- vues : #stories (tous les contes), #story-<clé> (un conte et ses ressources), #games (jeux)
 function renderStoryHead(key){
   const h = $("#storyHead"); h.replaceChildren();
@@ -568,6 +602,7 @@ function renderStoryHead(key){
     el("a",{class:"btn",href:s.html,target:"_blank",rel:"noopener",text:"قراءة الورقة"}),
     el("a",{class:"btn",href:s.sb3,download:`${s.title}.sb3`,text:"مشروع سكراتش"}),
     el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"})));
+  if (key !== "__general") kids.push(el("div",{class:"box2"}, el("b",{text:"الربط بالمنهاج: "}), el("a",{class:"ficheln",href:"fiches-activite/contes.html",target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"}), chipsFor("conte_" + key)));
   h.append(el("div",{class:"storyhead"}, el("div",{class:"sbar",style:`background:${s.accent}`}), el("div",{class:"sbody"}, kids)));
 }
 function showStory(key){
