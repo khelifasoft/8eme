@@ -11,7 +11,9 @@ AX = {  # domaines (menu)
  "create": ("Création de contenus numériques", "إنتاج المحتويات الرقمية"),
  "prog": ("Pensée logique et programmation", "الفكر المنطقي والبرمجة"),
 }
-YEARS = {7: ("7e année", "السنة السابعة", "7e", "٧"), 8: ("8e année", "السنة الثامنة", "8e", "٨"), 9: ("9e année", "السنة التاسعة", "9e", "٩")}
+YEARS = {7: ("7e année", "السنة السابعة", "7e", "٧"), 8: ("8e année", "السنة الثامنة", "8e", "٨"), 9: ("9e année", "السنة التاسعة", "9e", "٩"),
+         "s1": ("1ère année secondaire", "السنة الأولى ثانوي", "1S", "١ث"), "s2": ("2e année secondaire", "السنة الثانية ثانوي", "2S", "٢ث"),
+         "s3": ("3e année secondaire", "السنة الثالثة ثانوي", "3S", "٣ث"), "s4": ("4e année secondaire", "السنة الرابعة ثانوي", "4S", "٤ث")}
 
 def part(t, items): return dict(t_fr=t[0], t_ar=t[1], i_fr=[x[0] for x in items], i_ar=[x[1] for x in items])
 def axis(comp, parts, know, cad, note=None):
@@ -84,14 +86,50 @@ for n in (7, 8):
     L = prg.LEVELS[n]
     A[(n, "prog")] = dict(comp_fr=L["comp_fr"], comp_ar=L["comp_ar"], parts=[dict(t_fr=b, t_ar=a, i_fr=d, i_ar=c) for a, b, c, d in L["parts"]], know_fr=L["know_fr"], know_ar=L["know_ar"], cad_fr=L["cad_fr"], cad_ar=L["cad_ar"], note=None)
 
+# ---------------------------------------------------------------------------------------------
+# Curriculum officiel (PDF « Curriculum d'informatique – 7ème, 8ème et 9ème année de base ») : domaines et compétences
+def L(*pairs): return [(f, a) for f, a in pairs]
+CF = ("Communication et collaboration", "التواصل والتعاون"); CI = ("Créativité et innovation", "الإبداع والابتكار"); RP = ("Résolution de problèmes", "حل المشكلات")
+MEDIA = ("Acquérir une éducation aux médias et à l'information.", "اكتساب تربية على وسائل الإعلام والمعلومات.")
+PDF = {
+ (7, "env"): dict(comps=L(("Se familiariser avec l'environnement informatique de travail.", "التآلف مع بيئة العمل المعلوماتية."), ("Exploiter à bon escient l'environnement informatique de travail.", "استغلال بيئة العمل المعلوماتية استغلالا حسنا.")), life=None),
+ (7, "net"): dict(comps=L(("Exploiter des outils, des services de communication et des technologies Internet.", "استغلال أدوات وخدمات التواصل وتقنيات الإنترنت."), MEDIA, ("Tenir compte des enjeux civiques de l'usage de l'informatique et de l'Internet.", "مراعاة الرهانات المدنية لاستعمال الإعلامية والإنترنت."), ("Adopter une attitude avertie face aux résultats obtenus suite à une recherche.", "اعتماد موقف واعٍ إزاء النتائج المتحصل عليها بعد البحث.")), life=CF),
+ (7, "create"): dict(comps=L(("Produire et partager en ligne des créations numériques en respectant l'e-réputation.", "إنتاج أعمال رقمية ومشاركتها عبر الإنترنت مع احترام السمعة الرقمية.")), life=CI),
+ (7, "prog"): dict(comps=L(("Développer une stratégie logique de résolution de problème.", "تطوير استراتيجية منطقية لحل مشكلة."), ("Découvrir des notions de base de la programmation.", "اكتشاف مفاهيم أساسية في البرمجة."), ("Résoudre des problèmes faisant appel à la logique en manipulant des objets.", "حل مشكلات تستدعي المنطق بمعالجة أشياء.")), life=RP),
+ (8, "env"): dict(comps=L(("Identifier les risques qui menacent l'environnement informatique de travail.", "تحديد المخاطر التي تهدد بيئة العمل المعلوماتية."), ("Acquérir des comportements de vigilance numérique.", "اكتساب سلوكيات اليقظة الرقمية.")), life=None),
+ (8, "net"): dict(comps=L(("S'approprier des outils de l'e-communication et de l'e-partage.", "التمكن من أدوات التواصل والمشاركة الإلكترونيين."), ("Identifier les risques relatifs aux communautés virtuelles.", "تحديد المخاطر المتعلقة بالمجتمعات الافتراضية."), ("Adopter une pratique éclairée sur Internet.", "اعتماد ممارسة واعية على الإنترنت.")), life=CF),
+ (8, "create"): dict(comps=L(("S'exprimer par le biais des médias numériques et technologiques.", "التعبير بواسطة الوسائط الرقمية والتكنولوجية."), ("Exploiter des outils de création de contenus numériques.", "استغلال أدوات إنشاء المحتويات الرقمية."), ("Modifier et combiner des ressources existantes pour créer de nouveaux contenus.", "تعديل موارد موجودة ودمجها لإنشاء محتويات جديدة."), MEDIA), life=CI),
+ (8, "prog"): dict(comps=L(("Développer une stratégie de raisonnement logique pour résoudre un problème.", "تطوير استراتيجية تفكير منطقي لحل مشكلة."), ("Produire un programme à l'aide d'un langage de programmation.", "إنتاج برنامج باستعمال لغة برمجة.")), life=RP),
+ (9, "prog"): dict(title=("Initiation à la logique et à la programmation", "مدخل إلى المنطق والبرمجة"), champ=("Programmation visuelle et robotique", "البرمجة البصرية والروبوتية"),
+   comps=L(("Résoudre des problèmes en développant une stratégie de raisonnement logique.", "حل مشكلات بتطوير استراتيجية تفكير منطقي."), ("Développer l'esprit critique et créatif.", "تنمية الحس النقدي والإبداعي."), ("S'approprier des notions fondamentales de la programmation robotique.", "التمكن من مفاهيم أساسية في البرمجة الروبوتية."), ("Communiquer à travers des langages de programmation et des objets contrôlés.", "التواصل بواسطة لغات البرمجة والأشياء المتحكَّم فيها.")), life=None,
+   prat=L(("Faire un choix réfléchi sur l'environnement de travail.", "اختيار بيئة العمل عن روية."), ("Appliquer les notions fondamentales de la programmation.", "تطبيق المفاهيم الأساسية للبرمجة."), ("Exploiter un environnement de travail.", "استغلال بيئة عمل."), ("Commander des objets via un programme.", "التحكم في أشياء بواسطة برنامج."), ("Argumenter les choix des solutions.", "تبرير اختيارات الحلول.")),
+   pist=L(("Valoriser les initiatives créatives et innovantes.", "تثمين المبادرات الإبداعية والمبتكرة."), ("Avantager les débats tout au long de la réalisation du projet.", "تفضيل النقاشات طيلة إنجاز المشروع."), ("Inciter les apprenants à la collaboration et à la publication de leurs projets.", "تشجيع المتعلمين على التعاون ونشر مشاريعهم."), ("Choisir un espace adéquat de partage de données.", "اختيار فضاء مناسب لمشاركة المعطيات."))),
+ (9, "prod"): dict(title=("Production numérique", "الإنتاج الرقمي"), champ=("Tableur", "الجدول الحاسوبي"),
+   comps=L(("Rationnaliser l'utilisation d'un tableur pour l'aide à la prise de décision.", "ترشيد استعمال الجدول الحاسوبي للمساعدة على اتخاذ القرار."), ("Développer l'esprit créatif et critique lors de la production numérique.", "تنمية الحس الإبداعي والنقدي عند الإنتاج الرقمي.")), life=None,
+   prat=L(("Faire un choix réfléchi pour répondre à un besoin donné.", "القيام باختيار مدروس لتلبية حاجة معينة."), ("Produire un document en utilisant convenablement un tableur.", "إنتاج وثيقة باستعمال الجدول الحاسوبي بشكل ملائم."), ("Analyser les données d'une feuille de calcul.", "تحليل معطيات ورقة حساب."), ("Faire un choix réfléchi lors de l'intégration des formules de calcul et des fonctions de base.", "القيام باختيار مدروس عند إدماج صيغ الحساب والدوال الأساسية."), ("Créer et analyser des graphiques.", "إنشاء رسوم بيانية وتحليلها."), ("Argumenter le choix des graphiques.", "تبرير اختيار الرسوم البيانية.")),
+   pist=L(("Favoriser des débats à partir de situations significatives amenant l'apprenant à analyser des données.", "تفضيل النقاشات انطلاقا من وضعيات ذات دلالة تدفع المتعلم إلى تحليل المعطيات."), ("Inciter les apprenants à la créativité et à l'innovation.", "تشجيع المتعلمين على الإبداع والابتكار."), ("Inviter les apprenants à la collaboration et à la publication de leurs projets.", "دعوة المتعلمين إلى التعاون ونشر مشاريعهم."))),
+}
+SRC = ("Source : Curriculum d'informatique – 7ème, 8ème et 9ème année de base (9ème : École numérique, année scolaire 2018-2019).", "المصدر: منهاج الإعلامية – السنوات 7 و8 و9 من التعليم الأساسي (السنة 9: المدرسة الرقمية، السنة الدراسية 2018-2019).")
+AIDE_SRC = ("Aide pédagogique – Informatique (Ministère de l'Éducation, septembre 2025) : détails transcrits des photographies, à relire avec le document.", "المساعدة البيداغوجية: الإعلامية (وزارة التربية، سبتمبر 2025): تفاصيل منقولة من الصور، تُراجَع مع الوثيقة.")
+AXES_BY_YEAR = {7: ["env", "net", "create", "prog"], 8: ["env", "net", "create", "prog"], 9: ["prog", "prod"]}
+
 def build():
-    data = dict(axes={k: dict(fr=v[0], ar=v[1]) for k, v in AX.items()},
-                years={str(y): dict(fr=v[0], ar=v[1], short_fr=v[2], short_ar=v[3]) for y, v in YEARS.items()},
-                pages={f"{y}-{k}": dict(a, year=y, axis=k) for (y, k), a in A.items()})
-    for p in data["pages"].values():
-        if p["note"]: p["note_fr"], p["note_ar"] = p["note"]
-        del p["note"]
+    pages = {}
+    for y, keys in AXES_BY_YEAR.items():
+        for k in keys:
+            d = PDF[(y, k)]; t = d.get("title") or AX[k]; aide = A.get((y, k)) if (y, k) in A and k != "create" or (y, k) in A and y != 9 else None
+            if y == 9 and k == "prod": aide = None
+            pg = dict(year=y, axis=k, title_fr=t[0], title_ar=t[1], comps_fr=[c[0] for c in d["comps"]], comps_ar=[c[1] for c in d["comps"]],
+                      life_fr=(d["life"] or ("", ""))[0], life_ar=(d["life"] or ("", ""))[1], champ_fr=(d.get("champ") or ("", ""))[0], champ_ar=(d.get("champ") or ("", ""))[1],
+                      prat_fr=[c[0] for c in d.get("prat", [])], prat_ar=[c[1] for c in d.get("prat", [])], pist_fr=[c[0] for c in d.get("pist", [])], pist_ar=[c[1] for c in d.get("pist", [])],
+                      aide=({kk: aide[kk] for kk in ("comp_fr", "comp_ar", "parts", "know_fr", "know_ar", "cad_fr", "cad_ar")} if aide and aide.get("parts") else None))
+            pages[f"{y}-{k}"] = pg
+    by_year = {str(y): v for y, v in AXES_BY_YEAR.items()}
+    for y in ("s1", "s2", "s3", "s4"): by_year[y] = []
+    data = dict(order=["7", "8", "9", "s1", "s2", "s3", "s4"], axes={k: dict(fr=v[0], ar=v[1]) for k, v in AX.items()}, by_year=by_year,
+                years={str(y): dict(fr=v[0], ar=v[1], short_fr=v[2], short_ar=v[3]) for y, v in YEARS.items()}, pages=pages,
+                src_fr=SRC[0], src_ar=SRC[1], aide_fr=AIDE_SRC[0], aide_ar=AIDE_SRC[1])
     json.dump(data, open(os.path.join(HERE, "axes.json"), "w", encoding="utf-8"), ensure_ascii=False)
     return data
 if __name__ == "__main__":
-    d = build(); print("pages :", len(d["pages"]), sorted(d["pages"]))
+    d = build(); print("pages :", len(d["pages"]), sorted(d["pages"]), "| avec détails 2025 :", sorted(k for k, v in d["pages"].items() if v["aide"]))

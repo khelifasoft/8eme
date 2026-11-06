@@ -17,13 +17,13 @@ TPL = r'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>قصص سكراتش</title>
+<title>Curriculum Informatique en Tunisie</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#1f4aa8">
 <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icones/icone-192.png">
 <style>
-:root{--ink:#1d2433;--muted:#5d6678;--line:#dfe3ec;--soft:#f4f6fb;--blue:#1f4aa8;--orange:#e8861c;--green:#1e8a5a;
+:root{--barh:56px;--ink:#1d2433;--muted:#5d6678;--line:#dfe3ec;--soft:#f4f6fb;--blue:#1f4aa8;--orange:#e8861c;--green:#1e8a5a;
  --font:'Segoe UI','Tahoma','Arial','Noto Sans Arabic',sans-serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -33,8 +33,8 @@ a{color:inherit}
 .hero{border-bottom:3px solid var(--orange);padding:24px 0 18px}
 .hero h1{margin:0;font-size:clamp(28px,5vw,44px);color:var(--blue);line-height:1.2}
 .hero p{margin:6px 0 0;color:var(--muted);font-size:17px}
-html{scroll-padding-top:68px}
-body{padding-top:56px}
+html{scroll-padding-top:calc(var(--barh) + 12px)}
+body{padding-top:var(--barh)}
 .topbar{position:fixed;top:0;inset-inline:0;height:56px;background:var(--blue);color:#fff;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 max(16px,env(safe-area-inset-left)) 0 max(16px,env(safe-area-inset-right));box-shadow:0 2px 8px rgba(20,40,100,.25)}
 .brand{color:#fff;text-decoration:none;font-weight:800;font-size:21px;white-space:nowrap}
 .yearnav{display:flex;gap:2px;height:100%;align-items:stretch}
@@ -51,7 +51,15 @@ body{padding-top:56px}
 .sub a[aria-current=page]{background:#e6edfb;color:var(--blue);font-weight:700}
 .sub li+li{border-top:1px solid var(--line)}
 .sub .ov a{font-weight:700;color:var(--blue)}
-@media (max-width:640px){.ybtn{padding:0 10px;font-size:15px}.ybtn .yl{display:none}.ybtn .ys{display:inline}.sub{position:fixed;top:56px;inset-inline:8px;min-width:0}.brand{font-size:15px}}
+@media (max-width:1400px){.ybtn .yl{display:none}.ybtn .ys{display:inline}.ybtn{padding:0 11px}}
+.refgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:10px}
+.refcol{border:1px solid var(--line);border-radius:12px;padding:12px 16px;background:#fff}
+.refcol h3{margin:0 0 6px;font-size:19px;color:var(--blue)}
+.refitem{border-top:1px solid var(--line);padding:8px 0;display:flex;flex-direction:column;gap:2px}.refitem:first-of-type{border-top:0}
+.refitem a{font-weight:700;color:var(--blue);text-decoration:none}.refitem a:hover{text-decoration:underline}
+.refitem .rt{display:inline-block;font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:0 8px;color:var(--muted);align-self:flex-start;margin-top:2px}
+.refitem p{margin:0;font-size:13.5px;color:var(--muted)}
+@media (max-width:640px){:root{--barh:108px}.topbar{height:auto;flex-wrap:wrap;row-gap:0;padding-top:4px;padding-bottom:0}.brand{order:1;font-size:16px}.barbtns{order:2}.yearnav{order:3;width:100%;height:46px;justify-content:space-between}.ydrop{flex:1}.ybtn{width:100%;justify-content:center}.ybtn{padding:0 4px;font-size:15px}.ybtn .yl{display:none}.ybtn .ys{display:inline}.sub{position:fixed;top:var(--barh);inset-inline:8px;min-width:0}}
 .yearcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .ycard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
 .ycard .yh{background:var(--blue);color:#fff;padding:10px 16px;font-size:20px;font-weight:800}
@@ -111,7 +119,7 @@ h2+.lead{margin:0 0 18px;color:var(--muted)}
 .btn.main:hover{background:#163a86}
 .btn.wide{grid-column:1/-1}
 .btn.alt{border-color:var(--orange);color:#a85a08}.btn.alt:hover{background:var(--orange);color:#fff}
-.tools{position:sticky;top:56px;background:#fff;z-index:5;border-bottom:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:10px}
+.tools{position:sticky;top:var(--barh);background:#fff;z-index:5;border-bottom:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:10px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
 .tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 16px;font:inherit;font-size:15px;cursor:pointer}
 .tab[aria-selected=true]{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -205,7 +213,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 </head>
 <body>
 <header class="topbar" id="top">
-  <a class="brand" href="#home">قصص سكراتش</a>
+  <a class="brand" href="#home">Curriculum Informatique en Tunisie</a>
   <nav class="yearnav" id="yearnav" aria-label="القائمة الرئيسية"></nav>
   <div class="barbtns">
     <button type="button" class="langbtn" data-lang="ar" aria-label="العربية">AR</button>
@@ -213,11 +221,11 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   </div>
 </header>
 <section class="hero" id="hero"><div class="wrap">
-  <div class="head"><h1>قصص سكراتش</h1>
+  <div class="head"><h1>Curriculum Informatique en Tunisie</h1>
   <div class="hbtns"><a class="btn alt" id="getscratch" href="https://scratch.mit.edu/download" target="_blank" rel="noopener">⬇ تحميل برنامج سكراتش</a>
   <a class="btn" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">فتح سكراتش على الإنترنت</a>
   <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div></div>
-  <p>كل ما تحتاجه لإنشاء مشروعك في صفحة واحدة: أوراق المشاريع، مشاريع جاهزة، أصوات، صور، أماكن وديكورات. لا حاجة إلى الإنترنت.</p>
+  <p>المنهاج والمراجع والموارد التعليمية لمادة الإعلامية في تونس، من السنة السابعة إلى السنة الرابعة ثانوي.</p>
 </div></section>
 
 <main class="wrap">
@@ -323,8 +331,10 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 
 <script src="videos.js"></script>
 <script src="jeux.js"></script>
+<script src="references.js"></script>
 <script>
 const DATA = __DATA__;
+const FRMAP = __FRMAP__, FRRULES = __FRRULES__.map(([a,b]) => [new RegExp(a), b]);
 const CATS = [
   {id:"lieux", name:"الأماكن", wide:true, hint:"خلفيات كاملة للمشاهد"},
   {id:"decors", name:"الديكور", hint:"أشياء تضعها في المشهد"},
@@ -622,7 +632,7 @@ renderGames();
 
 
 // ---- navigation : #home, #y7 / #y8 / #y9, #y7-env … #y9-prog, #story-<clé>
-const CUR = DATA.curriculum, YEARS = ["7","8","9"], AXKEYS = ["env","net","create","prog"];
+const CUR = DATA.curriculum, YEARS = CUR.order;
 function renderStoryHead(key){
   const h = $("#storyHead"); h.replaceChildren();
   const s = key === "__general" ? GENERAL : DATA.stories.find(x => x.key === key); if (!s) return;
@@ -651,7 +661,7 @@ function showStory(key){
 const ynav = $("#yearnav");
 YEARS.forEach(y => {
   const Y = CUR.years[y];
-  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), AXKEYS.map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.axes[k].ar}))));
+  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
   const btn = el("button",{class:"ybtn",type:"button","aria-expanded":"false","aria-haspopup":"true"}, el("span",{class:"yl",text:Y.ar}), el("span",{class:"ys",text:Y.short_ar}), el("i",{class:"car",text:"▾"}));
   const d = el("div",{class:"ydrop","data-year":y}, btn, ul);
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
@@ -661,31 +671,38 @@ function closeMenus(){ ynav.querySelectorAll(".ydrop").forEach(d => { d.removeAt
 document.addEventListener("click", e => { if (!e.target.closest(".ydrop")) closeMenus(); else if (e.target.closest(".sub a")) closeMenus(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenus(); });
 
-function axisLinks(y){ return AXKEYS.map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,text:CUR.axes[k].ar}))); }
+function axisLinks(y){ return CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,text:CUR.pages[`${y}-${k}`].title_ar}))).concat([el("li",{}, el("a",{href:`#y${y}-refs`,style:"font-weight:700",text:"المراجع"}))]); }
 function renderHome(){
   const c = $("#yearCards"); c.replaceChildren();
   YEARS.forEach(y => c.append(el("article",{class:"ycard"}, el("a",{class:"yh",href:"#y"+y,style:"text-decoration:none",text:CUR.years[y].ar}), el("ul",{}, axisLinks(y)))));
 }
 renderHome();
 // ressources proposées dans chaque axe
-const RES = {"7-prog":["stories"], "8-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
+const RES = {"7-prog":["stories"], "8-prog":["games"], "9-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
 const RESCAT = {"7-create":"personnages", "8-create":"sons"};
 function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => $("#pool").append(n))); }
 function renderAxis(y, k){
-  const P = CUR.pages[`${y}-${k}`], Y = CUR.years[y], A = CUR.axes[k];
+  const P = CUR.pages[`${y}-${k}`], Y = CUR.years[y];
   $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar;
-  const kids = [el("span",{class:"lvl",text:Y.ar}), el("h2",{text:A.ar})];
-  if (P.comp_ar) kids.push(el("p",{class:"comp",text:P.comp_ar}));
-  if (P.note_ar) kids.push(el("p",{class:"pnote",text:P.note_ar}));
-  if (P.parts.length) kids.push(el("h3",{text:"المكوّنات والقدرات"}));
-  P.parts.forEach(x => kids.push(el("h3",{text:x.t_ar,style:"font-size:16px"}), el("ul",{}, x.i_ar.map(t => el("li",{text:t})))));
-  if (P.know_ar.length) kids.push(el("h3",{text:"المعارف المرتبطة"}), el("ul",{}, P.know_ar.map(t => el("li",{text:t}))));
-  if (P.cad_ar.length) kids.push(el("details",{}, el("summary",{text:"توجيهات الإطار"}), el("ul",{}, P.cad_ar.map(t => el("li",{text:t})))));
+  const kids = [el("span",{class:"lvl",text:Y.ar}), el("h2",{text:P.title_ar})];
+  if (P.champ_ar) kids.push(el("p",{class:"pnote",text:"ميدان الاعتبار: " + P.champ_ar}));
+  kids.push(el("h3",{text:"الكفايات المراد تنميتها"}), el("ul",{}, P.comps_ar.map(t => el("li",{text:t}))));
+  if (P.life_ar) kids.push(el("p",{},el("b",{text:"الكفاية الحياتية المستهدفة: "}), P.life_ar));
+  if (P.prat_ar.length) kids.push(el("h3",{text:"الممارسات المنتظرة"}), el("ul",{}, P.prat_ar.map(t => el("li",{text:t}))));
+  if (P.pist_ar.length) kids.push(el("h3",{text:"مسالك مقترحة"}), el("ul",{}, P.pist_ar.map(t => el("li",{text:t}))));
+  kids.push(el("p",{class:"pnote",text:CUR.src_ar}));
+  if (P.aide) {
+    const A2 = P.aide, d = [el("summary",{text:"تفاصيل من المساعدة البيداغوجية (2025)"}), el("p",{text:A2.comp_ar})];
+    A2.parts.forEach(x => d.push(el("h3",{text:x.t_ar,style:"font-size:16px"}), el("ul",{}, x.i_ar.map(t => el("li",{text:t})))));
+    if (A2.know_ar.length) d.push(el("h3",{text:"المعارف المرتبطة"}), el("ul",{}, A2.know_ar.map(t => el("li",{text:t}))));
+    if (A2.cad_ar.length) d.push(el("h3",{text:"توجيهات الإطار"}), el("ul",{}, A2.cad_ar.map(t => el("li",{text:t}))));
+    d.push(el("p",{class:"pnote",text:CUR.aide_ar}));
+    kids.push(el("details",{}, d));
+  }
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
   park(); const res = $("#resArea"); const list = RES[`${y}-${k}`] || [];
-  const ctx = (id, cond) => { const n = $("#" + id); res.append(n); return n; };
-  if (!list.length) res.append(el("p",{class:"empty",text: y === "9" && k === "prog" ? "في هذا المستوى تُستعمل بيئة تطوير بالكتل مثل App Inventor. لم تُنجَز موارد لهذا المحور بعد." : "ستُضاف موارد هذا المحور لاحقا."}));
-  list.forEach(id => ctx(id));
+  if (!list.length) res.append(el("p",{class:"empty",text:"ستُضاف موارد هذا المحور لاحقا."}));
+  list.forEach(id => res.append($("#" + id)));
   if (list.includes("library")) {
     [sel, vsel, tsel].forEach(x => x.hidden = false);
     $("#library .lead").textContent = "صور وأصوات ورسوم متحركة يمكنك استعمالها في أي قصة. اضغط «تحميل» ثم أضف الملف في سكراتش.";
@@ -695,22 +712,39 @@ function renderAxis(y, k){
 function renderYear(y){
   const Y = CUR.years[y]; $("#axisBack").href = "#home"; $("#axisBack").textContent = "← الرئيسية"; park();
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("span",{class:"lvl",text:Y.ar}), el("h2",{text:"المحاور الدراسية"}),
-    el("div",{class:"axcards"}, AXKEYS.map(k => { const P = CUR.pages[`${y}-${k}`]; return el("article",{class:"axcard"}, el("h3",{text:CUR.axes[k].ar}), el("p",{text:P.comp_ar || P.note_ar || ""}), el("div",{class:"btns"}, el("a",{class:"btn main wide",href:`#y${y}-${k}`,text:"فتح المحور"}))); }))));
+    CUR.by_year[y].length ? null : el("p",{class:"pnote",text:"لم تُدرج بعد وثيقة منهاج هذا المستوى. يمكنك الاطلاع على المراجع المتاحة."}),
+    el("div",{class:"axcards"}, CUR.by_year[y].map(k => { const P = CUR.pages[`${y}-${k}`]; return el("article",{class:"axcard"}, el("h3",{text:P.title_ar}), el("p",{text:P.comps_ar[0]}), el("div",{class:"btns"}, el("a",{class:"btn main wide",href:`#y${y}-${k}`,text:"فتح المحور"}))); }).concat([el("article",{class:"axcard"}, el("h3",{text:"المراجع"}), el("p",{text:"مراجع التلميذ ومراجع الأستاذ لهذا المستوى."}), el("div",{class:"btns"}, el("a",{class:"btn wide",href:`#y${y}-refs`,text:"فتح المراجع"})))]))));
   $("#resArea").replaceChildren();
+}
+const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};
+function renderRefs(y){
+  const Y = CUR.years[y]; $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar; park(); $("#resArea").replaceChildren();
+  const all = (window.REFERENCES || []).filter(r => r.level === "all" || r.level === y || (Array.isArray(r.level) && r.level.includes(y)));
+  const col = (who, title) => {
+    const list = all.filter(r => r.for === who);
+    return el("div",{class:"refcol"}, el("h3",{text:title}), list.length ? list.map(r => {
+      if (r.fr) FRMAP[r.title] = r.fr; if (r.note && r.note_fr) FRMAP[r.note] = r.note_fr;
+      const ext = /^https?:/.test(r.url || ""); const a = el("a",{href:r.url,text:r.title}); if (ext) { a.target = "_blank"; a.rel = "noopener"; }
+      return el("div",{class:"refitem"}, a, r.type && el("span",{class:"rt",text:REFTYPES[r.type] || r.type}), r.note && el("p",{text:r.note}));
+    }) : el("p",{class:"pnote",text:"لم تُضف مراجع بعد لهذا المستوى."}));
+  };
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("span",{class:"lvl",text:Y.ar}), el("h2",{text:"المراجع"}),
+    el("div",{class:"refgrid"}, col("eleve","مراجع التلميذ"), col("enseignant","مراجع الأستاذ")),
+    el("p",{class:"pnote",text:"لإضافة مرجع: ضعه في المجلد references وأضف سطرا في الملف references.js."})));
 }
 function route(){
   let h = decodeURIComponent(location.hash.replace(/^#/, "")) || "home";
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
-  if ((m = h.match(/^y([789])$/))) { view = "year"; y = m[1]; }
-  else if ((m = h.match(/^y([789])-(env|net|create|prog)$/))) { view = "axis"; y = m[1]; k = m[2]; }
+  if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
+  else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|refs)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
   $("#viewAxis").hidden = !(view === "year" || view === "axis"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "year") renderYear(y);
-  if (view === "axis") renderAxis(y, k);
+  if (view === "axis") { if (k === "refs") renderRefs(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
   ynav.querySelectorAll(".sub a").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   window.scrollTo(0, 0);
@@ -719,7 +753,6 @@ window.addEventListener("hashchange", route);
 route();
 
 // ---- اللغة : العربية / Français (traduction de tout le texte de la page)
-const FRMAP = __FRMAP__, FRRULES = __FRRULES__.map(([a,b]) => [new RegExp(a), b]);
 let LANG = "ar";
 const origText = new WeakMap(), origAttr = new WeakMap(), origHTML = new WeakMap(), ATTRS = ["placeholder","aria-label","title","alt"];
 function trStr(t){

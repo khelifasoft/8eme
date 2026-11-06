@@ -22,6 +22,17 @@ THEMES_FR = {"غابة": "Forêt", "قصر": "Château", "بحر": "Mer", "سف�
  "بجعة": "Cygne", "خروف وغنم": "Mouton", "خنزير": "Cochon", "حمار": "Âne", "جمل": "Chameau", "حصان": "Cheval", "فراشة": "Papillon", "عصفور": "Oiseau", "سباق": "Course",
  "شجرة": "Arbre", "شمس وغيوم": "Soleil et nuages", "أطفال يقرؤون": "Enfants qui lisent", "كتاب وقصص": "Livre de contes"}
 UI = {
+ "المراجع": "Références", "مراجع التلميذ": "Références pour l'élève", "مراجع الأستاذ": "Références pour l'enseignant", "فتح المراجع": "Ouvrir les références",
+ "مراجع التلميذ ومراجع الأستاذ لهذا المستوى.": "Références pour l'élève et pour l'enseignant de ce niveau.",
+ "لم تُضف مراجع بعد لهذا المستوى.": "Aucune référence n'a encore été ajoutée pour ce niveau.",
+ "لإضافة مرجع: ضعه في المجلد references وأضف سطرا في الملف references.js.": "Pour ajouter une référence : la déposer dans le dossier references puis ajouter une ligne dans le fichier references.js.",
+ "لم تُدرج بعد وثيقة منهاج هذا المستوى. يمكنك الاطلاع على المراجع المتاحة.": "Le document de programme de ce niveau n'a pas encore été ajouté. Tu peux consulter les références disponibles.",
+ "المنهاج والمراجع والموارد التعليمية لمادة الإعلامية في تونس، من السنة السابعة إلى السنة الرابعة ثانوي.": "Programme, références et ressources pédagogiques pour l'enseignement de l'informatique en Tunisie, de la 7e année à la 4e année secondaire.",
+ "PDF": "PDF", "موقع": "Site", "كتاب": "Livre", "أداة": "Outil",
+
+ "الكفايات المراد تنميتها": "Compétences à développer", "الممارسات المنتظرة": "Pratiques envisagées", "مسالك مقترحة": "Pistes à envisager",
+ "تفاصيل من المساعدة البيداغوجية (2025)": "Détails de l'Aide pédagogique (2025)", "الكفاية الحياتية المستهدفة:": "Compétence de vie visée :",
+
  "نظرة عامة": "Aperçu de l'année", "المحاور الدراسية حسب السنة": "Les axes d'étude par année", "اختر سنتك، ثم المحور الذي تريد دراسته.": "Choisis ton année, puis l'axe que tu veux étudier.",
  "اختر سنتك ثم المحور الذي تريد دراسته من القائمة أعلاه.": "Choisis ton année, puis l'axe que tu veux étudier dans le menu ci-dessus.",
  "← الرئيسية": "← Accueil", "المحاور الدراسية": "Axes d'étude", "فتح المحور": "Ouvrir l'axe", "المكوّنات والقدرات": "Composantes et capacités",
@@ -136,14 +147,22 @@ def build(man, games):
     if cur:
         for a in cur["axes"].values(): M[a["ar"]] = a["fr"]
         for y in cur["years"].values(): M[y["ar"]] = y["fr"]
+        M[cur["src_ar"]] = cur["src_fr"]; M[cur["aide_ar"]] = cur["aide_fr"]
         for pg in cur["pages"].values():
-            if pg["comp_ar"]: M[pg["comp_ar"]] = pg["comp_fr"]
-            for a, b in zip(pg["know_ar"], pg["know_fr"]): M[a] = b
-            for a, b in zip(pg["cad_ar"], pg["cad_fr"]): M[a] = b
-            for x in pg["parts"]:
-                M[x["t_ar"]] = x["t_fr"]
-                for a, b in zip(x["i_ar"], x["i_fr"]): M[a] = b
-            if pg.get("note_ar"): M[pg["note_ar"]] = pg["note_fr"]
+            M[pg["title_ar"]] = pg["title_fr"]
+            for k in ("comps", "prat", "pist"):
+                for a, b in zip(pg[k + "_ar"], pg[k + "_fr"]): M[a] = b
+            if pg["life_ar"]: M[pg["life_ar"]] = pg["life_fr"]
+            if pg["champ_ar"]: M["ميدان الاعتبار: " + pg["champ_ar"]] = "Champ : " + pg["champ_fr"]
+            ad = pg.get("aide")
+            if ad:
+                M[ad["comp_ar"]] = ad["comp_fr"]
+                for a, b in zip(ad["know_ar"], ad["know_fr"]): M[a] = b
+                for a, b in zip(ad["cad_ar"], ad["cad_fr"]): M[a] = b
+                for x in ad["parts"]:
+                    M[x["t_ar"]] = x["t_fr"]
+                    for a, b in zip(x["i_ar"], x["i_fr"]): M[a] = b
+        M = {k: v for k, v in M.items() if v is not None}
     prg = man.get("programme")
     if prg:
         for c in prg["concepts"].values(): M[c["ar"]] = c["fr"]
