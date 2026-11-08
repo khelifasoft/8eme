@@ -781,6 +781,8 @@ function renderTeacher(y){
   }
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
 }
+// pages dont on ne garde que les ressources (sans en-tête, parcours ni espace élève)
+const BARE = new Set(["8-prog"]);
 function renderAxis(y, k){
   const P = CUR.pages[`${y}-${k}`], Y = CUR.years[y];
   $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar;
@@ -800,10 +802,11 @@ function renderAxis(y, k){
     kids.push(el("details",{}, d));
   }
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
-  $("#axisHead").firstChild.append(...axisExtras(y, k));
+  const bare = BARE.has(`${y}-${k}`);
+  if (bare) $("#axisHead").replaceChildren(); else $("#axisHead").firstChild.append(...axisExtras(y, k));
   park(); const res = $("#resArea"); const list = RES[`${y}-${k}`] || [];
-  if (!list.length && !(k === "prog" && (DATA.parcours || {})[y])) res.append(el("p",{class:"empty",text:"ستُضاف موارد هذا المحور لاحقا."}));
-  const lw = k === "prog" && list.length && (DATA.parcours || {})[y] ? el("details",{class:"space-d libwrap",open:""}, el("summary",{text: y === "7" ? "القصص الجاهزة (مكتبة)" : "الألعاب الجاهزة (مكتبة)"})) : null;
+  if (!list.length && !bare && !(k === "prog" && (DATA.parcours || {})[y])) res.append(el("p",{class:"empty",text:"ستُضاف موارد هذا المحور لاحقا."}));
+  const lw = k === "prog" && list.length && (DATA.parcours || {})[y] && !bare ? el("details",{class:"space-d libwrap",open:""}, el("summary",{text: y === "7" ? "القصص الجاهزة (مكتبة)" : "الألعاب الجاهزة (مكتبة)"})) : null;
   if (lw) res.append(lw);
   list.forEach(id => (lw || res).append($("#" + id)));
   if (list.includes("library")) {

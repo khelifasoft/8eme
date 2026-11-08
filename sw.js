@@ -1,7 +1,7 @@
 // Service worker : permet l'installation et l'utilisation hors connexion.
 // Les pages sont chargées depuis le réseau d'abord (la dernière version s'affiche toujours),
 // puis depuis la mémoire si la connexion manque. Les autres fichiers sont gardés après leur première ouverture.
-const VERSION = "v16";
+const VERSION = "v17";
 const CACHE = "ateliers-contes-" + VERSION;
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./videos.js", "./jeux.js", "./references.js", "./logiciels.js", "./icones/icone-192.png", "./icones/icone-512.png"];
 
