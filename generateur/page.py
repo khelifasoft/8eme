@@ -252,6 +252,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .step[open]>summary{border-bottom:1px solid var(--line)}.stbody{padding:6px 14px 12px}.stbody h5{margin:10px 0 4px;color:#1e3a6e}.stbody ol,.stbody ul{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
 .badge{background:#1e4fa8;color:#fff;border-radius:999px;min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;padding:0 8px}.badge.pj{background:#e8a21c;color:#222;letter-spacing:1px}
 .stbody .check{list-style:none;padding:0}.stbody .check li::before{content:"";display:inline-block;width:12px;height:12px;border:2px solid #1e4fa8;border-radius:3px;margin-inline-end:8px;vertical-align:-1px}
+#games.only-grid>h2,#games.only-grid>.lead,#games.only-grid>.progbox,#games.only-grid>#extGames{display:none}
 </style>
 </head>
 <body>
@@ -311,7 +312,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <p class="lead">لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.</p>
   <div class="stories" id="storyGrid"></div>
 </section>
-<section id="games">
+<section id="games" class="only-grid">
   <h2>ألعاب سكراتش</h2>
   <p class="lead">ألعاب بسيطة وتعليمية: أسئلة وأجوبة، حساب، ذاكرة، وسرعة. حمّل اللعبة وافتحها في سكراتش، ثم عدّلها كما تشاء.</p>
   <details class="progbox" id="progBox"><summary>الربط بالمنهاج: الفكر المنطقي والبرمجة</summary><div id="progBody"></div></details>
@@ -647,7 +648,7 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
 // ---- jeux
-const GAME_CATS = ["quiz", "math", "memory", "order", "reflex", "catch"];
+const GAME_CATS = ["catch"];
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
   GAME_CATS.forEach(cat => {
@@ -801,8 +802,8 @@ function renderAxis(y, k){
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
   $("#axisHead").firstChild.append(...axisExtras(y, k));
   park(); const res = $("#resArea"); const list = RES[`${y}-${k}`] || [];
-  if (!list.length) res.append(el("p",{class:"empty",text:"ستُضاف موارد هذا المحور لاحقا."}));
-  const lw = k === "prog" && (DATA.parcours || {})[y] ? el("details",{class:"space-d libwrap"}, el("summary",{text: y === "7" ? "القصص الجاهزة (مكتبة)" : "الألعاب الجاهزة (مكتبة)"})) : null;
+  if (!list.length && !(k === "prog" && (DATA.parcours || {})[y])) res.append(el("p",{class:"empty",text:"ستُضاف موارد هذا المحور لاحقا."}));
+  const lw = k === "prog" && list.length && (DATA.parcours || {})[y] ? el("details",{class:"space-d libwrap",open:""}, el("summary",{text: y === "7" ? "القصص الجاهزة (مكتبة)" : "الألعاب الجاهزة (مكتبة)"})) : null;
   if (lw) res.append(lw);
   list.forEach(id => (lw || res).append($("#" + id)));
   if (list.includes("library")) {
