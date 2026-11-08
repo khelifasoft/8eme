@@ -308,7 +308,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <div class="hbtns"><a class="btn alt" id="getscratch" href="#downloads">⬇ التحميلات: سكراتش وبقية البرمجيات</a>
   <a class="btn" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">فتح سكراتش على الإنترنت</a>
   <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div></div>
-  <p>المنهاج والمراجع والموارد التعليمية لمادة الإعلامية في تونس، من السنة السابعة إلى السنة الرابعة ثانوي.</p>
+  <p>المنهاج والمراجع والموارد التعليمية لمادة الإعلامية في تونس، من السنة السابعة إلى السنة التاسعة.</p>
 </div></section>
 
 <main class="wrap">
@@ -772,7 +772,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenus()
 function axisLinks(y){ return CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,text:CUR.pages[`${y}-${k}`].title_ar}))).concat([el("li",{}, el("a",{href:`#y${y}-refs`,style:"font-weight:700",text:"المراجع"}))]); }
 function renderHome(){
   const c = $("#yearCards"); c.replaceChildren();
-  YEARS.forEach(y => c.append(el("article",{class:"ycard"}, el("a",{class:"yh",href:"#y"+y,style:"text-decoration:none",text:CUR.years[y].ar}), el("ul",{}, axisLinks(y)))));
+  MENU_YEARS.forEach(y => c.append(el("article",{class:"ycard"}, el("a",{class:"yh",href:"#y"+y,style:"text-decoration:none",text:CUR.years[y].ar}), el("ul",{}, axisLinks(y)))));
 }
 renderHome();
 // ressources proposées dans chaque axe

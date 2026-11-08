@@ -1,6 +1,6 @@
 # Curriculum Informatique en Tunisie
 
-Site bilingue (arabe / français) sur l'enseignement de l'informatique en Tunisie : programme, références et ressources pédagogiques de la 7e année de base à la 4e année secondaire.
+Site bilingue (arabe / français) sur l'enseignement de l'informatique en Tunisie : programme, références et ressources pédagogiques de la 7e à la 9e année de base (les pages des niveaux secondaires existent toujours dans le dépôt mais ne sont plus proposées dans les menus : voir ci-dessous).
 
 ## Page de l'élève
 
@@ -102,7 +102,7 @@ Sous la section **« Jeux Scratch »** des pages 8e et 9e (`#y8-prog`), la rubri
 - Textes : `generateur/activites_data1.py` (niveaux 1-2 et dictionnaire des blocs), `activites_data2.py` (niveaux 3-5), `activites_help.py` (rôle des blocs).
 - Images (illustrations dessinées pour le site, pas des captures de l'éditeur Scratch) : `generateur/activites_specs.py` décrit le script et les deux scènes de chaque activité ; `python3 generateur/activites_img.py` écrit les 324 SVG dans `fiches-activite/activites/`. Puis `python3 generateur/page.py`.
 
-**Menu principal** : seuls les niveaux 7e, 8e et 9e y figurent ; les niveaux secondaires restent accessibles depuis les cartes de la page d'accueil, et la page Téléchargements depuis le bouton de l'accueil.
+**Menu principal et accueil** : seuls les niveaux 7e, 8e et 9e y figurent (menu du haut et cartes de la page d'accueil). Les pages des niveaux secondaires (1S à 4S : modules, exercices non officiels, références) sont conservées et restent accessibles par leur adresse (`#ys1`, `#ys2`, `#ys3`, `#ys4`) ; pour les réafficher, remplacer `MENU_YEARS` par `YEARS` dans `generateur/page.py`. La page Téléchargements est accessible depuis le bouton de l'accueil.
 
 ## Téléchargements
 

@@ -27,7 +27,7 @@ UI = {
  "لم تُضف مراجع بعد لهذا المستوى.": "Aucune référence n'a encore été ajoutée pour ce niveau.",
  "لإضافة مرجع: ضعه في المجلد references وأضف سطرا في الملف references.js.": "Pour ajouter une référence : la déposer dans le dossier references puis ajouter une ligne dans le fichier references.js.",
  "لم تُدرج بعد وثيقة منهاج هذا المستوى. يمكنك الاطلاع على المراجع المتاحة.": "Le document de programme de ce niveau n'a pas encore été ajouté. Tu peux consulter les références disponibles.",
- "المنهاج والمراجع والموارد التعليمية لمادة الإعلامية في تونس، من السنة السابعة إلى السنة الرابعة ثانوي.": "Programme, références et ressources pédagogiques pour l'enseignement de l'informatique en Tunisie, de la 7e année à la 4e année secondaire.",
+ "المنهاج والمراجع والموارد التعليمية لمادة الإعلامية في تونس، من السنة السابعة إلى السنة التاسعة.": "Programme, références et ressources pédagogiques pour l'enseignement de l'informatique en Tunisie, de la 7e à la 9e année.",
  "PDF": "PDF", "موقع": "Site", "كتاب": "Livre", "أداة": "Outil",
 
  "الكفايات المراد تنميتها": "Compétences à développer", "الممارسات المنتظرة": "Pratiques envisagées", "مسالك مقترحة": "Pistes à envisager",
