@@ -645,7 +645,7 @@ function renderStoryHead(key){
     el("a",{class:"btn",href:s.html,target:"_blank",rel:"noopener",text:"قراءة الورقة"}),
     el("a",{class:"btn",href:s.sb3,download:`${s.title}.sb3`,text:"مشروع سكراتش"}),
     el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"})));
-  if (key !== "__general") kids.push(el("div",{class:"box2"}, el("b",{text:"الربط بالمنهاج: "}), el("a",{class:"ficheln",href:"fiches-activite/contes.html",target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"}), chipsFor("conte_" + key)));
+  if (key !== "__general") kids.push(el("div",{class:"box2"}, el("b",{text:"الربط بالمنهاج: "}), el("a",{class:"ficheln",href:"fiches-activite/contes.html",target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"})));
   h.append(el("div",{class:"storyhead"}, el("div",{class:"sbar",style:`background:${s.accent}`}), el("div",{class:"sbody"}, kids)));
 }
 
