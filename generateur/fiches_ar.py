@@ -33,6 +33,22 @@ AR = {
    criteres=["Le changement de vitesse est constaté au test.", "L'élève explique les conditions imbriquées de la collision.", "Une amélioration est testée."],
    allegee="Changer uniquement la vitesse de départ.",
    prolongement="Créer un module « voiture touchée » (−1 vie, son, retour en haut) et l'appeler à la place des blocs.")),
+ "saut": dict(
+  title="الجمل يقفز: تفادَ الشجيرات", duree="حصتان من 45 دقيقة", year="السنة الثامنة",
+  situation="كيف نجعل جملا يقفز بالضغط على المسافة، ونجعل شجيرات تأتي بسرعة متزايدة، ونحسب النقاط والأرواح؟",
+  steps=["حاجة تُستخلص دون حاسوب (10 د)", "نلعب ونصف (10 د)", "نقرأ السكربتات (15 د)", "نعدّل ونحسّن (20 د)", "نختبر ونصحّح (10 د)"],
+  eleve=["العب حتى النهاية ودوّن نتيجتك.", "ابحث عن المتغير الذي يعطي سرعة القفز. أين يتغيّر؟", "غيّر ارتفاع القفزة، واختبر وفسّر الأثر على اللعبة.", "حدّد الشرطين المتداخلين اللذين يكشفان الاصطدام، وفسّر كلا منهما.", "تحدٍّ: أضف صوتا عندما يقفز الجمل."],
+  criteres=["يُلاحَظ أثر تغيير الارتفاع عند الاختبار.", "يفسّر التلميذ الشرطين المتداخلين للاصطدام.", "يُختبَر تحسين واحد."],
+  allegee="تغيير ارتفاع القفزة فقط.",
+  prolongement="إنشاء وحدة «شجيرة ملموسة» (−1 روح، صوت، العودة إلى اليمين) واستدعاؤها بدل الكتل.",
+  fr=dict(
+   title="Le chameau saute-buissons", duree="2 séances de 45 minutes", year="8e année",
+   situation="Comment faire sauter un chameau avec la barre d'espace, faire arriver des buissons de plus en plus vite et compter les points et les vies ?",
+   steps=['Besoin à faire émerger sans ordinateur (10 min)', 'Jouer et décrire (10 min)', 'Lire les scripts (15 min)', 'Modifier et optimiser (20 min)', 'Tester et corriger (10 min)'],
+   eleve=["Joue jusqu'à la fin et note ton score.", "Trouve la variable qui donne la vitesse du saut. Où est-elle modifiée ?", "Change la hauteur du saut, teste et explique l'effet sur le jeu.", "Repère les deux conditions imbriquées qui détectent la collision. Explique chacune.", "Défi : ajoute un son quand le chameau saute."],
+   criteres=["L'effet du changement de hauteur est constaté au test.", "L'élève explique les conditions imbriquées de la collision.", "Une amélioration est testée."],
+   allegee="Changer uniquement la hauteur du saut.",
+   prolongement="Créer un module « buisson touché » (−1 vie, son, retour à droite) et l'appeler à la place des blocs.")),
  "contes": dict(
   title="نحكي قصة بسكراتش", duree="حصتان من 45 دقيقة", year="السنة السابعة",
   situation="كيف نجعل الشخصيات تمثّل قصة، فتتكلم كل واحدة في دورها وبالترتيب الصحيح، عند النقر على العلم الأخضر؟",
@@ -63,6 +79,13 @@ COURSE_STEPS = [
  ("سيارة قادمة", "تظهر سيارة معاكسة في الأعلى عند موضع يُختار عشوائيا، وتنزل بسرعة اللعبة."),
  ("سيارة متفادَاة", "إذا مرّت السيارة إلى الأسفل دون أن تصدمني: تزيد النقاط بواحد والسرعة بـ 0٫15."),
  ("سيارة صادمة", "إذا صدمتني السيارة المعاكسة: أفقد روحا (يختفي قلب) ويُسمع صوت الاصطدام."),
+ ("نهاية اللعبة", "عندما تصل الأرواح إلى 0 تظهر عبارة «نهاية اللعبة» وتتوقف اللعبة.")]
+SAUT_STEPS = [
+ ("بداية اللعبة", "أنقر على العلم الأخضر: تصبح النقاط 0 والأرواح 3 والسرعة 3."),
+ ("شجيرة قادمة", "تظهر شجيرة في اليمين وتتقدم نحو اليسار بسرعة اللعبة."),
+ ("أقفز", "أضغط على المسافة: يصعد الجمل ثم يهبط (تنقص الجاذبية سرعته بواحد في كل صورة)."),
+ ("شجيرة متفادَاة", "إذا خرجت الشجيرة من المنصة دون أن تلمسني: تزيد النقاط بواحد والسرعة بـ 0٫15."),
+ ("شجيرة ملموسة", "إذا كان الجمل على الأرض عند وصول الشجيرة: أفقد روحا (يختفي قلب) ويُسمع صوت الاصطدام."),
  ("نهاية اللعبة", "عندما تصل الأرواح إلى 0 تظهر عبارة «نهاية اللعبة» وتتوقف اللعبة.")]
 SCENE = ("المشهد", "Scène")
 HEAD = {"الوضعية المشكلة": "Situation-problème", "مراحل اللعبة بالصور": "Les étapes en images", "سير الحصة": "Déroulement", "أنشطة التلميذ": "Activités de l'élève", "معايير النجاح": "Critères de réussite", "التمايز": "Différenciation",

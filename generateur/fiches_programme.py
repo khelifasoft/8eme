@@ -153,6 +153,23 @@ FAMILIES = {
   allegee="Changer uniquement la vitesse de départ.",
   prolongement="Créer un module « voiture touchée » (−1 vie, son, retour en haut) et l'appeler à la place des blocs.",
   criteres=["Le changement de vitesse est constaté au test.", "L'élève explique les conditions imbriquées de la collision.", "Une amélioration est testée."]),
+ "saut": dict(level=8, title="Le chameau saute-buissons", prefix=["jeu_saut"], dir="jeux", pattern="jeu_{k}.sb3",
+  situation="Comment faire sauter un chameau avec la barre d'espace, faire arriver des buissons de plus en plus vite et compter les points et les vies ?",
+  parts=[0, 1, 2], duree="2 séances de 45 minutes",
+  demarche=[("Besoin à faire émerger sans ordinateur (10 min)", "Un élève « chameau » saute par-dessus une corde tenue au sol : comment décider quand sauter, compter les réussites et les ratés ? → besoin de variables."),
+            ("Jouer et décrire (10 min)", "Jouer au jeu, puis décrire les règles : saut, buissons, points, vies, vitesse."),
+            ("Lire les scripts (15 min)", "La barre d'espace donne une vitesse verticale de 19 (variable), seulement si le chameau est au sol ; à chaque image la position y change de cette vitesse, puis la vitesse diminue de 1 (la gravité) ; le buisson avance vers la gauche de « vitesse » ; deux conditions imbriquées détectent la collision ; le buisson repart à droite après chaque passage."),
+            ("Modifier et optimiser (20 min)", "Changer la hauteur du saut, la gravité ou la vitesse de départ, puis rejouer et comparer."),
+            ("Tester et corriger (10 min)", "Tester : sauter 3 buissons, en toucher 3 ; vérifier le score, les cœurs et le message de fin ; corriger les erreurs.")],
+  eleve=["Joue jusqu'à la fin et note ton score.",
+         "Trouve la variable qui donne la vitesse du saut. Où est-elle modifiée ?",
+         "Change la hauteur du saut, teste et explique l'effet sur le jeu.",
+         "Repère les deux conditions imbriquées qui détectent la collision. Explique chacune.",
+         "Défi : ajoute un son quand le chameau saute."],
+  questions=["Pourquoi le chameau ne peut-il sauter que lorsqu'il est au sol ?", "Que se passe-t-il quand le nombre de vies atteint 0 ?"],
+  allegee="Changer uniquement la hauteur du saut.",
+  prolongement="Créer un module « buisson touché » (−1 vie, son, retour à droite) et l'appeler à la place des blocs.",
+  criteres=["L'effet du changement de hauteur est constaté au test.", "L'élève explique les conditions imbriquées de la collision.", "Une amélioration est testée."]),
 }
 
 CSS = """body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;max-width:820px;margin:0 auto;padding:18px 22px 50px;color:#1d2433;line-height:1.55;background:#fff}

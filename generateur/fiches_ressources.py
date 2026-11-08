@@ -19,7 +19,16 @@ GAMES = {
    ("القلوب", "2"): ("coeurs-2.svg", "Cœurs : 2 vies", "القلوب: روحان", "image"),
    ("القلوب", "3"): ("coeurs-3.svg", "Cœurs : 3 vies", "القلوب: ثلاثة أرواح", "image"),
    ("Stage", "موسيقى مغامرة"): ("musique-aventure.wav", "Musique de fond : aventure", "موسيقى الخلفية: مغامرة", "son"),
-   ("سيارة معاكسة", "نطّة"): ("son-choc.wav", "Son quand on est touché", "صوت الاصطدام", "son")})}
+   ("سيارة معاكسة", "نطّة"): ("son-choc.wav", "Son quand on est touché", "صوت الاصطدام", "son")}),
+ "saut": dict(sb3="jeu_saut.sb3", dir="saut", names={
+   ("Stage", "fond"): ("decor-desert.svg", "Décor : le désert", "الخلفية: الصحراء", "image"),
+   ("الجمل", "جمل"): ("chameau.svg", "Le chameau", "الجمل", "image"),
+   ("الشجيرة", "شجيرة"): ("buisson.svg", "Le buisson (obstacle)", "الشجيرة (العقبة)", "image"),
+   ("القلوب", "1"): ("coeurs-1.svg", "Cœurs : 1 vie", "القلوب: روح واحدة", "image"),
+   ("القلوب", "2"): ("coeurs-2.svg", "Cœurs : 2 vies", "القلوب: روحان", "image"),
+   ("القلوب", "3"): ("coeurs-3.svg", "Cœurs : 3 vies", "القلوب: ثلاثة أرواح", "image"),
+   ("Stage", "موسيقى مغامرة"): ("musique-aventure.wav", "Musique de fond : aventure", "موسيقى الخلفية: مغامرة", "son"),
+   ("الشجيرة", "نطّة"): ("son-choc.wav", "Son quand on touche un buisson", "صوت لمس الشجيرة", "son")})}
 allres = {}
 for gid, G in GAMES.items():
     OUT = os.path.join(ROOT, "jeux", "ressources", G["dir"]); os.makedirs(OUT, exist_ok=True)

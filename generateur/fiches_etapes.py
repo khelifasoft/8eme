@@ -83,6 +83,34 @@ def course():
         for n, body in enumerate(S, 1):
             open(os.path.join(OUT, f"course{suffix}-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{defs}{body}</svg>')
     return [dict(img=f"fiches-activite/etapes/course-{n}.svg", img_ar=f"fiches-activite/etapes/course-ar-{n}.svg", t=COURSE[n - 1][0], c=COURSE[n - 1][1]) for n in range(1, 7)]
+SAUT = [("Début de partie", "Je clique sur le drapeau vert : le score est mis à 0, les vies à 3 et la vitesse à 3."),
+ ("Un buisson arrive", "Un buisson apparaît à droite et avance vers la gauche à la vitesse du jeu."),
+ ("Je saute", "J'appuie sur la barre d'espace : le chameau monte, puis retombe (la gravité diminue sa vitesse de 1 à chaque image)."),
+ ("Buisson évité", "Si le buisson sort de la scène sans me toucher : le score augmente de 1 et la vitesse de 0,15."),
+ ("Buisson touché", "Si le chameau est au sol quand le buisson arrive : je perds une vie (un cœur disparaît) et le son de choc retentit."),
+ ("Fin de partie", "Quand les vies arrivent à 0, le jeu affiche « Fin de partie » et s'arrête.")]
+SL = {"fr": dict(flag="1  Drapeau vert", come="2  Buisson", jump="3  Barre d'espace", up="+1 point", hit="−1 vie", fin="FIN"),
+      "ar": dict(flag="1  العلم الأخضر", come="2  الشجيرة", jump="3  المسافة", up="+1 نقطة", hit="−1 روح", fin="النهاية")}
+def saut():
+    import video_jeu as V
+    z, T = V.load(os.path.join(ROOT, "jeux", "jeu_saut.sb3")); by = {t["name"]: t for t in T}
+    def scene(cy, bush, score, lives, extra):
+        s = V.place(T[0]["costumes"][0], 0, 0, 100) + V.place(by["الجمل"]["costumes"][0], -120, cy, 50)
+        if bush is not None: s += V.place(by["الشجيرة"]["costumes"][0], bush, -120, 40)
+        if lives: s += V.place(by["القلوب"]["costumes"][lives - 1], -40, 158, 100)
+        return s + V.monitor("النقاط", score, 4, 4) + V.monitor("الأرواح", lives, 4, 30) + extra
+    defs = '<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e8861c"/></marker></defs>'
+    for lang in ("fr", "ar"):
+        L = SL[lang]; suffix = "" if lang == "fr" else "-ar"
+        S = [scene(-95, None, 0, 3, tag(L["flag"], 170, 120)),
+             scene(-95, 150, 0, 3, arrow(375, 275, 305, 275) + tag(L["come"], 335, 235)),
+             scene(10, 40, 0, 3, arrow(215, 210, 215, 130) + tag(L["jump"], 235, 190)),
+             scene(-95, -230, 1, 3, tag(L["up"], 40, 120, "#2e9e5b")),
+             scene(-95, -115, 1, 2, tag(L["hit"], 70, 110, "#c0392b")),
+             scene(-95, -115, 3, 0, f'<rect x="0" y="0" width="480" height="360" fill="#000" fill-opacity=".5"/><text x="240" y="195" text-anchor="middle" font-family="Tajawal,Arial,sans-serif" font-size="58" font-weight="bold" fill="#fff">{L["fin"]}</text>')]
+        for n, body in enumerate(S, 1):
+            open(os.path.join(OUT, f"saut{suffix}-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{defs}{body}</svg>')
+    return [dict(img=f"fiches-activite/etapes/saut-{n}.svg", img_ar=f"fiches-activite/etapes/saut-ar-{n}.svg", t=SAUT[n - 1][0], c=SAUT[n - 1][1]) for n in range(1, 7)]
 def contes():
     out = {}
     for key in sc.D:
@@ -92,7 +120,7 @@ def contes():
             out[key].append(dict(img=f"fiches-activite/etapes/{key}-{i+1}.svg", t=f"Scène {i+1}", c=J3.caption(key, i)))
     return out
 def export():
-    return dict(catch=catch(), course=course(), contes=contes())
+    return dict(catch=catch(), course=course(), saut=saut(), contes=contes())
 if __name__ == "__main__":
     e = export(); json.dump(e, open(os.path.join(HERE, "etapes.json"), "w", encoding="utf-8"), ensure_ascii=False)
     print("étapes :", len(e["catch"]), {k: len(v) for k, v in e["contes"].items()})

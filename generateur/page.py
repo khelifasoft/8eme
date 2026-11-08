@@ -8,9 +8,9 @@ games = json.load(open(os.path.join(HERE, "jeux2_manifest.json"), encoding="utf-
 games += json.load(open(os.path.join(HERE, "jeux3_manifest.json"), encoding="utf-8"))
 for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8")):
     games.append(dict(g, cat="catch", cat_ar="ألعاب سكراتش", cat_fr="Jeux Scratch"))
-for _g in json.load(open(os.path.join(HERE, "jeux4_manifest.json"), encoding="utf-8")):
+for _g in json.load(open(os.path.join(HERE, "jeux4_manifest.json"), encoding="utf-8")) + json.load(open(os.path.join(HERE, "jeux5_manifest.json"), encoding="utf-8")):
     games.append(dict(_g, cat="catch", cat_ar="ألعاب سكراتش", cat_fr="Jeux Scratch"))
-_EXTRA = {"sindbad": dict(video="jeux/videos/attrape-poissons.mp4", fiche="catch", res="catch"), "course": dict(video="jeux/videos/course.mp4", fiche="course", res="course")}
+_EXTRA = {"saut": dict(video="jeux/videos/saut.mp4", fiche="saut", res="saut"), "sindbad": dict(video="jeux/videos/attrape-poissons.mp4", fiche="catch", res="catch"), "course": dict(video="jeux/videos/course.mp4", fiche="course", res="course")}
 for _g in games:
     if _g["cat"] == "catch": _g.update(_EXTRA.get(_g["key"], {}))
 man["games"] = games
@@ -33,7 +33,7 @@ for _fid, _d in _AR.AR.items():
     for _k in ("situation", "allegee", "prolongement"): _far[_d[_k]] = _f[_k]
     for _k in ("steps", "eleve", "criteres"):
         for _a, _b in zip(_d[_k], _f[_k]): _far[_a] = _b
-for _key, _steps in (("catch", _AR.CATCH_STEPS), ("course", _AR.COURSE_STEPS)):
+for _key, _steps in (("catch", _AR.CATCH_STEPS), ("course", _AR.COURSE_STEPS), ("saut", _AR.SAUT_STEPS)):
     for _i, (_t, _c) in enumerate(_steps):
         _e = man["etapes"][_key][_i]; _far[_t] = _e["t"]; _far[_c] = _e["c"]; _e["t"], _e["c"] = _t, _c
 for _lst in man["etapes"]["contes"].values():
@@ -896,7 +896,7 @@ function renderFiche(fid, key){
     steps.length ? sec("مراحل اللعبة بالصور", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img_ar || st.img,"data-fr-src":st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
     sec("سير الحصة", li(F.steps)), sec("أنشطة التلميذ", li(F.eleve)), sec("معايير النجاح", li(F.criteres)),
     sec("التمايز", el("ul",{}, el("li",{}, el("b",{text:"التخفيف: "}), el("span",{text:F.allegee})), el("li",{}, el("b",{text:"التوسيع: "}), el("span",{text:F.prolongement})))),
-    dl ? el("p",{}, dl, fid === "catch" || fid === "course" ? resBtn(fid) : null) : null);
+    dl ? el("p",{}, dl, fid === "catch" || fid === "course" || fid === "saut" ? resBtn(fid) : null) : null);
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, body)); syncImgs();
 }
 const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};

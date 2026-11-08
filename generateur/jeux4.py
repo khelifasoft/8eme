@@ -56,7 +56,7 @@ def build():
     ob.script(ob.hat_flag(), ob.setv(sco, si, 0), ob.setv(lv, lvi, 3), ob.setv(sp, spi, 3), ob.size(70), go_top(), ob.show(), ob.forever_(fall, c_hit, c_pass, c_end), y=0)
     P.sprite("سيارة معاكسة", ob, [P.costume("معاكسة", car_svg("#d62828", "#8f1414", down=True))], [ouch], x=0, y=210, size=70)
     # cœurs = nombre de vies
-    cb = B(); cb.script(cb.hat_flag(), cb.show(), cb.forever_(cb.costume_n(cb.R(cb.var(lv, lvi)))), y=0)
+    cb = B(); cb.script(cb.hat_flag(), cb.show(), cb.forever_(cb.costume_n(cb.R(cb.var(lv, lvi))), cb.if_(cb.lt(cb.R(cb.var(lv, lvi)), cb.N(1)), cb.hide())), y=0)
     P.sprite("القلوب", cb, [P.costume(f"{n}", hearts_svg(n), 54, 17) for n in (1, 2, 3)], x=185, y=158, size=100, visible=True)
     P.monitor("النقاط", 5); P.monitor("الأرواح", 32); P.monitor("السرعة", 59, False)
     P.finish("aventure")

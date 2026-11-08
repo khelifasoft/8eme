@@ -8,6 +8,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "jeux", "videos"); os.makedirs(OUT, exist_ok=True)
 FPS = 30
 GAMES = {"catch": dict(sb3="jeu_sindbad.sb3", mp4="attrape-poissons.mp4", event="score_up", sound_sprite="الشيء", hud=("النقاط", "الأرواح")),
+         "saut": dict(sb3="jeu_saut.sb3", mp4="saut.mp4", event="lives_down", sound_sprite="الشجيرة", hud=("النقاط", "الأرواح")),
          "course": dict(sb3="jeu_course.sb3", mp4="course.mp4", event="lives_down", sound_sprite="سيارة معاكسة", hud=("النقاط", "الأرواح"))}
 
 def load(sb3):
@@ -25,7 +26,7 @@ def place(c, x, y, size):
     return f'<g transform="translate({tx:.1f},{ty:.1f}) scale({s})">{c["svg"]}</g>'
 FONT = "Tajawal,Arial,sans-serif"
 def bubble(text, x, y):
-    w = 11 * len(text) + 30
+    w = 11 * len(text) + 30; x = max(w / 2 + 4, min(480 - w / 2 - 4, x))
     return (f'<g><rect x="{x - w/2}" y="{y}" width="{w}" height="34" rx="14" fill="#fff" stroke="#9aa3b2" stroke-width="2"/>'
             f'<text x="{x}" y="{y + 23}" text-anchor="middle" font-family="{FONT}" font-size="17" font-weight="bold" fill="#333">{escape(text)}</text></g>')
 def monitor(label, value, x, y):

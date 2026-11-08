@@ -1,6 +1,6 @@
 // Fait jouer un projet Scratch (.sb3) dans scratch-vm, sans écran, image par image (30 images/s), et enregistre l'état de la scène.
 // Chaque tour de boucle « répéter indéfiniment » correspond à une image, comme dans Scratch avec affichage.
-// Usage : NODE_PATH=<node_modules avec scratch-vm et scratch-storage> node enregistrer_jeu.js jeu.sb3 frames.json catch|course [images_max]
+// Usage : NODE_PATH=<node_modules avec scratch-vm et scratch-storage> node enregistrer_jeu.js jeu.sb3 frames.json catch|course|saut [images_max]
 const VM = require('scratch-vm'); const _S = require('scratch-storage'); const Storage = _S.default || _S.ScratchStorage || _S; const fs = require('fs');
 (async () => {
   const [f, out, mode, maxN] = [process.argv[2], process.argv[3], process.argv[4] || 'catch', +(process.argv[5] || 3600)];
@@ -15,7 +15,7 @@ const VM = require('scratch-vm'); const _S = require('scratch-storage'); const S
   // les durées (« dire pendant n secondes », « attendre ») utilisent l'horloge : on la fait avancer de 1/30 s par image
   let clock = Date.now(); const realNow = Date.now; Date.now = () => clock;
   const rng = (() => { let s = 12345; return () => (s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff; })();
-  const item = T('الشيء') || T('سيارة معاكسة'), player = T('اللاعب') || T('السيارة');
+  const item = T('الشيء') || T('سيارة معاكسة') || T('الشجيرة'), player = T('اللاعب') || T('السيارة') || T('الجمل');
   let mouse = 0, keyL = false, keyR = false;
   const key = (k, down) => vm.postIOData('keyboard', { key: k, isDown: down });
   rt.currentStepTime = 1000 / 30;                  // normalement fixé par vm.start() ; nécessaire pour que les scripts s'exécutent
@@ -26,6 +26,10 @@ const VM = require('scratch-vm'); const _S = require('scratch-storage'); const S
       const target = t < 18 ? item.x : (item.x > 0 ? -200 : 200);
       mouse += Math.max(-14, Math.min(14, (target - mouse) * 0.22));
       vm.postIOData('mouse', { x: mouse + 240, y: 180, canvasWidth: 480, canvasHeight: 360, isDown: false });
+    } else if (mode === 'saut') {                // saut : on appuie sur espace au bon moment pendant 20 s, ensuite on ne saute plus
+      const dx = item.x - player.x, onGround = Math.abs(player.y + 95) < 1.5;
+      const want = t < 20 && dx > 0 && dx <= 19 * val('السرعة') && onGround;
+      if (want !== keyL) { key(' ', want); keyL = want; }
     } else {                                      // course : on évite des voitures pendant 24 s, puis on fonce dessus
       let want = 0;
       const safe = t < 24 && Math.abs(item.x - player.x) < 70 && item.y < 80 && item.y > -190;
