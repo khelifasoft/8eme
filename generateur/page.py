@@ -293,12 +293,18 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.figpair figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}.figpair img{width:100%;height:auto;display:block}.figpair figcaption{padding:6px 10px;font-weight:700;color:#1e3a6e}
 .actnav{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
+.actcard{position:relative}.actlink{display:flex;flex-direction:column;color:inherit;text-decoration:none;flex:1}
+.actdone{display:flex;gap:6px;align-items:center;padding:0 12px 12px;font-size:13px;font-weight:700;color:#555;cursor:pointer;margin-top:auto}
+.actcb{width:18px;height:18px;accent-color:#2e9e5b;cursor:pointer;margin:0}.actcard.is-done{border-color:#2e9e5b;box-shadow:0 0 0 2px rgba(46,158,91,.4)}.actcard.is-done .actdone{color:#1d6b3b}
+.actprog{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:8px 0 4px}.allprog{font-weight:700;color:#1d6b3b}.actbar{flex:1;min-width:140px;max-width:420px;height:10px;background:#e3eaf6;border-radius:999px;overflow:hidden}.actbar>i{display:block;height:100%;background:#2e9e5b;width:0;transition:width .25s}
+.lvlprog{font-size:13px;font-weight:700;color:#1d6b3b;background:#e4f6e8;border-radius:999px;padding:0 10px}.donebtn{margin-inline-start:auto}.donebtn[aria-pressed=true]{background:#2e9e5b;color:#fff;border-color:#2e9e5b}.actcard[data-l="6"]{border-top-color:#0f9e7a}
+.blk.my{background:#FF6680}
 .actsec{margin:22px 0 8px;scroll-margin-top:calc(var(--barh) + 12px)}.actsec .acthead h3{margin:0;font-size:19px;color:#1e3a6e}.actsec>.pnote{margin:4px 0 10px}
 .actgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
 .actcard{display:flex;flex-direction:column;border:1px solid var(--line);border-top:5px solid #1e4fa8;border-radius:12px;overflow:hidden;background:#fff;text-decoration:none;color:inherit;transition:transform .12s,box-shadow .12s}
-.actcard:hover,.actcard:focus-visible{transform:translateY(-3px);box-shadow:0 6px 16px rgba(30,58,110,.18)}
+.actcard:hover,.actcard:focus-within{transform:translateY(-3px);box-shadow:0 6px 16px rgba(30,58,110,.18)}
 .actcard[data-l="1"]{border-top-color:#2e9e5b}.actcard[data-l="2"]{border-top-color:#1e6fd6}.actcard[data-l="3"]{border-top-color:#e8861c}.actcard[data-l="4"]{border-top-color:#c0392b}.actcard[data-l="5"]{border-top-color:#8a55d7}
-.actthumb{position:relative;aspect-ratio:4/3;background:#eef3fb}.actthumb img{width:100%;height:100%;object-fit:cover;display:block}.actthumb .badge{position:absolute;top:8px;inset-inline-start:8px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.actthumb{position:relative;aspect-ratio:4/3;background:#eef3fb}.actthumb img{width:100%;height:100%;object-fit:cover;display:block}.actthumb .badge{position:absolute;top:8px;right:8px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 @media (max-width:600px){.actgrid{grid-template-columns:repeat(2,1fr);gap:10px}.actcard h4{font-size:13.5px;padding:8px 9px 10px}}
 .actcard h4{margin:0;padding:10px 12px 12px;font-size:15px;line-height:1.4;color:#1e3a6e;text-align:start}
 </style>
@@ -696,6 +702,22 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
 // ---- jeux
+// ---- case « Fait » des activités Scratch : progression enregistrée dans ce navigateur (localStorage)
+const DONE_KEY = "scratch-activites-faites";
+const Done = (() => {
+  let mem = []; try { const v = JSON.parse(localStorage.getItem(DONE_KEY) || "[]"); if (Array.isArray(v)) mem = v; } catch (e) {}
+  const save = () => { try { localStorage.setItem(DONE_KEY, JSON.stringify(mem)); } catch (e) {} };
+  return { has: n => mem.includes(n), toggle(n){ const i = mem.indexOf(n); if (i >= 0) mem.splice(i, 1); else mem.push(n); save(); return i < 0; },
+           count: pred => DATA.activites ? DATA.activites.acts.filter(a => mem.includes(a.n) && (!pred || pred(a))).length : 0, reset(){ mem = []; save(); } };
+})();
+function updateProgress(){
+  const D = DATA.activites; if (!D) return;
+  document.querySelectorAll("[data-lvl-prog]").forEach(e => { const n = +e.dataset.lvlProg, L = D.levels.find(x => x.n === n); e.textContent = Done.count(a => a.lvl === n) + " / " + L.count; });
+  document.querySelectorAll("[data-all-prog]").forEach(e => { e.textContent = Done.count() + " / " + D.total; });
+  document.querySelectorAll(".actbar > i").forEach(e => { e.style.width = (100 * Done.count() / D.total) + "%"; });
+  document.querySelectorAll("[data-act]").forEach(e => { const d = Done.has(+e.dataset.act); e.classList.toggle("is-done", d); const cb = e.querySelector("input.actcb"); if (cb) cb.checked = d; });
+  document.querySelectorAll("button.donebtn").forEach(b => { const d = Done.has(+b.dataset.n); b.setAttribute("aria-pressed", String(d)); const t = d ? "تم ✓" : "علّم النشاط كمنجز"; if (b.textContent !== t && b.dataset.t !== t) { b.textContent = t; b.dataset.t = t; } });
+}
 const GAME_CATS = ["catch"];
 function watchBtn(x){
   const b = el("button",{type:"button",class:"btn main",text:"شاهد فيديو اللعبة"});
@@ -719,10 +741,11 @@ function renderGames(){
   // activités Scratch : rubrique placée sous « Jeux Scratch »
   if (DATA.activites) {
     g.append(el("h3",{class:"gcat",style:"margin-top:28px"}, el("span",{text:"أنشطة سكراتش"}), null),
-      el("p",{class:"pnote",text:"50 فكرة ونشاطا مصنّفة في أربعة مستويات، مع مشاريع إبداعية. لكل نشاط صفحة مفصلة: صورة السكربت والمشهد قبل التنفيذ وبعده ودور كل كتلة."}),
+      el("p",{class:"pnote",text:DATA.activites.intro}),
       el("div",{class:"actlevels"}, DATA.activites.levels.map(L => el("article",{class:"actlvl"}, el("div",{class:"acthead"}, el("span",{class:"badge",text:L.n}), el("span",{class:"lvlf",text:L.diff})),
-        el("h4",{text:L.t}), el("p",{text:L.obj}), el("p",{class:"pnote",text:L.count_t}), el("a",{class:"btn main",href:"#activites-" + L.n,text:"فتح المستوى"})))),
+        el("h4",{text:L.t}), el("p",{text:L.obj}), el("p",{class:"pnote"}, el("span",{text:L.count_t}), " · ", el("b",{"data-lvl-prog":L.n})), el("a",{class:"btn main",href:"#activites-" + L.n,text:"فتح المستوى"})))),
       el("p",{}, el("a",{class:"btn",href:"#activites",text:"فتح المجموعة كاملة"})));
+    updateProgress();
   }
   // jeux Scratch publiés sur scratch.mit.edu (liste dans jeux.js) : joués ici, sans quitter la page
   const ext = $("#extGames"); ext.replaceChildren();
@@ -908,14 +931,18 @@ function actImg(a, k, alt){ return el("img",{src:a.img[k][1],"data-fr-src":a.img
 function renderActivites(openLevel){
   $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← ألعاب سكراتش"; park(); $("#resArea").replaceChildren();
   const D = DATA.activites;
-  // une grille d'images par niveau : pour chaque activité, une image explicative (la scène après exécution) et son titre en dessous
-  const card = a => el("a",{class:"actcard","data-l":a.lvl,href:"#activite-" + a.n,title:a.t}, el("div",{class:"actthumb"}, actImg(a, "apres", a.t), el("span",{class:"badge pj",text:a.n})), el("h4",{text:a.t}));
-  const sec = L => el("section",{class:"actsec",id:"lvl-" + L.n,"data-l":L.n}, el("div",{class:"acthead"}, el("span",{class:"badge",text:L.n}), el("h3",{text:L.t}), el("span",{class:"lvlf",text:L.diff})),
+  // une grille d'images par niveau : pour chaque activité, une image explicative (la scène après exécution), son titre en dessous et une case « Fait »
+  const card = a => { const cb = el("input",{type:"checkbox",class:"actcb","aria-label":"تم"}); cb.checked = Done.has(a.n); cb.addEventListener("change", () => { Done.toggle(a.n); updateProgress(); });
+    return el("div",{class:"actcard","data-l":a.lvl,"data-act":a.n}, el("a",{class:"actlink",href:"#activite-" + a.n,title:a.t}, el("div",{class:"actthumb"}, actImg(a, "apres", a.t), el("span",{class:"badge pj",text:a.n})), el("h4",{text:a.t})),
+      el("label",{class:"actdone"}, cb, el("span",{text:"تم"}))); };
+  const sec = L => el("section",{class:"actsec",id:"lvl-" + L.n,"data-l":L.n}, el("div",{class:"acthead"}, el("span",{class:"badge",text:L.n}), el("h3",{text:L.t}), el("span",{class:"lvlf",text:L.diff}), el("span",{class:"lvlprog","data-lvl-prog":L.n})),
     el("p",{class:"pnote",text:L.obj}), el("div",{class:"actgrid"}, D.acts.filter(a => a.lvl === L.n).map(card)));
   const jump = el("div",{class:"dlchips"}, D.levels.map(L => el("a",{class:"chip",href:"#activites-" + L.n,"aria-pressed":String(L.n === openLevel),text:L.t.split(" – ")[0]})));
-  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"مجموعة: 50 فكرة ونشاطا في سكراتش"}),
-    el("p",{class:"pnote",text:"50 فكرة ونشاطا مصنّفة في أربعة مستويات، مع مشاريع إبداعية. لكل نشاط صفحة مفصلة: صورة السكربت والمشهد قبل التنفيذ وبعده ودور كل كتلة."}), jump, D.levels.map(sec)));
-  syncImgs();
+  const reset = el("button",{type:"button",class:"btn",text:"مسح تقدّمي"});
+  reset.addEventListener("click", () => { if (confirm(document.documentElement.lang === "fr" ? "Effacer toute ta progression ?" : "هل تريد مسح كل تقدّمك؟")) { Done.reset(); updateProgress(); } });
+  const prog = el("div",{class:"actprog"}, el("b",{text:"تقدّمك:"}), el("span",{class:"allprog","data-all-prog":""}), el("div",{class:"actbar"}, el("i",{})), reset);
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:D.title}), el("p",{class:"pnote",text:D.intro}), prog, el("p",{class:"pnote",text:"يُحفظ تقدّمك في هذا المتصفح فقط."}), jump, D.levels.map(sec)));
+  syncImgs(); updateProgress();
   window.__scrollTo = openLevel ? "lvl-" + openLevel : null;
 }
 function renderActivite(n){
@@ -924,8 +951,10 @@ function renderActivite(n){
   $("#axisBack").href = "#activites-" + a.lvl; $("#axisBack").textContent = "← مجموعة الأنشطة"; park(); $("#resArea").replaceChildren();
   const row = k => el("div",{class:"blkhelp"}, actChip(k), el("p",{text:D.blocks[k][2]}));
   const fig = (k, cap) => el("figure",{}, actImg(a, k, cap), el("figcaption",{text:cap}));
+  const mkDone = () => { const x = el("button",{type:"button",class:"btn donebtn","data-n":a.n,"aria-pressed":"false"}); x.addEventListener("click", () => { Done.toggle(a.n); updateProgress(); }); return x; };
+  const doneBtn = mkDone(), doneBtn2 = mkDone();
   $("#axisHead").replaceChildren(el("div",{class:"axhead actpage"},
-    el("div",{class:"acthead"}, el("span",{class:"badge pj",text:a.n}), el("span",{class:"lvlf",text:L.diff}), el("span",{class:"pnote",text:L.t})),
+    el("div",{class:"acthead"}, el("span",{class:"badge pj",text:a.n}), el("span",{class:"lvlf",text:L.diff}), el("span",{class:"pnote",text:L.t}), doneBtn),
     el("h2",{text:a.t}),
     el("h3",{text:"الهدف"}), el("p",{text:a.obj}),
     el("h3",{text:"الكتل المستعملة ودورها"}), a.blocks.map(row),
@@ -936,8 +965,8 @@ function renderActivite(n){
     el("h3",{text:"النتيجة المنتظرة"}), el("p",{text:a.res}),
     el("h3",{text:"تحدٍّ إضافي"}), el("p",{class:"defi",text:a.defi}),
     el("p",{class:"pnote",text:"الصور رسوم توضيحية أُنجزت لهذا الموقع (كتل سكراتش ومشهد المشروع)."}),
-    el("div",{class:"btns actnav"}, prev ? el("a",{class:"btn",href:"#activite-" + prev.n,text:"النشاط السابق"}) : null, el("a",{class:"btn main",href:"#activites-" + a.lvl,text:"كل الأنشطة"}), next ? el("a",{class:"btn",href:"#activite-" + next.n,text:"النشاط التالي"}) : null)));
-  syncImgs();
+    el("div",{class:"btns actnav"}, doneBtn2, prev ? el("a",{class:"btn",href:"#activite-" + prev.n,text:"النشاط السابق"}) : null, el("a",{class:"btn main",href:"#activites-" + a.lvl,text:"كل الأنشطة"}), next ? el("a",{class:"btn",href:"#activite-" + next.n,text:"النشاط التالي"}) : null)));
+  syncImgs(); updateProgress();
 }
 function renderRessources(id){
   $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← " + CUR.years["8"].ar; park(); $("#resArea").replaceChildren();
@@ -987,7 +1016,7 @@ function route(){
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
   if (h === "downloads") view = "dl";
-  let am = h.match(/^activites(?:-([1-5]))?$/); if (am) { view = "act"; y = "8"; }
+  let am = h.match(/^activites(?:-([1-6]))?$/); if (am) { view = "act"; y = "8"; }
   let ad = h.match(/^activite-(\d+)$/); if (ad) { view = "actd"; y = "8"; }
   let rm = h.match(/^ressources-([a-z]+)$/); if (rm) { view = "res"; y = "8"; }
   let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) { view = "fiche"; y = fm[1] === "contes" ? "7" : "8"; }
@@ -1007,6 +1036,7 @@ function route(){
   if (view === "axis") { if (k === "refs") renderRefs(y); else if (k === "ens") renderTeacher(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
   ynav.querySelectorAll(".sub a").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  updateProgress();
   const st = window.__scrollTo; window.__scrollTo = null;
   if (st && $("#" + st)) $("#" + st).scrollIntoView(); else window.scrollTo(0, 0);
 }

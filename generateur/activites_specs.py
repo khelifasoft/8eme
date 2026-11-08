@@ -61,4 +61,44 @@ SPECS.update({
  53: dict(script=[[b("recv", "quand je reçois maison", "عند استلام بيت"), b("backdrop"), F([IF(C("touche la clé ?", "هل تلمس المفتاح؟"), [b("chv", "ajouter 1 à clés", "غيّر المفاتيح بمقدار 1"), b("hide")]), IF(C("touche la porte et clés = 1", "لمس الباب والمفاتيح = 1"), [b("send", "envoyer à tous ouvrir", "أرسل فتح إلى الجميع")])])]], before=S("maison_interieur", [I("p:garcon", -120, -60, 60), I("d:cle", 20, -80, 35), I("d:porte_fermee", 150, -30, 70)], tags=[("clés : 0", "المفاتيح: 0", -140, 130, "#e0592a")]), after=S("maison_interieur", [I("p:garcon", 100, -60, 60), I("d:porte_ouverte", 150, -30, 70)], tags=[("clés : 1", "المفاتيح: 1", -140, 130, "#e0592a"), ("porte ouverte !", "الباب مفتوح!", 20, 80, "#2e9e5b")])),
  54: dict(script=[b("flag"), b("setv", "mettre faim à 0", "اجعل الجوع = 0"), F([b("wait"), b("chv", "ajouter 1 à faim", "غيّر الجوع بمقدار 1"), IFE(C("faim > 5", "الجوع > 5"), [b("costume", "basculer sur le costume Triste", "بدّل إلى زي الحزين")], [b("costume", "basculer sur le costume Content", "بدّل إلى زي السعيد")])]), [b("click"), b("chv", "ajouter -3 à faim (nourrir)", "غيّر الجوع بمقدار -3 (إطعام)")]], before=S("chambre", [I("a:chien", 0, -60, 120)], hud=[("Faim", "الجوع", 7)], tags=[("triste", "حزين", 0, 70, "#4C97FF")]), after=S("chambre", [I("a:chien", 0, -60, 120)], hud=[("Faim", "الجوع", 4)], tags=[("content !", "سعيد!", 0, 70, "#2e9e5b")])),
 })
-assert sorted(SPECS) == list(range(1, 55)), sorted(set(range(1, 55)) - set(SPECS))
+
+# ---- ajouts : drapeau de la Tunisie (55) et niveau 6 « méthode du programme » (56-63)
+RED = "#e70013"
+FLAG_FIELD = f'<rect x="60" y="60" width="360" height="240" fill="{RED}"/>'
+FLAG_FULL = [FLAG_FIELD, '<circle cx="240" cy="180" r="60" fill="#fff"/>', f'<circle cx="236" cy="180" r="42" fill="{RED}"/>', '<circle cx="250" cy="180" r="35" fill="#fff"/>', f'<polygon points="{star_points(253, 180, 17, 7)}" fill="{RED}"/>']
+def pen(c_fr, c_ar, size): return b("pencolor", f"mettre la couleur du stylo à {c_fr}", f"اجعل لون القلم {c_ar}"), b("pensize", f"mettre la taille du stylo à {size}", f"اجعل حجم القلم {size}")
+def go(x): return b("goto", f"aller à x : {x} y : 0", f"اذهب إلى س: {x} ص: 0")
+SPECS.update({
+ 55: dict(script=[b("flag"), b("clear"), *pen("blanc", "أبيض", 120), go(0), b("pendown"), b("penup"), *pen("rouge", "أحمر", 84), go(-4), b("pendown"), b("penup"), *pen("blanc", "أبيض", 70), go(10), b("pendown"), b("penup"), go(14), b("stamp", "estampiller (étoile rouge)", "اطبع (نجمة حمراء)")],
+          before=S(None, [I("a:chat", 175, -135, 55)], raw=[FLAG_FIELD], tags=[("1. Fond rouge", "1. خلفية حمراء", 0, 150, "#e8861c")]),
+          after=S(None, [I("a:chat", 175, -135, 55)], raw=FLAG_FULL, tags=[("Drapeau de la Tunisie", "علم تونس", 0, 150, "#2e9e5b")])),
+ 56: dict(script=[b("flag"), R(4, [b("move", "avancer de 80 pas", "تحرك 80 خطوة"), b("turnr", "tourner ↻ de 90 degrés", "استدر يمينا 90 درجة")]), b("say", "dire Fini ! pendant 2 secondes", "قل انتهيت! لمدة 2 ثانية")],
+          before=S(None, [I("a:chat", -60, -60, 90)], tags=[("Que va faire le lutin ?", "ماذا سيفعل اللاعب؟", 0, 140, "#4C97FF")]),
+          after=S(None, [I("a:chat", -60, -60, 90)], dashed=["M180,240 L260,240 L260,320 L180,320 Z"], bubble=("Fini !", "انتهيت!", -60, 10), tags=[("chemin : un carré", "المسار: مربع", 80, 140, "#e8861c")])),
+ 57: dict(script=[[LBL("Script avec 3 erreurs", "سكربت فيه 3 أخطاء"), b("say", "dire Bravo ! pendant 2 secondes", "قل أحسنت! لمدة 2 ثانية"), b("move", "avancer de 10 pas", "تحرك 10 خطوات")],
+                   [LBL("Script corrigé", "السكربت المصحَّح"), b("flag"), b("move", "avancer de 100 pas", "تحرك 100 خطوة"), b("say", "dire Bravo ! pendant 2 secondes", "قل أحسنت! لمدة 2 ثانية")]],
+          before=S("prairie_maisons", [I("a:chat", -150, -80, 90)], tags=[("3 erreurs à trouver", "3 أخطاء للاكتشاف", 0, 140, "#c0392b")]),
+          after=S("prairie_maisons", [I("a:chat", -50, -80, 90)], bubble=("Bravo !", "أحسنت!", -50, -15), arrows=[(-130, -40, -60, -40)], tags=[("corrigé ✓", "تم التصحيح ✓", 0, 140, "#2e9e5b")])),
+ 58: dict(script=[b("flag"), b("show"), b("say", "dire Bonjour ! pendant 2 secondes", "قل مرحبا! لمدة 2 ثانية"), b("move", "avancer de 100 pas", "تحرك 100 خطوة"), b("hide")],
+          before=S(None, diagram=[("Début", "البداية"), ("Montrer le lutin", "إظهار اللاعب"), ("Dire « Bonjour ! »", "قول «مرحبا!»"), ("Avancer de 100 pas", "التقدم 100 خطوة"), ("Cacher le lutin", "إخفاء اللاعب"), ("Fin", "النهاية")]),
+          after=S("prairie_maisons", [I("a:chat", -50, -80, 90)], bubble=("Bonjour !", "مرحبا!", -50, -15), arrows=[(-150, -40, -60, -40)], tags=[("puis le lutin disparaît", "ثم يختفي اللاعب", 0, 140, "#9966FF")])),
+ 59: dict(script=[[b("define", "définir carré", "عرّف مربع"), R(4, [b("move", "avancer de 60 pas", "تحرك 60 خطوة"), b("turnr", "tourner ↻ de 90 degrés", "استدر يمينا 90 درجة")])],
+                   [b("flag"), b("pendown"), b("callmod", "carré", "مربع"), b("move", "avancer de 100 pas", "تحرك 100 خطوة"), b("callmod", "carré", "مربع")]],
+          before=S(None, [I("a:chat", -100, -50, 60)], tags=[("Rien n'est dessiné", "لا شيء مرسوم", 0, 140, "#777")]),
+          after=S(None, [I("a:chat", 0, -50, 60)], lines=["M140,230 L240,230", "M140,230 L200,230 L200,290 L140,290 Z", "M240,230 L300,230 L300,290 L240,290 Z"], tags=[("2 carrés, 1 seul bloc", "مربعان بكتلة واحدة", 0, 140, "#FF6680")])),
+ 60: dict(script=[[b("define", "définir polygone (côtés)", "عرّف مضلع (أضلاع)"), R("côtés", [b("move", "avancer de 50 pas", "تحرك 50 خطوة"), b("turnr", "tourner ↻ de (360 ÷ côtés) degrés", "استدر يمينا (360 ÷ أضلاع) درجة")])],
+                   [b("flag"), b("pendown"), b("callmod", "polygone 3", "مضلع 3"), go(60), b("callmod", "polygone 5", "مضلع 5")]],
+          before=S(None, [I("a:chat", -80, 50, 60)], tags=[("polygone 3 puis polygone 5", "مضلع 3 ثم مضلع 5", 0, 150, "#FF6680")]),
+          after=S(None, [I("a:chat", 60, 50, 60)], lines=[poly_path(160, 130, 3, 50), poly_path(300, 130, 5, 50)], tags=[("même bloc, formes différentes", "كتلة واحدة وأشكال مختلفة", 0, 150, "#2e9e5b")])),
+ 61: dict(script=[[LBL("Avant : 10 blocs", "قبل: 10 كتل"), b("flag"), b("pendown"), *[blk for _ in range(4) for blk in (b("move", "avancer de 80 pas", "تحرك 80 خطوة"), b("turnr", "tourner ↻ de 90 degrés", "استدر يمينا 90 درجة"))]],
+                   [LBL("Après : 5 blocs", "بعد: 5 كتل"), b("flag"), b("pendown"), R(4, [b("move", "avancer de 80 pas", "تحرك 80 خطوة"), b("turnr", "tourner ↻ de 90 degrés", "استدر يمينا 90 درجة")])]],
+          before=S(None, [I("a:chat", -100, -50, 60)], lines=["M140,230 L220,230 L220,310 L140,310 Z"], tags=[("10 blocs", "10 كتل", 0, 140, "#c0392b")]),
+          after=S(None, [I("a:chat", -100, -50, 60)], lines=["M140,230 L220,230 L220,310 L140,310 Z"], tags=[("5 blocs : même dessin ✓", "5 كتل: الرسم نفسه ✓", 0, 140, "#2e9e5b")])),
+ 62: dict(script=[b("flag"), F([IFE(C("distance de Personne < 100", "المسافة إلى الشخص < 100"), [b("costume", "basculer sur le costume porte ouverte", "بدّل إلى زي الباب المفتوح")], [b("costume", "basculer sur le costume porte fermée", "بدّل إلى زي الباب المغلق")])])],
+          before=S("village_route", [I("d:porte_fermee", 110, -20, 90), I("p:garcon", -150, -60, 65)], tags=[("capteur : distance = 260", "المستشعر: المسافة = 260", -40, 120, "#5CB1D6"), ("actionneur : porte fermée", "المنفّذ: الباب مغلق", -40, 80, "#e8861c")]),
+          after=S("village_route", [I("d:porte_ouverte", 110, -20, 90), I("p:garcon", 20, -60, 65)], tags=[("capteur : distance = 90", "المستشعر: المسافة = 90", -40, 120, "#5CB1D6"), ("actionneur : porte ouverte", "المنفّذ: الباب مفتوح", -40, 80, "#2e9e5b")])),
+ 63: dict(script=[b("flag"), b("size", "mettre la taille à 150 %", "اجعل الحجم 150%"), b("say", "dire Remix de « Attrape les poissons » par Sami pendant 3 secondes", "قل نسخة معدّلة من «اصطد الأسماك» بقلم سامي لمدة 3 ثوان")],
+          before=S("mer", [I("p:sindbad", 0, -70, 80), I("a:poisson", -60, 60, 60)], tags=[("projet original", "المشروع الأصلي", 0, 140, "#777")]),
+          after=S("mer", [I("p:sindbad", 0, -70, 80), I("a:poisson", -60, 60, 90), I("d:etoile", 90, 80, 45)], bubble=("Remix de « Attrape les poissons » par Sami", "نسخة معدّلة من «اصطد الأسماك» بقلم سامي", 0, -10), tags=[("remix ✓", "نسخة معدّلة ✓", 0, 140, "#2e9e5b")])),
+})
+assert sorted(SPECS) == list(range(1, 64)), sorted(set(range(1, 64)) - set(SPECS))

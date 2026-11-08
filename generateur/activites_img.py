@@ -7,7 +7,8 @@ import scratch_art as art
 from activites_data1 import BLOCKS
 OUT = os.path.join(ROOT, "fiches-activite", "activites"); os.makedirs(OUT, exist_ok=True)
 COL = {"ev": ("#FFBF00", "#CC9900"), "mv": ("#4C97FF", "#3373CC"), "lk": ("#9966FF", "#774DCB"), "sn": ("#CF63CF", "#BD42BD"), "ct": ("#FFAB19", "#CF8B17"),
-       "se": ("#5CB1D6", "#2E8EB8"), "op": ("#59C059", "#389438"), "va": ("#FF8C1A", "#DB6E00"), "pen": ("#0FBD8C", "#0B8E69")}
+       "se": ("#5CB1D6", "#2E8EB8"), "op": ("#59C059", "#389438"), "va": ("#FF8C1A", "#DB6E00"), "pen": ("#0FBD8C", "#0B8E69"), "my": ("#FF6680", "#FF4D6A")}
+HATS = {"define"}   # blocs « chapeau » autres que les événements
 FONT = "Tajawal,Arial,sans-serif"
 LANGIDX = {"fr": 0, "ar": 1}
 # mots des blocs en C
@@ -22,6 +23,7 @@ def IF(cond, body): return ("IF", cond, body)
 def IFE(cond, a, c): return ("IFE", cond, a, c)
 def UNTIL(cond, body): return ("U", cond, body)
 def WU(cond): return ("WU", cond)
+def LBL(fr, ar): return ("LBL", fr, ar)     # titre placé au-dessus d'un script (pas un bloc)
 
 def tw(s, size=13): return sum(size * (0.62 if ord(c) < 0x600 else 0.52) for c in s) + 2
 class Canvas:
@@ -35,7 +37,7 @@ class Canvas:
     def block(self, x, key, fr, ar, width=None):
         cat = BLOCKS[key][0]; fill, stroke = COL[cat]; text = (fr or BLOCKS[key][1]) if self.i == 0 else (ar or BLOCKS[key][2])
         w = tw(text) + 26; h = 30
-        if cat == "ev":   # chapeau
+        if cat == "ev" or key in HATS:   # chapeau
             self.s.append(f'<path d="M{x},{self.y + 8} Q{x + w * .3},{self.y - 8} {x + w * .55},{self.y + 6} Q{x + w * .75},{self.y + 12} {x + w},{self.y + 6} L{x + w},{self.y + 36} L{x},{self.y + 36} Z" fill="{fill}" stroke="{stroke}" stroke-width="1.5"/>')
             self.txt(x + 12, self.y + 28, text); self.y += 36; self.maxw = max(self.maxw, x + w); return
         self.s.append(f'<rect x="{x}" y="{self.y}" width="{w:.1f}" height="{h}" rx="4" fill="{fill}" stroke="{stroke}" stroke-width="1.5"/>')
@@ -63,7 +65,9 @@ class Canvas:
     def stack(self, x, items):
         for it in items:
             k = it[0]
-            if k == "B": self.block(x, it[1], it[2], it[3])
+            if k == "LBL":
+                self.txt(x, self.y + 14, it[1 + self.i], fill="#333", size=14); self.maxw = max(self.maxw, x + tw(it[1 + self.i], 14)); self.y += 26
+            elif k == "B": self.block(x, it[1], it[2], it[3])
             elif k == "F": self.cblock(x, [("t", CTEXT["forever"][self.i])], lambda xx, it=it: self.stack(xx, it[1]))
             elif k == "R": self.cblock(x, [("t", CTEXT["repeat"][self.i].format(n=it[1]))], lambda xx, it=it: self.stack(xx, it[2]))
             elif k in ("IF", "IFE"):
@@ -93,7 +97,7 @@ def script_svg(scripts, lang):
     return c.svg()
 
 # ---------- scènes : back (clé de lieu ou None), items = [(art, x, y, w, rot, opa, flip)], bubble=(fr, ar, x, y), tags=[(fr, ar, x, y, couleur)], lines=[(d)], hud=[(fr, ar, valeur)]
-def S(back, items=(), bubble=None, tags=(), lines=(), hud=(), arrows=()): return dict(back=back, items=list(items), bubble=bubble, tags=list(tags), lines=list(lines), hud=list(hud), arrows=list(arrows))
+def S(back, items=(), bubble=None, tags=(), lines=(), hud=(), arrows=(), raw=(), diagram=(), dashed=()): return dict(back=back, items=list(items), bubble=bubble, tags=list(tags), lines=list(lines), hud=list(hud), arrows=list(arrows), raw=list(raw), diagram=list(diagram), dashed=list(dashed))
 def I(a, x, y, w=90, rot=0, opa=1.0, flip=False): return (a, x, y, w, rot, opa, flip)
 def _inner(svg): return svg
 def scene_svg(sp, lang):
@@ -102,6 +106,8 @@ def scene_svg(sp, lang):
     from jeux2 import nest
     if sp["back"]: s += nest(art.art_svg("l", sp["back"]), 0, 0, 480, 360)
     else: s += '<rect width="480" height="360" fill="#fff"/><rect x="2" y="2" width="476" height="356" fill="none" stroke="#ddd"/>'
+    for r in sp.get("raw", []): s += r
+    for ln in sp.get("dashed", []): s += f'<path d="{ln}" fill="none" stroke="#e8861c" stroke-width="4" stroke-dasharray="9 7" stroke-linecap="round" stroke-linejoin="round"/>'
     for ln in sp["lines"]: s += f'<path d="{ln}" fill="none" stroke="#c0392b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'
     for (a, x, y, w, rot, opa, flip) in sp["items"]:
         kind, key = a.split(":"); svg = art.art_svg(kind, key); sw, sh = art.svg_size(svg); h = w * sh / sw
@@ -118,9 +124,28 @@ def scene_svg(sp, lang):
     for (fr, ar, x, y, color) in sp["tags"]:
         t = (fr, ar)[i]; w = tw(t, 15) + 24
         s += f'<rect x="{240 + x - w / 2}" y="{180 - y - 14}" width="{w}" height="28" rx="14" fill="{color}"/><text x="{240 + x}" y="{180 - y + 6}" text-anchor="middle" font-family="{FONT}" font-size="15" font-weight="700" fill="#fff">{escape(t)}</text>'
+    dg = sp.get("diagram", [])
+    for k, (fr, ar) in enumerate(dg):          # diagramme (organigramme) vertical
+        t = (fr, ar)[i]; w = max(150, tw(t, 15) + 30); bx = 240 - w / 2; by = 14 + k * (332 / max(len(dg), 1)); bh = 30
+        shape = "rx=\"15\"" if k in (0, len(dg) - 1) else "rx=\"4\""
+        s += f'<rect x="{bx}" y="{by}" width="{w}" height="{bh}" {shape} fill="#fff" stroke="#1e4fa8" stroke-width="2.5"/><text x="240" y="{by + 20}" text-anchor="middle" font-family="{FONT}" font-size="15" font-weight="700" fill="#1e3a6e">{escape(t)}</text>'
+        if k < len(dg) - 1: ny = by + bh; s += f'<line x1="240" y1="{ny}" x2="240" y2="{ny + 332 / len(dg) - bh - 2}" stroke="#e8861c" stroke-width="3" marker-end="url(#ah)"/>'
     defs = '<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e8861c"/></marker></defs>'
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{defs}{s}</svg>'
 
+import math
+def poly_path(x0, y0, n, side, h0=90):
+    """chemin SVG (pixels de la scène) d'un polygone régulier dessiné comme en Scratch : on avance de « side » puis on tourne à droite de 360/n"""
+    h = h0; x, y = x0, y0; d = f"M{x:.1f},{y:.1f}"
+    for _ in range(n):
+        x += side * math.sin(math.radians(h)); y += -side * math.cos(math.radians(h)); d += f" L{x:.1f},{y:.1f}"; h += 360 / n
+    return d + " Z"
+def star_points(cx, cy, R, r, up=True):
+    pts = []
+    for k in range(10):
+        a = math.radians(-90 + k * 36); rad = R if k % 2 == 0 else r
+        pts.append(f"{cx + rad * math.cos(a):.1f},{cy + rad * math.sin(a):.1f}")
+    return " ".join(pts)
 def render_all():
     from activites_specs import SPECS
     n = 0

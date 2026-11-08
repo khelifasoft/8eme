@@ -5,6 +5,7 @@ LEVELS = [
  dict(n=3, fr="Niveau 3 – Avancé : créer des mini-jeux", ar="المستوى 3 – متقدم: إنشاء ألعاب صغيرة", diff=("Difficile", "صعب"), obj=("Assembler variables, conditions et boucles pour créer de vrais petits jeux.", "الجمع بين المتغيرات والشروط والحلقات لإنشاء ألعاب صغيرة حقيقية.")),
  dict(n=4, fr="Niveau 4 – Expert : programmation complexe", ar="المستوى 4 – خبير: برمجة معقدة", diff=("Très difficile", "صعب جدا"), obj=("Structurer des programmes plus longs : modules, états, gravité, intelligence simple.", "هيكلة برامج أطول: وحدات وحالات وجاذبية وذكاء بسيط.")),
  dict(n=5, fr="Niveau 5 – Projets créatifs", ar="المستوى 5 – مشاريع إبداعية", diff=("Créatif", "إبداعي"), obj=("Combiner plusieurs astuces dans un projet personnel.", "الجمع بين عدة أفكار في مشروع شخصي.")),
+ dict(n=6, fr="Niveau 6 – Méthode du programme : modules, tests et capteurs", ar="المستوى 6 – منهجية المنهاج: الوحدات والاختبار والمستشعرات", diff=("Moyen à difficile", "متوسط إلى صعب"), obj=("Travailler les attendus du programme : lire, tester et corriger, décomposer, créer des modules, optimiser et simuler des capteurs.", "العمل على مطالب المنهاج: القراءة والاختبار والتصحيح والتجزئة وإنشاء الوحدات والتحسين ومحاكاة المستشعرات.")),
 ]
 # cat : ev événements, mv mouvement, lk apparence, sn son, ct contrôle, se capteurs, op opérateurs, va variables, pen stylo
 BLOCKS = {
@@ -25,6 +26,8 @@ BLOCKS = {
  "setv": ("va", "mettre score à 0", "اجعل النقاط = 0"), "chv": ("va", "ajouter 1 à score", "غيّر النقاط بمقدار 1"),
  "clone": ("ct", "créer un clone de moi-même", "أنشئ نسخة من نفسي"), "whenclone": ("ct", "quand je commence comme un clone", "عند بدء النسخة"), "delclone": ("ct", "supprimer ce clone", "احذف هذه النسخة"),
  "bdover": ("lk", "basculer sur l'arrière-plan Game Over", "بدّل إلى خلفية نهاية اللعبة"), "myblock": ("va", "définir mon bloc", "عرّف كتلتي"), "listadd": ("va", "ajouter chose à la liste", "أضف شيئا إلى القائمة"), "listitem": ("va", "élément 1 de la liste", "العنصر 1 من القائمة"),
+ "define": ("my", "définir carré", "عرّف مربع"), "callmod": ("my", "carré", "مربع"),
+ "pensize": ("pen", "mettre la taille du stylo à 50", "اجعل حجم القلم 50"), "pencolor": ("pen", "mettre la couleur du stylo à rouge", "اجعل لون القلم أحمر"), "stamp": ("pen", "estampiller", "اطبع"),
  "pendown": ("pen", "stylo en position d'écriture", "أنزل القلم"), "penup": ("pen", "relever le stylo", "ارفع القلم"), "clear": ("pen", "effacer tout", "امسح الكل"),
 }
 def A(n, lvl, title, obj, blocks, steps, result, defi): return dict(n=n, lvl=lvl, title=title, obj=obj, blocks=blocks, steps=steps, result=result, defi=defi)
