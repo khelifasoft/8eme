@@ -657,7 +657,7 @@ function renderGames(){
     const row = el("div",{class:"gamegrid"});
     list.forEach(x => row.append(el("article",{class:"gcard"},
       el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
-      el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}), chipsFor("jeu_" + x.key),
+      el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
         el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}))))));
     g.append(row);
   });
