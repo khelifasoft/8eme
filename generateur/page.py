@@ -648,11 +648,11 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
 // ---- jeux
-const GAME_CATS = ["catch"], KEEP_GAMES = {catch: ["sindbad"]};  // un seul jeu retenu par catégorie affichée
+const GAME_CATS = ["catch"];
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
   GAME_CATS.forEach(cat => {
-    const list = (DATA.games||[]).filter(x => x.cat === cat && (!KEEP_GAMES[cat] || KEEP_GAMES[cat].includes(x.key))); if (!list.length) return;
+    const list = (DATA.games||[]).filter(x => x.cat === cat); if (!list.length) return;
     g.append(el("h3",{class:"gcat"}, el("span",{text:list[0].cat_ar}), el("a",{class:"ficheln",href:`fiches-activite/${cat}.html`,target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"})));
     const row = el("div",{class:"gamegrid"});
     list.forEach(x => row.append(el("article",{class:"gcard"},

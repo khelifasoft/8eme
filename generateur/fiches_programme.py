@@ -119,7 +119,7 @@ FAMILIES = {
   allegee="Changer seulement la vitesse ou la durée d'affichage puis rejouer.",
   prolongement="Créer un module « perdre une vie » qui diminue les vies et joue un son ; tester le jeu avec ce module.",
   criteres=["Le réglage modifié change bien la difficulté.", "L'élève explique la boucle et la condition principale.", "Un test avec un camarade est rapporté.", "La modification est justifiée."]),
- "catch": dict(level=8, title="Attrape-objets (un jeu par conte)", prefix=["jeu_cinderella", "jeu_layla", "jeu_djeha", "jeu_alibaba", "jeu_sindbad", "jeu_crow", "jeu_hare", "jeu_lion", "jeu_frog", "jeu_shepherd", "jeu_pigs", "jeu_duckling"], dir="jeux", pattern="jeu_{k}.sb3",
+ "catch": dict(level=8, title="Attrape-objets", prefix=["jeu_sindbad"], dir="jeux", pattern="jeu_{k}.sb3",
   situation="Comment faire tomber des objets de plus en plus vite, les attraper avec la souris et compter les points et les vies ?",
   parts=[0, 1, 2], duree="2 séances de 45 minutes",
   demarche=[("Besoin à faire émerger sans ordinateur (10 min)", "Lancer des balles de papier dans une corbeille tenue par un élève : comment compter les points et les ratés ? → besoin de variables."),

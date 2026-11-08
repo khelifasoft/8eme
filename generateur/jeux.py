@@ -7,18 +7,7 @@ OUT = sys.argv[1] if len(sys.argv) > 1 else "jeux"
 P_, A_, D_ = "p", "a", "d"
 # conte -> (joueur, objet qui tombe, effet sonore, fond, titre arabe, titre français, consigne arabe, consigne française)
 GAMES = {
- "cinderella": ((P_, "cendrillon_bal", 42), (D_, "etoile", 45), "magie", "salle_bal", "التقطي النجوم السحرية", "Attrape les étoiles magiques", "حرّك الفأرة لتلتقط النجوم قبل منتصف الليل!", "Déplace la souris pour attraper les étoiles avant minuit !"),
- "layla": ((P_, "laila", 42), (D_, "pomme", 45), "pop", "foret", "اجمعي التفاح لجدتك", "Ramasse les pommes pour grand-mère", "حرّك الفأرة لتجمع التفاح في السلة.", "Déplace la souris pour ramasser les pommes."),
- "djeha": ((P_, "djeha", 42), (D_, "pieces", 40), "piece", "marche", "اجمع القطع الذهبية", "Ramasse les pièces d'or", "حرّك الفأرة لتلتقط القطع قبل أن تسقط.", "Déplace la souris pour attraper les pièces."),
- "alibaba": ((P_, "ali_baba", 42), (D_, "sac_or", 40), "piece", "grotte_interieur", "كنز المغارة", "Le trésor de la grotte", "التقط أكياس الذهب قبل أن تصل إلى الأرض.", "Attrape les sacs d'or avant qu'ils touchent le sol."),
  "sindbad": ((P_, "sindbad", 38), (A_, "poisson", 45), "plouf", "mer", "اصطد الأسماك", "Attrape les poissons", "حرّك الفأرة لتلتقط الأسماك.", "Déplace la souris pour attraper les poissons."),
- "crow": ((A_, "corbeau", 50), (D_, "fromage", 35), "ding", "foret", "التقط الجبن", "Attrape le fromage", "ساعد الغراب على التقاط قطع الجبن.", "Aide le corbeau à attraper les morceaux de fromage."),
- "hare": ((A_, "lievre", 55), (D_, "pomme", 40), "pop", "piste_course", "الأرنب الجائع", "Le lièvre gourmand", "حرّك الفأرة ليلتقط الأرنب الفواكه.", "Déplace la souris pour que le lièvre attrape les fruits."),
- "lion": ((A_, "lion", 60), (D_, "pain", 40), "ding", "foret", "غذاء الأسد", "Le repas du lion", "ساعد الأسد على التقاط الطعام.", "Aide le lion à attraper la nourriture."),
- "frog": ((A_, "grenouille", 45), (D_, "etoile", 40), "boing", "jardin_puits", "الضفدع والنجوم", "La grenouille et les étoiles", "قفز الضفدع ليلتقط النجوم.", "Fais sauter la grenouille pour attraper les étoiles."),
- "shepherd": ((P_, "berger", 42), (D_, "foin", 40), "pop", "colline_pature", "علف الأغنام", "Le foin des moutons", "اجمع القش لإطعام الأغنام.", "Ramasse le foin pour nourrir les moutons."),
- "pigs": ((A_, "cochon", 45), (D_, "pomme", 40), "cochon", "colline_pature", "الخنزير يلتقط التفاح", "Le cochon attrape les pommes", "حرّك الفأرة ليلتقط الخنزير التفاح.", "Déplace la souris pour que le cochon attrape les pommes."),
- "duckling": ((A_, "canard", 50), (D_, "pain", 40), "canard", "etang_ferme", "خبز للبطة", "Du pain pour le canard", "التقط قطع الخبز قبل أن تسقط في الماء.", "Attrape les morceaux de pain avant qu'ils tombent à l'eau."),
 }
 
 def build(key):
