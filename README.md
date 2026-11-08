@@ -85,6 +85,8 @@ Modifier le parcours : `generateur/parcours.py` (textes arabe/français), puis `
 
 Le bouton « بطاقة النشاط » / « Fiche d'activité », à côté du téléchargement du jeu ou du conte, ouvre une **page du site** (`#fiche-catch`, `#fiche-contes-<conte>`) : situation-problème, **étapes en images** (6 images du jeu « Attrape les poissons », 6 scènes par conte), déroulement, activités de l'élève, critères de réussite et différenciation. Les images sont générées par `python3 generateur/fiches_etapes.py` (dans `fiches-activite/etapes/`, avec `generateur/etapes.json`) ; le texte vient de `generateur/fiches_programme.py`. Les fiches complètes à imprimer restent dans `fiches-activite/*.html`.
 
+**Ressources du jeu « Attrape les poissons »** : le bouton « موارد اللعبة » ouvre `#ressources-catch` avec les 3 images et les 2 sons du projet (à importer dans Scratch) et un zip (`jeux/ressources/`, régénéré par `python3 generateur/fiches_ressources.py`).
+
 ## Téléchargements
 
 Rubrique « Téléchargements » (barre bleue, ou bouton de l'accueil) : logiciels utilisés dans tous les niveaux (Scratch, App Inventor, mBlock, Python, LibreOffice, Audacity, Shotcut, GIMP, SQLite, Filius…), filtrables par niveau, avec liens vers les sites officiels. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire).
