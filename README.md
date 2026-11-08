@@ -95,13 +95,18 @@ Le bouton « بطاقة النشاط » / « Fiche d'activité », à côté du 
 
 **Ressources du jeu « Attrape les poissons »** : le bouton « موارد اللعبة » ouvre `#ressources-catch` avec les 3 images et les 2 sons du projet (à importer dans Scratch) et un zip (`jeux/ressources/`, régénéré par `python3 generateur/fiches_ressources.py`).
 
-## Activités : collection d'astuces Scratch
+## Activités Scratch : collection d'astuces (sous « Jeux Scratch »)
 
-Rubrique « الأنشطة / Activités » (barre bleue, `#activites`) : **50 astuces et activités Scratch** en quatre niveaux (1 Débutant, 2 Intermédiaire, 3 Avancé, 4 Expert) plus **4 projets créatifs** (niveau 5), soit 54 fiches. Chaque fiche suit le modèle standard : objectif, **blocs nécessaires** (affichés comme des blocs Scratch colorés), réalisation en 3 étapes, résultat attendu et défi supplémentaire. Bilingue arabe/français. Données : `generateur/activites_data1.py` (niveaux 1-2 et dictionnaire des blocs) et `activites_data2.py` (niveaux 3-5) ; modifier puis `python3 generateur/page.py`.
+Sous la section **« Jeux Scratch »** des pages 8e et 9e (`#y8-prog`), la rubrique **« أنشطة سكراتش / Activités Scratch »** présente **50 astuces et activités Scratch** en quatre niveaux (1 Débutant, 2 Intermédiaire, 3 Avancé, 4 Expert) plus **4 projets créatifs** (niveau 5), soit 54 activités. Cinq cartes de niveau ouvrent la collection (`#activites`, `#activites-<n>`) ; chaque activité a une fiche courte (objectif, blocs, réalisation, résultat, défi) et une **page détaillée** (`#activite-<n>`) avec : le rôle de chaque bloc, l'**image du script complet** (blocs Scratch dessinés), la **scène avant / après**, les étapes, le résultat attendu et le défi, avec navigation précédente / suivante. Bilingue arabe/français ; les images existent en deux langues.
+
+- Textes : `generateur/activites_data1.py` (niveaux 1-2 et dictionnaire des blocs), `activites_data2.py` (niveaux 3-5), `activites_help.py` (rôle des blocs).
+- Images (illustrations dessinées pour le site, pas des captures de l'éditeur Scratch) : `generateur/activites_specs.py` décrit le script et les deux scènes de chaque activité ; `python3 generateur/activites_img.py` écrit les 324 SVG dans `fiches-activite/activites/`. Puis `python3 generateur/page.py`.
+
+**Menu principal** : seuls les niveaux 7e, 8e et 9e y figurent ; les niveaux secondaires restent accessibles depuis les cartes de la page d'accueil, et la page Téléchargements depuis le bouton de l'accueil.
 
 ## Téléchargements
 
-Rubrique « Téléchargements » (barre bleue, ou bouton de l'accueil) : logiciels utilisés dans tous les niveaux (Scratch, App Inventor, mBlock, Python, LibreOffice, Audacity, Shotcut, GIMP, SQLite, Filius…), filtrables par niveau, avec liens vers les sites officiels. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire).
+Rubrique « Téléchargements » (bouton de la page d'accueil) : logiciels utilisés dans tous les niveaux (Scratch, App Inventor, mBlock, Python, LibreOffice, Audacity, Shotcut, GIMP, SQLite, Filius…), filtrables par niveau, avec liens vers les sites officiels. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire).
 
 ## Régénérer les fiches
 

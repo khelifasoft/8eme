@@ -286,6 +286,12 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .blk.ev{background:#c78a00}.blk.mv{background:#3f7ee0}.blk.lk{background:#8a55d7}.blk.sn{background:#b448b0}.blk.ct{background:#d68a00}.blk.se{background:#2a9fc9}.blk.op{background:#3fa854}.blk.va{background:#e0592a}.blk.pen{background:#0f9e7a}
 .lvlf{margin-inline-start:auto;font-size:13px;color:#666;border:1px solid var(--line);border-radius:999px;padding:0 10px}.defi{background:#fff6e0;border-radius:6px;padding:4px 10px}.step.lvlbox>summary{font-size:17px}
 @media (min-width:761px) and (max-width:1150px){.ybtn{padding:0 9px;font-size:15px}}
+.actlevels{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin:10px 0}.actlvl{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;display:flex;flex-direction:column;gap:6px}.actlvl h4{margin:0;font-size:16px}.actlvl p{margin:0;font-size:14px}.actlvl .btn{align-self:flex-start}
+.acthead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.actpage h3{margin:18px 0 6px;color:#1e3a6e}.blkhelp{display:flex;align-items:flex-start;gap:10px;margin:6px 0;flex-wrap:wrap}.blkhelp .blk{flex:none}.blkhelp p{margin:0;flex:1;min-width:200px;font-size:15px}
+.scriptimg{overflow-x:auto;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff;text-align:start}.scriptimg img{max-width:100%;height:auto;display:block}
+.bigsteps{padding-inline-start:24px;display:flex;flex-direction:column;gap:6px;font-size:16px}.tip{background:#eaf6ff;border-radius:8px;padding:6px 12px;margin:8px 0}
+.figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.figpair figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}.figpair img{width:100%;height:auto;display:block}.figpair figcaption{padding:6px 10px;font-weight:700;color:#1e3a6e}
+.actnav{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 </style>
 </head>
 <body>
@@ -701,6 +707,14 @@ function renderGames(){
         el("div",{class:"btns"}, watchBtn(x), x.fiche ? ficheBtn(x.fiche) : null, x.res ? resBtn(x.res) : null)))));
     g.append(row);
   });
+  // activités Scratch : rubrique placée sous « Jeux Scratch »
+  if (DATA.activites) {
+    g.append(el("h3",{class:"gcat",style:"margin-top:28px"}, el("span",{text:"أنشطة سكراتش"}), null),
+      el("p",{class:"pnote",text:"50 فكرة ونشاطا مصنّفة في أربعة مستويات، مع مشاريع إبداعية. لكل نشاط صفحة مفصلة: صورة السكربت والمشهد قبل التنفيذ وبعده ودور كل كتلة."}),
+      el("div",{class:"actlevels"}, DATA.activites.levels.map(L => el("article",{class:"actlvl"}, el("div",{class:"acthead"}, el("span",{class:"badge",text:L.n}), el("span",{class:"lvlf",text:L.diff})),
+        el("h4",{text:L.t}), el("p",{text:L.obj}), el("p",{class:"pnote",text:L.count_t}), el("a",{class:"btn main",href:"#activites-" + L.n,text:"فتح المستوى"})))),
+      el("p",{}, el("a",{class:"btn",href:"#activites",text:"فتح المجموعة كاملة"})));
+  }
   // jeux Scratch publiés sur scratch.mit.edu (liste dans jeux.js) : joués ici, sans quitter la page
   const ext = $("#extGames"); ext.replaceChildren();
   (window.JEUX||[]).forEach(j => {
@@ -717,7 +731,7 @@ renderGames();
 
 
 // ---- navigation : #home, #y7 / #y8 / #y9, #y7-env … #y9-prog, #story-<clé>
-const CUR = DATA.curriculum, YEARS = CUR.order;
+const CUR = DATA.curriculum, YEARS = CUR.order, MENU_YEARS = ["7", "8", "9"];   // menu principal : 7e, 8e et 9e seulement (les autres niveaux restent accessibles depuis l'accueil)
 function renderStoryHead(key){
   const h = $("#storyHead"); h.replaceChildren();
   const s = key === "__general" ? GENERAL : DATA.stories.find(x => x.key === key); if (!s) return;
@@ -743,7 +757,7 @@ function showStory(key){
 }
 // menu : une entrée par année, avec ses quatre axes
 const ynav = $("#yearnav");
-YEARS.forEach(y => {
+MENU_YEARS.forEach(y => {
   const Y = CUR.years[y];
   const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
   const btn = el("button",{class:"ybtn",type:"button","aria-expanded":"false","aria-haspopup":"true"}, el("span",{class:"yl",text:Y.ar}), el("span",{class:"ys",text:Y.short_ar}), el("i",{class:"car",text:"▾"}));
@@ -751,7 +765,6 @@ YEARS.forEach(y => {
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
   ynav.append(d);
 });
-{ [["#activites","الأنشطة"],["#downloads","التحميلات"]].forEach(([h, t]) => { const a = el("a",{class:"ybtn dl",href:h,text:t}); a.style.textDecoration = "none"; ynav.append(a); }); }
 function closeMenus(){ ynav.querySelectorAll(".ydrop").forEach(d => { d.removeAttribute("data-open"); d.querySelector(".ybtn").setAttribute("aria-expanded","false"); }); }
 document.addEventListener("click", e => { if (!e.target.closest(".ydrop")) closeMenus(); else if (e.target.closest(".sub a")) closeMenus(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenus(); });
@@ -878,17 +891,42 @@ function renderDownloads(){
     el("p",{class:"pnote",text:"لإضافة برنامج: عدّل الملف logiciels.js."})));
 }
 function syncImgs(){ document.querySelectorAll("img[data-fr-src]").forEach(i => { if (!i.dataset.arSrc) i.dataset.arSrc = i.getAttribute("src"); i.setAttribute("src", document.documentElement.lang === "fr" ? i.dataset.frSrc : i.dataset.arSrc); }); }
-function renderActivites(){
-  $("#axisBack").href = "#home"; $("#axisBack").textContent = "← الرئيسية"; park(); $("#resArea").replaceChildren();
+function actChip(k){ const b = DATA.activites.blocks[k]; return el("span",{class:"blk " + b[0],text:b[1]}); }
+function actImg(a, k, alt){ return el("img",{src:a.img[k][1],"data-fr-src":a.img[k][0],alt,loading:"lazy"}); }
+function renderActivites(openLevel){
+  $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← ألعاب سكراتش"; park(); $("#resArea").replaceChildren();
   const D = DATA.activites;
-  const chip = k => { const b = D.blocks[k]; return el("span",{class:"blk " + b[0],text:b[1]}); };
   const fiche = a => el("details",{class:"step proj"}, el("summary",{}, el("span",{class:"badge pj",text:a.n}), el("b",{text:a.t})),
-    el("div",{class:"stbody"}, el("h5",{text:"الهدف"}), el("p",{text:a.obj}), el("h5",{text:"الكتل اللازمة"}), el("div",{class:"blkrow"}, a.blocks.map(chip)),
-      el("h5",{text:"الإنجاز"}), el("ol",{}, a.steps.map(t => el("li",{text:t}))), el("h5",{text:"النتيجة المنتظرة"}), el("p",{text:a.res}), el("h5",{text:"تحدٍّ إضافي"}), el("p",{class:"defi",text:a.defi})));
-  const lvl = L => el("details",{class:"step lvlbox"}, el("summary",{}, el("span",{class:"badge",text:L.n}), el("b",{text:L.t}), el("span",{class:"lvlf",text:L.diff})),
-    el("div",{class:"stbody"}, el("p",{class:"pnote",text:L.obj}), D.acts.filter(a => a.lvl === L.n).map(fiche)));
+    el("div",{class:"stbody"}, el("h5",{text:"الهدف"}), el("p",{text:a.obj}), el("h5",{text:"الكتل اللازمة"}), el("div",{class:"blkrow"}, a.blocks.map(actChip)),
+      el("h5",{text:"الإنجاز"}), el("ol",{}, a.steps.map(t => el("li",{text:t}))), el("h5",{text:"النتيجة المنتظرة"}), el("p",{text:a.res}), el("h5",{text:"تحدٍّ إضافي"}), el("p",{class:"defi",text:a.defi}),
+      el("p",{}, el("a",{class:"btn main",href:"#activite-" + a.n,text:"فتح الصفحة المفصلة"}))));
+  const lvl = L => { const d = el("details",{class:"step lvlbox"}, el("summary",{}, el("span",{class:"badge",text:L.n}), el("b",{text:L.t}), el("span",{class:"lvlf",text:L.diff})),
+    el("div",{class:"stbody"}, el("p",{class:"pnote",text:L.obj}), D.acts.filter(a => a.lvl === L.n).map(fiche))); if (L.n === openLevel) d.open = true; return d; };
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"مجموعة: 50 فكرة ونشاطا في سكراتش"}),
-    el("p",{class:"pnote",text:"50 فكرة مصنّفة في أربعة مستويات، ثم مشاريع إبداعية. لكل نشاط البطاقة نفسها: الهدف والكتل اللازمة والإنجاز والنتيجة المنتظرة وتحدٍّ إضافي."}), D.levels.map(lvl)));
+    el("p",{class:"pnote",text:"50 فكرة ونشاطا مصنّفة في أربعة مستويات، مع مشاريع إبداعية. لكل نشاط صفحة مفصلة: صورة السكربت والمشهد قبل التنفيذ وبعده ودور كل كتلة."}), D.levels.map(lvl)));
+  syncImgs();
+  if (openLevel) { const o = $("#axisHead details.lvlbox[open]"); if (o) o.scrollIntoView(); }
+}
+function renderActivite(n){
+  const D = DATA.activites, a = D.acts.find(x => x.n === n); if (!a) return;
+  const L = D.levels.find(x => x.n === a.lvl), prev = D.acts.find(x => x.n === n - 1), next = D.acts.find(x => x.n === n + 1);
+  $("#axisBack").href = "#activites-" + a.lvl; $("#axisBack").textContent = "← مجموعة الأنشطة"; park(); $("#resArea").replaceChildren();
+  const row = k => el("div",{class:"blkhelp"}, actChip(k), el("p",{text:D.blocks[k][2]}));
+  const fig = (k, cap) => el("figure",{}, actImg(a, k, cap), el("figcaption",{text:cap}));
+  $("#axisHead").replaceChildren(el("div",{class:"axhead actpage"},
+    el("div",{class:"acthead"}, el("span",{class:"badge pj",text:a.n}), el("span",{class:"lvlf",text:L.diff}), el("span",{class:"pnote",text:L.t})),
+    el("h2",{text:a.t}),
+    el("h3",{text:"الهدف"}), el("p",{text:a.obj}),
+    el("h3",{text:"الكتل المستعملة ودورها"}), a.blocks.map(row),
+    el("h3",{text:"السكربت الكامل"}), el("div",{class:"scriptimg"}, actImg(a, "script", a.t)),
+    el("h3",{text:"الإنجاز خطوة بخطوة"}), el("ol",{class:"bigsteps"}, a.steps.map(t => el("li",{text:t}))),
+    el("p",{class:"tip",text:"نصيحة: اختبر مشروعك بعد كل خطوة بالنقر على العلم الأخضر."}),
+    el("h3",{text:"قبل وبعد"}), el("div",{class:"figpair"}, fig("avant", "قبل التنفيذ"), fig("apres", "بعد التنفيذ")),
+    el("h3",{text:"النتيجة المنتظرة"}), el("p",{text:a.res}),
+    el("h3",{text:"تحدٍّ إضافي"}), el("p",{class:"defi",text:a.defi}),
+    el("p",{class:"pnote",text:"الصور رسوم توضيحية أُنجزت لهذا الموقع (كتل سكراتش ومشهد المشروع)."}),
+    el("div",{class:"btns actnav"}, prev ? el("a",{class:"btn",href:"#activite-" + prev.n,text:"النشاط السابق"}) : null, el("a",{class:"btn main",href:"#activites-" + a.lvl,text:"كل الأنشطة"}), next ? el("a",{class:"btn",href:"#activite-" + next.n,text:"النشاط التالي"}) : null)));
+  syncImgs();
 }
 function renderRessources(id){
   $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← " + CUR.years["8"].ar; park(); $("#resArea").replaceChildren();
@@ -938,24 +976,25 @@ function route(){
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
   if (h === "downloads") view = "dl";
-  if (h === "activites") view = "act";
-  let rm = h.match(/^ressources-([a-z]+)$/); if (rm) view = "res";
-  let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) view = "fiche";
+  let am = h.match(/^activites(?:-([1-5]))?$/); if (am) { view = "act"; y = "8"; }
+  let ad = h.match(/^activite-(\d+)$/); if (ad) { view = "actd"; y = "8"; }
+  let rm = h.match(/^ressources-([a-z]+)$/); if (rm) { view = "res"; y = "8"; }
+  let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) { view = "fiche"; y = fm[1] === "contes" ? "7" : "8"; }
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
-  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act"); $("#viewStory").hidden = view !== "story";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "dl") renderDownloads();
-  if (view === "act") renderActivites();
+  if (view === "act") renderActivites(am[1] ? +am[1] : 0);
+  if (view === "actd") renderActivite(+ad[1]);
   if (view === "fiche") renderFiche(fm[1], fm[2]);
   if (view === "res") renderRessources(rm[1]);
   if (view === "year") renderYear(y);
   if (view === "axis") { if (k === "refs") renderRefs(y); else if (k === "ens") renderTeacher(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
-  ynav.querySelectorAll(".dl").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   ynav.querySelectorAll(".sub a").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   window.scrollTo(0, 0);
 }
