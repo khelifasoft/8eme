@@ -20,7 +20,8 @@ import exercices
 import secondaire
 man["exo"] = {**exercices.EXO, **secondaire.EXO}; man["act"] = exercices.ACT
 man["seances"] = json.load(open(os.path.join(HERE, "seances.json"), encoding="utf-8"))
-import parcours, fiches_programme as _FP
+import parcours, fiches_programme as _FP, activites as _ACT
+man["activites"], _afr = _ACT.export()
 man["fiches"] = {fid: dict(title=F["title"], meta=f'{_FP.PRG["levels"][str(F["level"])]["year_fr"]} · {F["duree"]}', situation=F["situation"], steps=[t for t, _ in F["demarche"]], eleve=F["eleve"], criteres=F["criteres"], allegee=F["allegee"], prolongement=F["prolongement"]) for fid, F in _FP.FAMILIES.items()}
 man["ressources"] = json.load(open(os.path.join(HERE, "ressources.json"), encoding="utf-8"))
 man["etapes"] = json.load(open(os.path.join(HERE, "etapes.json"), encoding="utf-8"))
@@ -43,6 +44,7 @@ man["parcours"], _pfr = parcours.export()
 FR = i18n_fr.build(man, games)
 FR["map"].update(_pfr)
 FR["map"].update(_far)
+FR["map"].update(_afr)
 for _l in list({**exercices.EXO, **secondaire.EXO}.values()):
     for _q in _l:
         FR["map"][_q["q"]] = _q["q_fr"]
@@ -280,6 +282,10 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .fiche h3{margin:16px 0 4px;color:#1e3a6e}.fiche .sit{background:#f4f8ff;border-left:4px solid #1e4fa8;padding:6px 10px;margin:0}.figgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
 .figgrid figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}.figgrid img{width:100%;height:auto;display:block}.figgrid figcaption{padding:8px 10px;display:flex;flex-direction:column;gap:3px;font-size:14px}
 .rprev{width:100%;max-height:150px;object-fit:contain;background:#f4f8ff;border-radius:8px}audio.rprev{height:40px}
+.blkrow{display:flex;flex-wrap:wrap;gap:5px}.blk{color:#fff;font-weight:600;font-size:13px;line-height:1.3;padding:4px 10px;border-radius:6px;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+.blk.ev{background:#c78a00}.blk.mv{background:#3f7ee0}.blk.lk{background:#8a55d7}.blk.sn{background:#b448b0}.blk.ct{background:#d68a00}.blk.se{background:#2a9fc9}.blk.op{background:#3fa854}.blk.va{background:#e0592a}.blk.pen{background:#0f9e7a}
+.lvlf{margin-inline-start:auto;font-size:13px;color:#666;border:1px solid var(--line);border-radius:999px;padding:0 10px}.defi{background:#fff6e0;border-radius:6px;padding:4px 10px}.step.lvlbox>summary{font-size:17px}
+@media (min-width:761px) and (max-width:1150px){.ybtn{padding:0 9px;font-size:15px}}
 </style>
 </head>
 <body>
@@ -745,7 +751,7 @@ YEARS.forEach(y => {
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
   ynav.append(d);
 });
-{ const a = el("a",{class:"ybtn dl",href:"#downloads",text:"التحميلات"}); a.style.textDecoration = "none"; ynav.append(a); }
+{ [["#activites","الأنشطة"],["#downloads","التحميلات"]].forEach(([h, t]) => { const a = el("a",{class:"ybtn dl",href:h,text:t}); a.style.textDecoration = "none"; ynav.append(a); }); }
 function closeMenus(){ ynav.querySelectorAll(".ydrop").forEach(d => { d.removeAttribute("data-open"); d.querySelector(".ybtn").setAttribute("aria-expanded","false"); }); }
 document.addEventListener("click", e => { if (!e.target.closest(".ydrop")) closeMenus(); else if (e.target.closest(".sub a")) closeMenus(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenus(); });
@@ -872,6 +878,18 @@ function renderDownloads(){
     el("p",{class:"pnote",text:"لإضافة برنامج: عدّل الملف logiciels.js."})));
 }
 function syncImgs(){ document.querySelectorAll("img[data-fr-src]").forEach(i => { if (!i.dataset.arSrc) i.dataset.arSrc = i.getAttribute("src"); i.setAttribute("src", document.documentElement.lang === "fr" ? i.dataset.frSrc : i.dataset.arSrc); }); }
+function renderActivites(){
+  $("#axisBack").href = "#home"; $("#axisBack").textContent = "← الرئيسية"; park(); $("#resArea").replaceChildren();
+  const D = DATA.activites;
+  const chip = k => { const b = D.blocks[k]; return el("span",{class:"blk " + b[0],text:b[1]}); };
+  const fiche = a => el("details",{class:"step proj"}, el("summary",{}, el("span",{class:"badge pj",text:a.n}), el("b",{text:a.t})),
+    el("div",{class:"stbody"}, el("h5",{text:"الهدف"}), el("p",{text:a.obj}), el("h5",{text:"الكتل اللازمة"}), el("div",{class:"blkrow"}, a.blocks.map(chip)),
+      el("h5",{text:"الإنجاز"}), el("ol",{}, a.steps.map(t => el("li",{text:t}))), el("h5",{text:"النتيجة المنتظرة"}), el("p",{text:a.res}), el("h5",{text:"تحدٍّ إضافي"}), el("p",{class:"defi",text:a.defi})));
+  const lvl = L => el("details",{class:"step lvlbox"}, el("summary",{}, el("span",{class:"badge",text:L.n}), el("b",{text:L.t}), el("span",{class:"lvlf",text:L.diff})),
+    el("div",{class:"stbody"}, el("p",{class:"pnote",text:L.obj}), D.acts.filter(a => a.lvl === L.n).map(fiche)));
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"مجموعة: 50 فكرة ونشاطا في سكراتش"}),
+    el("p",{class:"pnote",text:"50 فكرة مصنّفة في أربعة مستويات، ثم مشاريع إبداعية. لكل نشاط البطاقة نفسها: الهدف والكتل اللازمة والإنجاز والنتيجة المنتظرة وتحدٍّ إضافي."}), D.levels.map(lvl)));
+}
 function renderRessources(id){
   $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← " + CUR.years["8"].ar; park(); $("#resArea").replaceChildren();
   const RG = (DATA.ressources || {})[id] || {items:[], zip:""}, R = RG.items, game = (DATA.games || []).find(x => x.res === id) || {title_ar:""}; R.forEach(r => { FRMAP[r.ar] = r.fr; });
@@ -920,22 +938,24 @@ function route(){
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
   if (h === "downloads") view = "dl";
+  if (h === "activites") view = "act";
   let rm = h.match(/^ressources-([a-z]+)$/); if (rm) view = "res";
   let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) view = "fiche";
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
-  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res"); $("#viewStory").hidden = view !== "story";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "dl") renderDownloads();
+  if (view === "act") renderActivites();
   if (view === "fiche") renderFiche(fm[1], fm[2]);
   if (view === "res") renderRessources(rm[1]);
   if (view === "year") renderYear(y);
   if (view === "axis") { if (k === "refs") renderRefs(y); else if (k === "ens") renderTeacher(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
-  ynav.querySelectorAll(".dl").forEach(a => { if (view === "dl") a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  ynav.querySelectorAll(".dl").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   ynav.querySelectorAll(".sub a").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   window.scrollTo(0, 0);
 }
