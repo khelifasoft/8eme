@@ -111,6 +111,35 @@ def saut():
         for n, body in enumerate(S, 1):
             open(os.path.join(OUT, f"saut{suffix}-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{defs}{body}</svg>')
     return [dict(img=f"fiches-activite/etapes/saut-{n}.svg", img_ar=f"fiches-activite/etapes/saut-ar-{n}.svg", t=SAUT[n - 1][0], c=SAUT[n - 1][1]) for n in range(1, 7)]
+LABY = [("Début de partie", "Je clique sur le drapeau vert : la souris part en bas à gauche, le score est à 0 et le temps à 60."),
+ ("Je déplace la souris", "J'utilise les flèches : à chaque image, x ou y change de 4, après avoir mémorisé la position précédente."),
+ ("Un mur m'arrête", "Si j'entre dans la zone d'un mur hors de l'ouverture, je reviens à la position précédente : je ne traverse pas."),
+ ("Je passe l'ouverture", "À l'ouverture, x est hors de la zone du mur : je continue vers le couloir suivant."),
+ ("Étoile ramassée", "Quand la souris est proche d'une étoile (petite différence en x et en y) : le score augmente de 1 et l'étoile disparaît."),
+ ("Arrivée au fromage", "Quand y dépasse 140 : le message « Gagné ! » s'affiche et le jeu s'arrête. Si le temps tombe à 0, le jeu s'arrête aussi.")]
+LL = {"fr": dict(flag="1  Drapeau vert", keys="2  Flèches", wall="3  Mur : retour", gap="4  Ouverture", star="+1 point", win="GAGNÉ !"),
+      "ar": dict(flag="1  العلم الأخضر", keys="2  الأسهم", wall="3  جدار: رجوع", gap="4  الفتحة", star="+1 نقطة", win="فزت!")}
+def labyrinthe():
+    import video_jeu as V
+    z, T = V.load(os.path.join(ROOT, "jeux", "jeu_labyrinthe.sb3")); by = {t["name"]: t for t in T}
+    def scene(mx, my, score, t, stars, extra, flip=False):
+        s = V.place(T[0]["costumes"][0], 0, 0, 100) + V.place(by["الجبن"]["costumes"][0], 195, 150, 30)
+        for k, (sx, sy) in enumerate([(0, -130), (0, -15), (0, 75)], 1):
+            if k in stars: s += V.place(by["نجمة 1"]["costumes"][0], sx, sy, 25)
+        s += V.place(by["الفأرة"]["costumes"][0], mx, my, 22, flip)
+        return s + V.monitor("النقاط", score, 4, 4) + V.monitor("الوقت", t, 4, 30) + extra
+    defs = '<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e8861c"/></marker></defs>'
+    for lang in ("fr", "ar"):
+        L = LL[lang]; suffix = "" if lang == "fr" else "-ar"
+        S = [scene(-200, -130, 0, 60, (1, 2, 3), tag(L["flag"], 140, 250)),
+             scene(-90, -130, 0, 57, (1, 2, 3), arrow(250, 310, 330, 310) + tag(L["keys"], 270, 255)),
+             scene(-90, -91, 0, 55, (1, 2, 3), tag(L["wall"], 30, 175)),
+             scene(195, -60, 1, 52, (2, 3), arrow(330, 300, 330, 220) + tag(L["gap"], 340, 255)),
+             scene(0, -15, 1, 51, (2, 3), tag(L["star"], 255, 140, "#2e9e5b")),
+             scene(192, 142, 3, 47, (), f'<rect x="0" y="0" width="480" height="360" fill="#000" fill-opacity=".45"/><text x="240" y="195" text-anchor="middle" font-family="Tajawal,Arial,sans-serif" font-size="52" font-weight="bold" fill="#fff">{L["win"]}</text>')]
+        for n, body in enumerate(S, 1):
+            open(os.path.join(OUT, f"labyrinthe{suffix}-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{defs}{body}</svg>')
+    return [dict(img=f"fiches-activite/etapes/labyrinthe-{n}.svg", img_ar=f"fiches-activite/etapes/labyrinthe-ar-{n}.svg", t=LABY[n - 1][0], c=LABY[n - 1][1]) for n in range(1, 7)]
 def contes():
     out = {}
     for key in sc.D:
@@ -120,7 +149,7 @@ def contes():
             out[key].append(dict(img=f"fiches-activite/etapes/{key}-{i+1}.svg", t=f"Scène {i+1}", c=J3.caption(key, i)))
     return out
 def export():
-    return dict(catch=catch(), course=course(), saut=saut(), contes=contes())
+    return dict(catch=catch(), course=course(), saut=saut(), labyrinthe=labyrinthe(), contes=contes())
 if __name__ == "__main__":
     e = export(); json.dump(e, open(os.path.join(HERE, "etapes.json"), "w", encoding="utf-8"), ensure_ascii=False)
     print("étapes :", len(e["catch"]), {k: len(v) for k, v in e["contes"].items()})

@@ -28,14 +28,24 @@ GAMES = {
    ("القلوب", "2"): ("coeurs-2.svg", "Cœurs : 2 vies", "القلوب: روحان", "image"),
    ("القلوب", "3"): ("coeurs-3.svg", "Cœurs : 3 vies", "القلوب: ثلاثة أرواح", "image"),
    ("Stage", "موسيقى مغامرة"): ("musique-aventure.wav", "Musique de fond : aventure", "موسيقى الخلفية: مغامرة", "son"),
-   ("الشجيرة", "نطّة"): ("son-choc.wav", "Son quand on touche un buisson", "صوت لمس الشجيرة", "son")})}
+   ("الشجيرة", "نطّة"): ("son-choc.wav", "Son quand on touche un buisson", "صوت لمس الشجيرة", "son")}),
+ "labyrinthe": dict(sb3="jeu_labyrinthe.sb3", dir="labyrinthe", names={
+   ("Stage", "fond"): ("decor-labyrinthe.svg", "Décor : le labyrinthe", "الخلفية: المتاهة", "image"),
+   ("الفأرة", "فأرة"): ("souris.svg", "La souris (joueur)", "الفأرة (اللاعب)", "image"),
+   ("الجبن", "جبن"): ("fromage.svg", "Le fromage (but)", "الجبن (الهدف)", "image"),
+   ("نجمة 1", "نجمة"): ("etoile.svg", "L'étoile à ramasser", "النجمة المطلوب التقاطها", "image"),
+   ("Stage", "موسيقى غامضة"): ("musique-mystere.wav", "Musique de fond : mystère", "موسيقى الخلفية: غموض", "son"),
+   ("نجمة 1", "جرس صغير"): ("son-clochette.wav", "Son quand on ramasse une étoile", "صوت التقاط النجمة", "son"),
+   ("نجمة 2", "نجمة"): None, ("نجمة 3", "نجمة"): None, ("نجمة 2", "جرس صغير"): None, ("نجمة 3", "جرس صغير"): None})}
 allres = {}
 for gid, G in GAMES.items():
     OUT = os.path.join(ROOT, "jeux", "ressources", G["dir"]); os.makedirs(OUT, exist_ok=True)
     z = zipfile.ZipFile(os.path.join(ROOT, "jeux", G["sb3"])); p = json.loads(z.read("project.json")); items = []
     for t in p["targets"]:
         for c in t["costumes"] + t["sounds"]:
-            f, fr, ar, ty = G["names"][(t["name"], c["name"])]; open(os.path.join(OUT, f), "wb").write(z.read(c["md5ext"]))
+            nm = G["names"][(t["name"], c["name"])]
+            if nm is None: continue
+            f, fr, ar, ty = nm; open(os.path.join(OUT, f), "wb").write(z.read(c["md5ext"]))
             items.append(dict(file=f"jeux/ressources/{G['dir']}/{f}", fr=fr, ar=ar, type=ty))
     items.sort(key=lambda i: ({"image": 0, "son": 1}[i["type"]], i["file"]))
     with zipfile.ZipFile(os.path.join(ROOT, "jeux", "ressources", f"ressources-{G['dir']}.zip"), "w", zipfile.ZIP_DEFLATED) as zz:

@@ -170,6 +170,23 @@ FAMILIES = {
   allegee="Changer uniquement la hauteur du saut.",
   prolongement="Créer un module « buisson touché » (−1 vie, son, retour à droite) et l'appeler à la place des blocs.",
   criteres=["L'effet du changement de hauteur est constaté au test.", "L'élève explique les conditions imbriquées de la collision.", "Une amélioration est testée."]),
+ "labyrinthe": dict(level=8, title="Le labyrinthe de la souris", prefix=["jeu_labyrinthe"], dir="jeux", pattern="jeu_{k}.sb3",
+  situation="Comment déplacer une souris avec les flèches dans un labyrinthe, l'empêcher de traverser les murs et compter les points et le temps ?",
+  parts=[0, 1, 2], duree="2 séances de 45 minutes",
+  demarche=[("Besoin à faire émerger sans ordinateur (10 min)", "Dans la cour, un labyrinthe tracé à la craie : un élève « souris » avance sur les ordres de la classe. Que faire quand il arrive à un mur ? → besoin de mémoriser la position précédente (variable)."),
+            ("Jouer et décrire (10 min)", "Jouer au jeu, puis décrire les règles : déplacement, murs, ouvertures, étoiles, temps, arrivée."),
+            ("Lire les scripts (15 min)", "Les flèches changent x ou y de 4 ; avant de bouger, la position est mémorisée dans deux variables (« x précédent », « y précédent ») ; pour chaque mur, trois conditions imbriquées : « si y est dans la zone du mur, si x n'est pas dans l'ouverture, alors retourner à la position précédente » ; le temps vaut 60 moins les secondes écoulées (compteur d'images ÷ 30) ; l'arrivée est détectée quand y dépasse 140."),
+            ("Modifier et optimiser (20 min)", "Changer la vitesse de la souris, la durée totale ou la place d'une ouverture, puis rejouer et comparer."),
+            ("Tester et corriger (10 min)", "Tester : taper contre chaque mur, passer chaque ouverture, ramasser les trois étoiles, laisser le temps s'écouler ; corriger les erreurs.")],
+  eleve=["Joue jusqu'au bout et note ton score et le temps restant.",
+         "Trouve les variables qui mémorisent la position précédente. À quoi servent-elles ?",
+         "Change la vitesse de la souris (la valeur 4) ou la durée totale (la valeur 60), teste et explique l'effet.",
+         "Repère les trois conditions imbriquées d'un mur. Explique chacune.",
+         "Défi : déplace l'ouverture d'un mur de l'autre côté et adapte la condition."],
+  questions=["Pourquoi retourne-t-on à la position précédente au lieu d'arrêter le jeu ?", "Que se passe-t-il quand le temps atteint 0 ?"],
+  allegee="Changer uniquement la durée totale.",
+  prolongement="Ajouter un quatrième mur avec son ouverture, puis regrouper la vérification d'un mur dans un module.",
+  criteres=["L'effet du changement est constaté au test.", "L'élève explique les conditions imbriquées d'un mur.", "Une amélioration est testée."]),
 }
 
 CSS = """body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;max-width:820px;margin:0 auto;padding:18px 22px 50px;color:#1d2433;line-height:1.55;background:#fff}

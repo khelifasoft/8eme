@@ -9,6 +9,7 @@ OUT = os.path.join(ROOT, "jeux", "videos"); os.makedirs(OUT, exist_ok=True)
 FPS = 30
 GAMES = {"catch": dict(sb3="jeu_sindbad.sb3", mp4="attrape-poissons.mp4", event="score_up", sound_sprite="الشيء", hud=("النقاط", "الأرواح")),
          "saut": dict(sb3="jeu_saut.sb3", mp4="saut.mp4", event="lives_down", sound_sprite="الشجيرة", hud=("النقاط", "الأرواح")),
+         "maze": dict(sb3="jeu_labyrinthe.sb3", mp4="labyrinthe.mp4", event="score_up", sound_sprite="نجمة 1", hud=("النقاط", "الوقت")),
          "course": dict(sb3="jeu_course.sb3", mp4="course.mp4", event="lives_down", sound_sprite="سيارة معاكسة", hud=("النقاط", "الأرواح"))}
 
 def load(sb3):
@@ -21,9 +22,9 @@ def load(sb3):
             cs.append(dict(svg=svg.replace("<svg", '<svg x="0" y="0"', 1), w=w, h=h, rcx=c.get("rotationCenterX", w / 2), rcy=c.get("rotationCenterY", h / 2)))
         T.append(dict(name=t["name"], costumes=cs, sounds=[s["md5ext"] for s in t["sounds"]], stage=t["isStage"]))
     return z, T
-def place(c, x, y, size):
-    s = size / 100; tx, ty = 240 + x - c["rcx"] * s, 180 - y - c["rcy"] * s
-    return f'<g transform="translate({tx:.1f},{ty:.1f}) scale({s})">{c["svg"]}</g>'
+def place(c, x, y, size, flip=False):
+    s = size / 100
+    return f'<g transform="translate({240 + x:.1f},{180 - y:.1f}) scale({-s if flip else s},{s}) translate({-c["rcx"]},{-c["rcy"]})">{c["svg"]}</g>'
 FONT = "Tajawal,Arial,sans-serif"
 def bubble(text, x, y):
     w = 11 * len(text) + 30; x = max(w / 2 + 4, min(480 - w / 2 - 4, x))
@@ -36,7 +37,7 @@ def tag(txt, x, y, color):
     w = 9 * len(txt) + 18
     return f'<rect x="{x}" y="{y}" width="{w}" height="28" rx="14" fill="{color}"/><text x="{x + w/2}" y="{y + 19}" text-anchor="middle" font-family="{FONT}" font-size="15" font-weight="bold" fill="#fff">{escape(txt)}</text>'
 
-def render(frames, T):
+def render(frames, T, hud=("النقاط", "الأرواح")):
     """un SVG par image ; bulle de dialogue : 4 s pour la consigne, 3 s pour le message de fin (comme dans les scripts)"""
     svgs = []; shown = {}; events = []
     prev = None
@@ -45,12 +46,12 @@ def render(frames, T):
         for t in T:   # ordre des calques = ordre du projet
             if t["stage"]: s += place(t["costumes"][0], 0, 0, 100); continue
             d = next(x for x in fr["sp"] if x["name"] == t["name"])
-            if d["visible"]: s += place(t["costumes"][min(d["costume"], len(t["costumes"]) - 1)], d["x"], d["y"], d["size"])
-        s += monitor("النقاط", fr["score"], 4, 4) + monitor("الأرواح", fr["lives"], 4, 30)
+            if d["visible"]: s += place(t["costumes"][min(d["costume"], len(t["costumes"]) - 1)], d["x"], d["y"], d["size"], d.get("direction", 90) < 0)
+        s += "".join(monitor(lbl, fr["vars"].get(lbl, 0), 4, 4 + 26 * k) for k, lbl in enumerate(hud))
         for d in fr["sp"]:
             if d["say"]:
                 key = (d["name"], d["say"]); shown.setdefault(key, i); dur = (3 if d["say"].startswith("انتهت") else 4) * FPS
-                if i - shown[key] < dur and d["visible"]: s += bubble(d["say"], 240 + max(-140, min(140, d["x"])), 120 if d["name"] in ("اللاعب", "السيارة") else 20 if False else 120)
+                if i - shown[key] < dur and d["visible"]: s += bubble(d["say"], 240 + d["x"], max(4, min(320, 180 - d["y"] - 80)))
         if prev:
             if fr["score"] > prev["score"]: events.append(("score_up", i)); fr["_flash"] = i
             if fr["lives"] < prev["lives"]: events.append(("lives_down", i))
@@ -62,7 +63,7 @@ def make(name):
     node_mod = os.environ.get("SCRATCH_NODE_MODULES")
     if not node_mod: sys.exit("Définir SCRATCH_NODE_MODULES (dossier node_modules avec scratch-vm et scratch-storage)")
     subprocess.run(["node", os.path.join(HERE, "enregistrer_jeu.js"), sb3, frames_json, name], check=True, env=dict(os.environ, NODE_PATH=node_mod), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    frames = json.load(open(frames_json)); z, T = load(sb3); body, events = render(frames, T)
+    frames = json.load(open(frames_json)); z, T = load(sb3); body, events = render(frames, T, G["hud"])
     # « +1 » une seconde après chaque prise (jeu du poisson)
     flash = {}
     if name == "catch":

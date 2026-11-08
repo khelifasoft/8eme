@@ -49,6 +49,22 @@ AR = {
    criteres=["L'effet du changement de hauteur est constaté au test.", "L'élève explique les conditions imbriquées de la collision.", "Une amélioration est testée."],
    allegee="Changer uniquement la hauteur du saut.",
    prolongement="Créer un module « buisson touché » (−1 vie, son, retour à droite) et l'appeler à la place des blocs.")),
+ "labyrinthe": dict(
+  title="متاهة الفأرة", duree="حصتان من 45 دقيقة", year="السنة الثامنة",
+  situation="كيف نحرّك فأرة بالأسهم في متاهة، ونمنعها من اختراق الجدران، ونحسب النقاط والوقت؟",
+  steps=["حاجة تُستخلص دون حاسوب (10 د)", "نلعب ونصف (10 د)", "نقرأ السكربتات (15 د)", "نعدّل ونحسّن (20 د)", "نختبر ونصحّح (10 د)"],
+  eleve=["العب حتى النهاية ودوّن نتيجتك والوقت المتبقي.", "ابحث عن المتغيرين اللذين يحفظان الموضع السابق. ما فائدتهما؟", "غيّر سرعة الفأرة (القيمة 4) أو المدة الكلية (القيمة 60)، واختبر وفسّر الأثر.", "حدّد الشروط الثلاثة المتداخلة الخاصة بجدار، وفسّر كلا منها.", "تحدٍّ: انقل فتحة جدار إلى الجهة الأخرى وكيّف الشرط."],
+  criteres=["يُلاحَظ أثر التغيير عند الاختبار.", "يفسّر التلميذ الشروط المتداخلة الخاصة بجدار.", "يُختبَر تحسين واحد."],
+  allegee="تغيير المدة الكلية فقط.",
+  prolongement="إضافة جدار رابع بفتحته، ثم تجميع مراقبة الجدار في وحدة.",
+  fr=dict(
+   title="Le labyrinthe de la souris", duree="2 séances de 45 minutes", year="8e année",
+   situation="Comment déplacer une souris avec les flèches dans un labyrinthe, l'empêcher de traverser les murs et compter les points et le temps ?",
+   steps=['Besoin à faire émerger sans ordinateur (10 min)', 'Jouer et décrire (10 min)', 'Lire les scripts (15 min)', 'Modifier et optimiser (20 min)', 'Tester et corriger (10 min)'],
+   eleve=["Joue jusqu'au bout et note ton score et le temps restant.", "Trouve les variables qui mémorisent la position précédente. À quoi servent-elles ?", "Change la vitesse de la souris (la valeur 4) ou la durée totale (la valeur 60), teste et explique l'effet.", "Repère les trois conditions imbriquées d'un mur. Explique chacune.", "Défi : déplace l'ouverture d'un mur de l'autre côté et adapte la condition."],
+   criteres=["L'effet du changement est constaté au test.", "L'élève explique les conditions imbriquées d'un mur.", "Une amélioration est testée."],
+   allegee="Changer uniquement la durée totale.",
+   prolongement="Ajouter un quatrième mur avec son ouverture, puis regrouper la vérification d'un mur dans un module.")),
  "contes": dict(
   title="نحكي قصة بسكراتش", duree="حصتان من 45 دقيقة", year="السنة السابعة",
   situation="كيف نجعل الشخصيات تمثّل قصة، فتتكلم كل واحدة في دورها وبالترتيب الصحيح، عند النقر على العلم الأخضر؟",
@@ -87,6 +103,13 @@ SAUT_STEPS = [
  ("شجيرة متفادَاة", "إذا خرجت الشجيرة من المنصة دون أن تلمسني: تزيد النقاط بواحد والسرعة بـ 0٫15."),
  ("شجيرة ملموسة", "إذا كان الجمل على الأرض عند وصول الشجيرة: أفقد روحا (يختفي قلب) ويُسمع صوت الاصطدام."),
  ("نهاية اللعبة", "عندما تصل الأرواح إلى 0 تظهر عبارة «نهاية اللعبة» وتتوقف اللعبة.")]
+LABY_STEPS = [
+ ("بداية اللعبة", "أنقر على العلم الأخضر: تنطلق الفأرة من أسفل اليسار، ويبدأ الوقت من 60."),
+ ("أحرّك الفأرة", "أستعمل الأسهم: في كل صورة يتغير س أو ص بمقدار 4 بعد حفظ الموضع السابق."),
+ ("جدار يمنعني", "إذا دخلت منطقة جدار خارج الفتحة: أعود إلى الموضع السابق فلا أخترق الجدار."),
+ ("أمرّ من الفتحة", "عند الفتحة يكون س خارج منطقة الجدار، فأواصل الصعود إلى الممر التالي."),
+ ("نجمة ملتقطة", "إذا اقتربت الفأرة من نجمة (فرق صغير في س وفي ص): تزيد النقاط بواحد وتختفي النجمة."),
+ ("الوصول إلى الجبن", "عندما يتجاوز ص القيمة 140: تظهر عبارة «فزت!» وتتوقف اللعبة. وإذا انتهى الوقت قبل ذلك تتوقف أيضا.")]
 SCENE = ("المشهد", "Scène")
 HEAD = {"الوضعية المشكلة": "Situation-problème", "مراحل اللعبة بالصور": "Les étapes en images", "سير الحصة": "Déroulement", "أنشطة التلميذ": "Activités de l'élève", "معايير النجاح": "Critères de réussite", "التمايز": "Différenciation",
         "التخفيف: ": "Allègement : ", "التوسيع: ": "Prolongement : ", "بطاقة النشاط: ": "Fiche d'activité : ", "تحميل مشروع سكراتش (.sb3)": "Télécharger le projet Scratch (.sb3)"}
