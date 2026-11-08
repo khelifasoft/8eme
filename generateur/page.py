@@ -10,7 +10,7 @@ for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-
     games.append(dict(g, cat="catch", cat_ar="ألعاب سكراتش", cat_fr="Jeux Scratch"))
 for _g in json.load(open(os.path.join(HERE, "jeux4_manifest.json"), encoding="utf-8")):
     games.append(dict(_g, cat="catch", cat_ar="ألعاب سكراتش", cat_fr="Jeux Scratch"))
-_EXTRA = {"sindbad": dict(video="jeux/videos/attrape-poissons.mp4", fiche="catch", res="catch"), "course": dict(video="jeux/videos/course.mp4", res="course")}
+_EXTRA = {"sindbad": dict(video="jeux/videos/attrape-poissons.mp4", fiche="catch", res="catch"), "course": dict(video="jeux/videos/course.mp4", fiche="course", res="course")}
 for _g in games:
     if _g["cat"] == "catch": _g.update(_EXTRA.get(_g["key"], {}))
 man["games"] = games
@@ -33,8 +33,9 @@ for _fid, _d in _AR.AR.items():
     for _k in ("situation", "allegee", "prolongement"): _far[_d[_k]] = _f[_k]
     for _k in ("steps", "eleve", "criteres"):
         for _a, _b in zip(_d[_k], _f[_k]): _far[_a] = _b
-for _i, (_t, _c) in enumerate(_AR.CATCH_STEPS):
-    _e = man["etapes"]["catch"][_i]; _far[_t] = _e["t"]; _far[_c] = _e["c"]; _e["t"], _e["c"] = _t, _c
+for _key, _steps in (("catch", _AR.CATCH_STEPS), ("course", _AR.COURSE_STEPS)):
+    for _i, (_t, _c) in enumerate(_steps):
+        _e = man["etapes"][_key][_i]; _far[_t] = _e["t"]; _far[_c] = _e["c"]; _e["t"], _e["c"] = _t, _c
 for _lst in man["etapes"]["contes"].values():
     for _i, _e in enumerate(_lst): _far[f"{_AR.SCENE[0]} {_i + 1}"] = f"{_AR.SCENE[1]} {_i + 1}"; _e["t"] = f"{_AR.SCENE[0]} {_i + 1}"
 _far.update({k.strip(): v.strip() for k, v in _AR.HEAD.items()})
@@ -889,13 +890,13 @@ function renderFiche(fid, key){
   const steps = isC ? (DATA.etapes.contes[key] || []) : (DATA.etapes[fid] || []);
   const sec = (t, kids) => [el("h3",{text:t}), kids];
   const li = a => el("ul",{}, a.map(t => el("li",{text:t})));
-  const dl = isC ? (s && el("a",{class:"btn main",href:s.sb3,download:`${s.title}.sb3`,text:"تحميل مشروع سكراتش (.sb3)"})) : (() => { const g = (DATA.games || []).find(x => x.cat === fid); return g && watchBtn(g); })();
+  const dl = isC ? (s && el("a",{class:"btn main",href:s.sb3,download:`${s.title}.sb3`,text:"تحميل مشروع سكراتش (.sb3)"})) : (() => { const g = (DATA.games || []).find(x => x.fiche === fid); return g && watchBtn(g); })();
   const body = el("div",{class:"fiche"}, el("h2",{}, el("span",{text:"بطاقة النشاط: "}), el("span",{text:isC && s ? s.title : F.title})), el("p",{class:"pnote",text:F.meta}),
     sec("الوضعية المشكلة", el("p",{class:"sit",text:F.situation})),
     steps.length ? sec("مراحل اللعبة بالصور", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img_ar || st.img,"data-fr-src":st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
     sec("سير الحصة", li(F.steps)), sec("أنشطة التلميذ", li(F.eleve)), sec("معايير النجاح", li(F.criteres)),
     sec("التمايز", el("ul",{}, el("li",{}, el("b",{text:"التخفيف: "}), el("span",{text:F.allegee})), el("li",{}, el("b",{text:"التوسيع: "}), el("span",{text:F.prolongement})))),
-    dl ? el("p",{}, dl, fid === "catch" ? resBtn("catch") : null) : null);
+    dl ? el("p",{}, dl, fid === "catch" || fid === "course" ? resBtn(fid) : null) : null);
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, body)); syncImgs();
 }
 const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};

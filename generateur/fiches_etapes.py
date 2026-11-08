@@ -54,6 +54,35 @@ def catch():
             body = defs + place(back, 0, 0, 100) + place(pl, px, -125) + (place(it, *itx) if itx else "") + hud(sc_, lv, L) + extra
             open(os.path.join(OUT, f"catch{suffix}-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{body}</svg>')
     return [dict(img=f"fiches-activite/etapes/catch-{n}.svg", img_ar=f"fiches-activite/etapes/catch-ar-{n}.svg", t=CATCH[n - 1][1], c=CATCH[n - 1][0]) for n in range(1, 7)]
+COURSE = [("Début de partie", "Je clique sur le drapeau vert : le score est mis à 0, les vies à 3 et la vitesse à 3."),
+ ("Je déplace la voiture", "J'appuie sur la flèche gauche ou droite : la voiture se déplace, sans sortir de la route."),
+ ("Une voiture arrive", "Une voiture adverse apparaît en haut, à une position choisie au hasard, et descend à la vitesse du jeu."),
+ ("Voiture évitée", "Si la voiture passe en bas sans me toucher : le score augmente de 1 et la vitesse de 0,15."),
+ ("Voiture touchée", "Si la voiture adverse me touche : je perds une vie (un cœur disparaît) et le son de choc retentit."),
+ ("Fin de partie", "Quand les vies arrivent à 0, le jeu affiche « Fin de partie » et s'arrête.")]
+CL = {"fr": dict(flag="1  Drapeau vert", keys="2  Flèches ← →", come="3  Voiture adverse", up="+1 point", hit="−1 vie", fin="FIN", sc="النقاط", lv="الأرواح"),
+      "ar": dict(flag="1  العلم الأخضر", keys="2  الأسهم ← →", come="3  سيارة معاكسة", up="+1 نقطة", hit="−1 روح", fin="النهاية", sc="النقاط", lv="الأرواح")}
+def course():
+    import video_jeu as V
+    z, T = V.load(os.path.join(ROOT, "jeux", "jeu_course.sb3")); by = {t["name"]: t for t in T}
+    def scene(carx, enemy, score, lives, extra, dark=False):
+        s = V.place(T[0]["costumes"][0], 0, 0, 100) + V.place(by["الخطوط"]["costumes"][0], 0, 0, 100) + V.place(by["السيارة"]["costumes"][0], carx, -125, 70)
+        if enemy: s += V.place(by["سيارة معاكسة"]["costumes"][0], enemy[0], enemy[1], 70)
+        if lives: s += V.place(by["القلوب"]["costumes"][lives - 1], 185, 158, 100)
+        s += V.monitor("النقاط", score, 4, 4) + V.monitor("الأرواح", lives, 4, 30)
+        return s + extra
+    for lang in ("fr", "ar"):
+        L = CL[lang]; suffix = "" if lang == "fr" else "-ar"
+        S = [scene(0, None, 0, 3, tag(L["flag"], 150, 150)),
+             scene(-60, None, 0, 3, arrow(250, 235, 190, 235) + tag(L["keys"], 255, 200)),
+             scene(-60, (35, 105), 0, 3, arrow(275, 105, 275, 170) + tag(L["come"], 295, 95)),
+             scene(55, (-30, -150), 1, 3, tag(L["up"], 140, 150, "#2e9e5b")),
+             scene(5, (10, -95), 1, 2, tag(L["hit"], 280, 150, "#c0392b")),
+             scene(5, (10, -95), 4, 0, f'<rect x="0" y="0" width="480" height="360" fill="#000" fill-opacity=".5"/><text x="240" y="195" text-anchor="middle" font-family="Tajawal,Arial,sans-serif" font-size="58" font-weight="bold" fill="#fff">{L["fin"]}</text>')]
+        defs = '<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e8861c"/></marker></defs>'
+        for n, body in enumerate(S, 1):
+            open(os.path.join(OUT, f"course{suffix}-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{defs}{body}</svg>')
+    return [dict(img=f"fiches-activite/etapes/course-{n}.svg", img_ar=f"fiches-activite/etapes/course-ar-{n}.svg", t=COURSE[n - 1][0], c=COURSE[n - 1][1]) for n in range(1, 7)]
 def contes():
     out = {}
     for key in sc.D:
@@ -63,7 +92,7 @@ def contes():
             out[key].append(dict(img=f"fiches-activite/etapes/{key}-{i+1}.svg", t=f"Scène {i+1}", c=J3.caption(key, i)))
     return out
 def export():
-    return dict(catch=catch(), contes=contes())
+    return dict(catch=catch(), course=course(), contes=contes())
 if __name__ == "__main__":
     e = export(); json.dump(e, open(os.path.join(HERE, "etapes.json"), "w", encoding="utf-8"), ensure_ascii=False)
     print("étapes :", len(e["catch"]), {k: len(v) for k, v in e["contes"].items()})

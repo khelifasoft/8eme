@@ -136,6 +136,23 @@ FAMILIES = {
   allegee="Changer uniquement la vitesse de départ.",
   prolongement="Regrouper « objet attrapé » (points, vitesse, son, retour en haut) dans un module et l'appeler à la place des blocs.",
   criteres=["La vitesse modifiée est constatée au test.", "L'élève explique les conditions imbriquées.", "Une amélioration est testée."]),
+ "course": dict(level=8, title="Course : évite les voitures", prefix=["jeu_course"], dir="jeux", pattern="jeu_{k}.sb3",
+  situation="Comment déplacer une voiture avec les flèches du clavier, faire arriver des voitures de plus en plus vite et compter les points et les vies ?",
+  parts=[0, 1, 2], duree="2 séances de 45 minutes",
+  demarche=[("Besoin à faire émerger sans ordinateur (10 min)", "Sur un quadrillage au sol, un élève « voiture » évite les élèves « obstacles » : comment compter les points et les collisions ? → besoin de variables."),
+            ("Jouer et décrire (10 min)", "Jouer au jeu, puis décrire les règles : déplacement, voitures adverses, points, vies, vitesse."),
+            ("Lire les scripts (15 min)", "Les flèches changent x de la voiture (limites ±85) ; la voiture adverse descend de « vitesse » ; deux conditions imbriquées détectent la collision ; les lignes de la route défilent à la même vitesse ; le nombre de cœurs affichés suit la variable « vies »."),
+            ("Modifier et optimiser (20 min)", "Changer la vitesse de départ, l'augmentation de vitesse ou la largeur de collision, puis rejouer et comparer."),
+            ("Tester et corriger (10 min)", "Tester : éviter 3 voitures, se faire toucher 3 fois ; vérifier le score, les cœurs et le message de fin ; corriger les erreurs.")],
+  eleve=["Joue jusqu'à la fin et note ton score.",
+         "Repère les blocs qui déplacent la voiture quand on appuie sur une flèche.",
+         "Trouve la variable qui règle la vitesse. Qu'est-ce qui la fait augmenter ?",
+         "Change la vitesse de départ ou l'augmentation de la vitesse, teste et explique l'effet.",
+         "Défi : ajoute un son quand tu évites une voiture."],
+  questions=["Pourquoi les deux conditions de la collision sont-elles imbriquées au lieu d'être reliées par ET ?", "Que se passe-t-il quand le nombre de vies atteint 0 ?"],
+  allegee="Changer uniquement la vitesse de départ.",
+  prolongement="Créer un module « voiture touchée » (−1 vie, son, retour en haut) et l'appeler à la place des blocs.",
+  criteres=["Le changement de vitesse est constaté au test.", "L'élève explique les conditions imbriquées de la collision.", "Une amélioration est testée."]),
 }
 
 CSS = """body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;max-width:820px;margin:0 auto;padding:18px 22px 50px;color:#1d2433;line-height:1.55;background:#fff}

@@ -17,6 +17,22 @@ AR = {
    criteres=['La vitesse modifiée est constatée au test.', "L'élève explique les conditions imbriquées.", 'Une amélioration est testée.'],
    allegee="Changer uniquement la vitesse de départ.",
    prolongement="Regrouper « objet attrapé » (points, vitesse, son, retour en haut) dans un module et l'appeler à la place des blocs.")),
+ "course": dict(
+  title="سباق السيارات: تفادَ السيارات", duree="حصتان من 45 دقيقة", year="السنة الثامنة",
+  situation="كيف نحرّك سيارة بأسهم لوحة المفاتيح، ونجعل سيارات تأتي بسرعة متزايدة، ونحسب النقاط والأرواح؟",
+  steps=["حاجة تُستخلص دون حاسوب (10 د)", "نلعب ونصف (10 د)", "نقرأ السكربتات (15 د)", "نعدّل ونحسّن (20 د)", "نختبر ونصحّح (10 د)"],
+  eleve=["العب حتى النهاية ودوّن نتيجتك.", "حدّد الكتل التي تحرّك السيارة عند الضغط على سهم.", "ابحث عن المتغير الذي يضبط السرعة. ما الذي يجعله يزيد؟", "غيّر سرعة البداية أو مقدار زيادة السرعة، واختبر وفسّر الأثر.", "تحدٍّ: أضف صوتا عندما تتفادى سيارة."],
+  criteres=["يُلاحَظ تغيّر السرعة عند الاختبار.", "يفسّر التلميذ الشرطين المتداخلين للاصطدام.", "يُختبَر تحسين واحد."],
+  allegee="تغيير سرعة البداية فقط.",
+  prolongement="إنشاء وحدة «سيارة مصدومة» (−1 روح، صوت، العودة إلى الأعلى) واستدعاؤها بدل الكتل.",
+  fr=dict(
+   title="Course : évite les voitures", duree="2 séances de 45 minutes", year="8e année",
+   situation="Comment déplacer une voiture avec les flèches du clavier, faire arriver des voitures de plus en plus vite et compter les points et les vies ?",
+   steps=['Besoin à faire émerger sans ordinateur (10 min)', 'Jouer et décrire (10 min)', 'Lire les scripts (15 min)', 'Modifier et optimiser (20 min)', 'Tester et corriger (10 min)'],
+   eleve=["Joue jusqu'à la fin et note ton score.", "Repère les blocs qui déplacent la voiture quand on appuie sur une flèche.", "Trouve la variable qui règle la vitesse. Qu'est-ce qui la fait augmenter ?", "Change la vitesse de départ ou l'augmentation de la vitesse, teste et explique l'effet.", "Défi : ajoute un son quand tu évites une voiture."],
+   criteres=["Le changement de vitesse est constaté au test.", "L'élève explique les conditions imbriquées de la collision.", "Une amélioration est testée."],
+   allegee="Changer uniquement la vitesse de départ.",
+   prolongement="Créer un module « voiture touchée » (−1 vie, son, retour en haut) et l'appeler à la place des blocs.")),
  "contes": dict(
   title="نحكي قصة بسكراتش", duree="حصتان من 45 دقيقة", year="السنة السابعة",
   situation="كيف نجعل الشخصيات تمثّل قصة، فتتكلم كل واحدة في دورها وبالترتيب الصحيح، عند النقر على العلم الأخضر؟",
@@ -41,6 +57,13 @@ CATCH_STEPS = [  # (titre, légende) en arabe, même ordre que fiches_etapes.CAT
  ("سمكة ملتقطة", "إذا لمس اللاعب السمكة: تزيد النقاط بواحد وتظهر سمكة جديدة."),
  ("سمكة فائتة", "إذا لمست السمكة أسفل المنصة: تنقص الأرواح بواحد."),
  ("نهاية اللعبة", "عندما تصل الأرواح إلى 0 تتوقف اللعبة: إنها نهاية الجولة.")]
+COURSE_STEPS = [
+ ("بداية اللعبة", "أنقر على العلم الأخضر: تصبح النقاط 0 والأرواح 3 والسرعة 3."),
+ ("أحرّك السيارة", "أضغط على السهم الأيسر أو الأيمن: تتحرك السيارة دون أن تخرج من الطريق."),
+ ("سيارة قادمة", "تظهر سيارة معاكسة في الأعلى عند موضع يُختار عشوائيا، وتنزل بسرعة اللعبة."),
+ ("سيارة متفادَاة", "إذا مرّت السيارة إلى الأسفل دون أن تصدمني: تزيد النقاط بواحد والسرعة بـ 0٫15."),
+ ("سيارة صادمة", "إذا صدمتني السيارة المعاكسة: أفقد روحا (يختفي قلب) ويُسمع صوت الاصطدام."),
+ ("نهاية اللعبة", "عندما تصل الأرواح إلى 0 تظهر عبارة «نهاية اللعبة» وتتوقف اللعبة.")]
 SCENE = ("المشهد", "Scène")
 HEAD = {"الوضعية المشكلة": "Situation-problème", "مراحل اللعبة بالصور": "Les étapes en images", "سير الحصة": "Déroulement", "أنشطة التلميذ": "Activités de l'élève", "معايير النجاح": "Critères de réussite", "التمايز": "Différenciation",
         "التخفيف: ": "Allègement : ", "التوسيع: ": "Prolongement : ", "بطاقة النشاط: ": "Fiche d'activité : ", "تحميل مشروع سكراتش (.sb3)": "Télécharger le projet Scratch (.sb3)"}
