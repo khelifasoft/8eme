@@ -204,6 +204,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .dlchips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.chip{font:inherit;border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 14px;cursor:pointer}.chip[aria-pressed=true]{background:#1e4fa8;color:#fff;border-color:#1e4fa8}
 .dlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}.dlcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;display:flex;flex-direction:column;gap:6px}.dlcard h4{margin:0;font-size:17px}.dlcard p{margin:0;font-size:14px;flex:1}
 .dlmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.dlmeta .os{font-size:12px;color:#666}
+.space-d{margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:0 14px}.space-d>summary{cursor:pointer;font-weight:700;font-size:18px;color:#1e3a6e;padding:10px 0}.space-d[open]>summary{border-bottom:1px solid var(--line);margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -322,7 +323,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
   <div id="ihBody"></div>
   <form method="dialog"><button class="btn main" style="margin-top:10px">حسنًا</button></form>
 </dialog>
-<footer><div class="wrap"><span dir="ltr" style="display:block">نسخة 2026-11-06</span>الصور مرسومة خصيصًا لهذه الورشة، والأصوات والموسيقى مولَّدة بالحاسوب، ويمكنك استعمالها وتعديلها بحرّية في مشاريعك.</div></footer>
+<footer><div class="wrap"><span dir="ltr" style="display:block">نسخة 2026-11-08</span>الصور مرسومة خصيصًا لهذه الورشة، والأصوات والموسيقى مولَّدة بالحاسوب، ويمكنك استعمالها وتعديلها بحرّية في مشاريعك.</div></footer>
 
 <script src="videos.js"></script>
 <script src="jeux.js"></script>
@@ -692,12 +693,11 @@ function quiz(list){
   box.append(sc, ...qs); return box;
 }
 function axisExtras(y, k){
-  const id = `${y}-${k}`, out = [], ex = (DATA.exo || {})[id], ac = (DATA.act || {})[id];
-  out.push(el("h2",{text:"فضاء التلميذ",style:"font-size:20px;margin-top:18px"}));
-  if (/^s/.test(y)) out.push(el("p",{class:"pnote",text:"تمارين مقترحة غير رسمية: لم تُقدَّم بعد وثيقة منهاج رسمية لهذا المستوى، فالمواضيع عامة وتُكيَّف مع المنهاج الفعلي."}));
-  if (ex) out.push(el("h3",{text:"تمارين تفاعلية"}), el("p",{class:"pnote",text:"اختر الإجابة الصحيحة. يظهر التصحيح مباشرة."}), quiz(ex));
-  if (ac) { out.push(el("h3",{text:"أنشطة للإنجاز"})); ac.forEach(a => out.push(el("div",{class:"qz"}, el("p",{text:a.t}), el("p",{style:"font-weight:400",text:a.d}), a.ex ? el("p",{class:"pnote",text:a.ex}) : null, a.link ? el("a",{class:"btn",href:a.link,text:"الموارد"}) : null))); }
-  return out;
+  const id = `${y}-${k}`, body = [], ex = (DATA.exo || {})[id], ac = (DATA.act || {})[id];
+  if (/^s/.test(y)) body.push(el("p",{class:"pnote",text:"تمارين مقترحة غير رسمية: لم تُقدَّم بعد وثيقة منهاج رسمية لهذا المستوى، فالمواضيع عامة وتُكيَّف مع المنهاج الفعلي."}));
+  if (ex) body.push(el("h3",{text:"تمارين تفاعلية"}), el("p",{class:"pnote",text:"اختر الإجابة الصحيحة. يظهر التصحيح مباشرة."}), quiz(ex));
+  if (ac) { body.push(el("h3",{text:"أنشطة للإنجاز"})); ac.forEach(a => body.push(el("div",{class:"qz"}, el("p",{text:a.t}), el("p",{style:"font-weight:400",text:a.d}), a.ex ? el("p",{class:"pnote",text:a.ex}) : null, a.link ? el("a",{class:"btn",href:a.link,text:"الموارد"}) : null))); }
+  return [el("details",{class:"space-d"}, el("summary",{text:"فضاء التلميذ"}), body)];
 }
 function renderTeacher(y){
   const Y = CUR.years[y]; $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar; park(); $("#resArea").replaceChildren();
