@@ -292,6 +292,15 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .bigsteps{padding-inline-start:24px;display:flex;flex-direction:column;gap:6px;font-size:16px}.tip{background:#eaf6ff;border-radius:8px;padding:6px 12px;margin:8px 0}
 .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.figpair figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}.figpair img{width:100%;height:auto;display:block}.figpair figcaption{padding:6px 10px;font-weight:700;color:#1e3a6e}
 .actnav{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
+.actsec{margin:22px 0 8px;scroll-margin-top:calc(var(--barh) + 12px)}.actsec .acthead h3{margin:0;font-size:19px;color:#1e3a6e}.actsec>.pnote{margin:4px 0 10px}
+.actgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.actcard{display:flex;flex-direction:column;border:1px solid var(--line);border-top:5px solid #1e4fa8;border-radius:12px;overflow:hidden;background:#fff;text-decoration:none;color:inherit;transition:transform .12s,box-shadow .12s}
+.actcard:hover,.actcard:focus-visible{transform:translateY(-3px);box-shadow:0 6px 16px rgba(30,58,110,.18)}
+.actcard[data-l="1"]{border-top-color:#2e9e5b}.actcard[data-l="2"]{border-top-color:#1e6fd6}.actcard[data-l="3"]{border-top-color:#e8861c}.actcard[data-l="4"]{border-top-color:#c0392b}.actcard[data-l="5"]{border-top-color:#8a55d7}
+.actthumb{position:relative;aspect-ratio:4/3;background:#eef3fb}.actthumb img{width:100%;height:100%;object-fit:cover;display:block}.actthumb .badge{position:absolute;top:8px;inset-inline-start:8px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+@media (max-width:600px){.actgrid{grid-template-columns:repeat(2,1fr);gap:10px}.actcard h4{font-size:13.5px;padding:8px 9px 10px}}
+.actcard h4{margin:0;padding:10px 12px 12px;font-size:15px;line-height:1.4;color:#1e3a6e;text-align:start}
 </style>
 </head>
 <body>
@@ -899,16 +908,15 @@ function actImg(a, k, alt){ return el("img",{src:a.img[k][1],"data-fr-src":a.img
 function renderActivites(openLevel){
   $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← ألعاب سكراتش"; park(); $("#resArea").replaceChildren();
   const D = DATA.activites;
-  const fiche = a => el("details",{class:"step proj"}, el("summary",{}, el("span",{class:"badge pj",text:a.n}), el("b",{text:a.t})),
-    el("div",{class:"stbody"}, el("h5",{text:"الهدف"}), el("p",{text:a.obj}), el("h5",{text:"الكتل اللازمة"}), el("div",{class:"blkrow"}, a.blocks.map(actChip)),
-      el("h5",{text:"الإنجاز"}), el("ol",{}, a.steps.map(t => el("li",{text:t}))), el("h5",{text:"النتيجة المنتظرة"}), el("p",{text:a.res}), el("h5",{text:"تحدٍّ إضافي"}), el("p",{class:"defi",text:a.defi}),
-      el("p",{}, el("a",{class:"btn main",href:"#activite-" + a.n,text:"فتح الصفحة المفصلة"}))));
-  const lvl = L => { const d = el("details",{class:"step lvlbox"}, el("summary",{}, el("span",{class:"badge",text:L.n}), el("b",{text:L.t}), el("span",{class:"lvlf",text:L.diff})),
-    el("div",{class:"stbody"}, el("p",{class:"pnote",text:L.obj}), D.acts.filter(a => a.lvl === L.n).map(fiche))); if (L.n === openLevel) d.open = true; return d; };
+  // une grille d'images par niveau : pour chaque activité, une image explicative (la scène après exécution) et son titre en dessous
+  const card = a => el("a",{class:"actcard","data-l":a.lvl,href:"#activite-" + a.n,title:a.t}, el("div",{class:"actthumb"}, actImg(a, "apres", a.t), el("span",{class:"badge pj",text:a.n})), el("h4",{text:a.t}));
+  const sec = L => el("section",{class:"actsec",id:"lvl-" + L.n,"data-l":L.n}, el("div",{class:"acthead"}, el("span",{class:"badge",text:L.n}), el("h3",{text:L.t}), el("span",{class:"lvlf",text:L.diff})),
+    el("p",{class:"pnote",text:L.obj}), el("div",{class:"actgrid"}, D.acts.filter(a => a.lvl === L.n).map(card)));
+  const jump = el("div",{class:"dlchips"}, D.levels.map(L => el("a",{class:"chip",href:"#activites-" + L.n,"aria-pressed":String(L.n === openLevel),text:L.t.split(" – ")[0]})));
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"مجموعة: 50 فكرة ونشاطا في سكراتش"}),
-    el("p",{class:"pnote",text:"50 فكرة ونشاطا مصنّفة في أربعة مستويات، مع مشاريع إبداعية. لكل نشاط صفحة مفصلة: صورة السكربت والمشهد قبل التنفيذ وبعده ودور كل كتلة."}), D.levels.map(lvl)));
+    el("p",{class:"pnote",text:"50 فكرة ونشاطا مصنّفة في أربعة مستويات، مع مشاريع إبداعية. لكل نشاط صفحة مفصلة: صورة السكربت والمشهد قبل التنفيذ وبعده ودور كل كتلة."}), jump, D.levels.map(sec)));
   syncImgs();
-  if (openLevel) { const o = $("#axisHead details.lvlbox[open]"); if (o) o.scrollIntoView(); }
+  window.__scrollTo = openLevel ? "lvl-" + openLevel : null;
 }
 function renderActivite(n){
   const D = DATA.activites, a = D.acts.find(x => x.n === n); if (!a) return;
@@ -999,7 +1007,8 @@ function route(){
   if (view === "axis") { if (k === "refs") renderRefs(y); else if (k === "ens") renderTeacher(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
   ynav.querySelectorAll(".sub a").forEach(a => { if (a.getAttribute("href") === "#" + h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
-  window.scrollTo(0, 0);
+  const st = window.__scrollTo; window.__scrollTo = null;
+  if (st && $("#" + st)) $("#" + st).scrollIntoView(); else window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
 route();

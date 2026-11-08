@@ -30,7 +30,7 @@ def export():
         ("Avant et après", "قبل وبعد"), ("Avant l'exécution", "قبل التنفيذ"), ("Après l'exécution", "بعد التنفيذ"),
         ("Astuce : teste ton projet après chaque étape en cliquant sur le drapeau vert.", "نصيحة: اختبر مشروعك بعد كل خطوة بالنقر على العلم الأخضر."),
         ("Les images sont des illustrations réalisées pour ce site (blocs Scratch et scène du projet).", "الصور رسوم توضيحية أُنجزت لهذا الموقع (كتل سكراتش ومشهد المشروع)."),
-        ("4 activités", "4 أنشطة"), ("10 activités", "10 أنشطة"), ("15 activités", "15 نشاطا"), ("Niveau", "المستوى"),
+        *[(f"Niveau {i}", f"المستوى {i}") for i in range(1, 6)], ("4 activités", "4 أنشطة"), ("10 activités", "10 أنشطة"), ("15 activités", "15 نشاطا"), ("Niveau", "المستوى"),
         ("Ces activités permettent aux élèves de combiner plusieurs astuces.", "تتيح هذه الأنشطة للتلاميذ الجمع بين عدة أفكار.")]:
         P(ui)
     for l in levels: l["count_t"] = {4: "4 أنشطة", 10: "10 أنشطة", 15: "15 نشاطا"}[l["count"]]
