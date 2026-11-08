@@ -81,9 +81,9 @@ La page « Pensée logique et programmation » de chaque niveau est organisée e
 
 Modifier le parcours : `generateur/parcours.py` (textes arabe/français), puis `python3 generateur/page.py`.
 
-## Fiches d'activité (résumé PDF)
+## Fiches d'activité (pages du site)
 
-Le bouton « Fiche d'activité (PDF) » placé à côté du téléchargement du jeu ou du conte ouvre dans une fenêtre un **résumé d'une page, en points** (situation-problème, capacités, déroulement, activités de l'élève, critères, différenciation). Les PDF sont dans `fiches-activite/pdf/`; pour les régénérer après une modification de `generateur/fiches_programme.py` : `python3 generateur/fiches_resume.py` (Node + Playwright requis). Les fiches complètes restent dans `fiches-activite/*.html`.
+Le bouton « بطاقة النشاط » / « Fiche d'activité », à côté du téléchargement du jeu ou du conte, ouvre une **page du site** (`#fiche-catch`, `#fiche-contes-<conte>`) : situation-problème, **étapes en images** (6 images du jeu « Attrape les poissons », 6 scènes par conte), déroulement, activités de l'élève, critères de réussite et différenciation. Les images sont générées par `python3 generateur/fiches_etapes.py` (dans `fiches-activite/etapes/`, avec `generateur/etapes.json`) ; le texte vient de `generateur/fiches_programme.py`. Les fiches complètes à imprimer restent dans `fiches-activite/*.html`.
 
 ## Téléchargements
 

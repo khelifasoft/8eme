@@ -15,7 +15,9 @@ import exercices
 import secondaire
 man["exo"] = {**exercices.EXO, **secondaire.EXO}; man["act"] = exercices.ACT
 man["seances"] = json.load(open(os.path.join(HERE, "seances.json"), encoding="utf-8"))
-import parcours
+import parcours, fiches_programme as _FP
+man["fiches"] = {fid: dict(title=F["title"], meta=f'{_FP.PRG["levels"][str(F["level"])]["year_fr"]} · {F["duree"]}', situation=F["situation"], steps=[t for t, _ in F["demarche"]], eleve=F["eleve"], criteres=F["criteres"], allegee=F["allegee"], prolongement=F["prolongement"]) for fid, F in _FP.FAMILIES.items()}
+man["etapes"] = json.load(open(os.path.join(HERE, "etapes.json"), encoding="utf-8"))
 man["parcours"], _pfr = parcours.export()
 FR = i18n_fr.build(man, games)
 FR["map"].update(_pfr)
@@ -27,7 +29,7 @@ for _l in exercices.ACT.values():
     for _a in _l:
         FR["map"][_a["t"]] = _a["t_fr"]; FR["map"][_a["d"]] = _a["d_fr"]
         if _a.get("ex"): FR["map"][_a["ex"]] = _a["ex_fr"]
-FR["map"].update({"بطاقة النشاط (PDF)": "Fiche d'activité (PDF)", "بطاقة النشاط": "Fiche d'activité", "فتح PDF في نافذة جديدة": "Ouvrir le PDF dans un nouvel onglet","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
+FR["map"].update({"بطاقة النشاط": "Fiche d'activité","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
  "المستوى": "Niveau", "الكفاية": "Compétence", "الأنشطة الصغيرة": "Petites activités", "أنا قادر على…": "Je suis capable de…", "نموذج للتحميل": "Modèle à télécharger", "فتح القصة": "Ouvrir le conte", "مشاريع أساسية للإنجاز": "Projets de base à réaliser", "الصعوبة": "Difficulté", "المطلوب": "Exigences", "نماذج": "Modèles",
  "الألعاب الجاهزة (مكتبة)": "Jeux prêts à l'emploi (bibliothèque)", "القصص الجاهزة (مكتبة)": "Contes prêts à l'emploi (bibliothèque)",
  "التحميلات": "Téléchargements", "كل المستويات": "Tous les niveaux", "⬇ تحميل": "⬇ Télécharger", "⬇ التحميلات: سكراتش وبقية البرمجيات": "⬇ Téléchargements : Scratch et autres logiciels", "حمّله من صفحة التحميلات": "téléchargez-le depuis la page Téléchargements",
@@ -203,7 +205,6 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .vphead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .vphead h3{margin:0;font-size:19px;color:var(--ink)}
 .vpbody{aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden}
-.vpbody.tall{aspect-ratio:auto;height:78vh;background:#fff}
 .vpbody iframe,.vpbody video{width:100%;height:100%;border:0;display:block}
 .vpfoot{margin:8px 0 0;font-size:14px}
 .srcsites{max-width:520px;grid-template-columns:repeat(3,1fr);margin:6px 0 12px}
@@ -254,6 +255,8 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .badge{background:#1e4fa8;color:#fff;border-radius:999px;min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;padding:0 8px}.badge.pj{background:#e8a21c;color:#222;letter-spacing:1px}
 .stbody .check{list-style:none;padding:0}.stbody .check li::before{content:"";display:inline-block;width:12px;height:12px;border:2px solid #1e4fa8;border-radius:3px;margin-inline-end:8px;vertical-align:-1px}
 #games.only-grid>h2,#games.only-grid>.lead,#games.only-grid>.progbox,#games.only-grid>#extGames{display:none}
+.fiche h3{margin:16px 0 4px;color:#1e3a6e}.fiche .sit{background:#f4f8ff;border-left:4px solid #1e4fa8;padding:6px 10px;margin:0}.figgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.figgrid figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}.figgrid img{width:100%;height:auto;display:block}.figgrid figcaption{padding:8px 10px;display:flex;flex-direction:column;gap:3px;font-size:14px}
 </style>
 </head>
 <body>
@@ -547,16 +550,8 @@ function openPlayer(v, info, title){
   const o = $("#vpOpen"); o.href = v.url; o.textContent = "فتح في الموقع الأصلي (" + info.host + ")";
   dlg2.showModal();
 }
-function openFiche(fid, title){
-  const body = $("#vpBody"); body.replaceChildren(); body.classList.add("tall");
-  const src = `fiches-activite/pdf/${fid}.pdf`;
-  $("#vpTitle").textContent = title;
-  body.append(el("iframe",{src,title}));
-  const o = $("#vpOpen"); o.href = src; o.textContent = "فتح PDF في نافذة جديدة";
-  dlg2.showModal();
-}
-function closePlayer(){ $("#vpBody").classList.remove("tall"); if (dlg2.open) dlg2.close(); $("#vpBody").replaceChildren(); }
-dlg2.addEventListener("close", () => { $("#vpBody").replaceChildren(); $("#vpBody").classList.remove("tall"); });
+function closePlayer(){ if (dlg2.open) dlg2.close(); $("#vpBody").replaceChildren(); }
+dlg2.addEventListener("close", () => $("#vpBody").replaceChildren());
 dlg2.addEventListener("click", e => { if (e.target === dlg2) closePlayer(); });
 $("#vpClose").addEventListener("click", closePlayer);
 
@@ -658,7 +653,7 @@ if ("serviceWorker" in navigator && secure) {
 }
 // ---- jeux
 const GAME_CATS = ["catch"];
-function ficheBtn(fid){ const b = el("button",{type:"button",class:"btn",text:"بطاقة النشاط (PDF)"}); b.addEventListener("click", () => openFiche(fid, "بطاقة النشاط")); return b; }
+function ficheBtn(fid, key){ return el("a",{class:"btn",href:"#fiche-" + fid + (key ? "-" + key : ""),text:"بطاقة النشاط"}); }
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
   GAME_CATS.forEach(cat => {
@@ -697,7 +692,7 @@ function renderStoryHead(key){
     el("a",{class:"btn",href:s.doc,download:`ورقة ${s.title}.doc`,title:"للإصدارات القديمة من Word (2003 و2007)",text:"Word قديم (.doc)"}),
     el("a",{class:"btn",href:s.html,target:"_blank",rel:"noopener",text:"قراءة الورقة"}),
     el("a",{class:"btn",href:s.sb3,download:`${s.title}.sb3`,text:"مشروع سكراتش"}),
-    el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"}), ficheBtn("contes")));
+    el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"}), ficheBtn("contes", s.key)));
   h.append(el("div",{class:"storyhead"}, el("div",{class:"sbar",style:`background:${s.accent}`}), el("div",{class:"sbody"}, kids)));
 }
 
@@ -847,6 +842,21 @@ function renderDownloads(){
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"التحميلات"}), el("p",{class:"pnote",text:"البرمجيات المستعملة في كل المستويات. الروابط تؤدي إلى المواقع الرسمية للبرمجيات."}), chips, groups,
     el("p",{class:"pnote",text:"لإضافة برنامج: عدّل الملف logiciels.js."})));
 }
+function renderFiche(fid, key){
+  const F = (DATA.fiches || {})[fid]; if (!F) return;
+  const isC = fid === "contes", s = isC ? DATA.stories.find(x => x.key === key) : null;
+  $("#axisBack").href = isC ? "#story-" + key : "#y8-prog"; $("#axisBack").textContent = isC ? "← " + (s ? s.title : "") : "← " + CUR.years["8"].ar; park(); $("#resArea").replaceChildren();
+  const steps = isC ? (DATA.etapes.contes[key] || []) : (DATA.etapes[fid] || []);
+  const sec = (t, kids) => [el("h3",{text:t}), kids];
+  const li = a => el("ul",{}, a.map(t => el("li",{text:t})));
+  const dl = isC ? (s && el("a",{class:"btn main",href:s.sb3,download:`${s.title}.sb3`,text:"Télécharger le projet Scratch (.sb3)"})) : (() => { const g = (DATA.games || []).find(x => x.cat === fid); return g && el("a",{class:"btn main",href:g.file,download:g.key + ".sb3",text:"Télécharger le jeu (.sb3)"}); })();
+  const body = el("div",{class:"fiche",lang:"fr",dir:"ltr","data-nofr":""}, el("h2",{text:"Fiche d'activité : " + (isC && s ? s.title : F.title)}), el("p",{class:"pnote",text:F.meta}),
+    sec("Situation-problème", el("p",{class:"sit",text:F.situation})),
+    steps.length ? sec("Les étapes en images", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:(i + 1) + ". " + st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
+    sec("Déroulement", li(F.steps)), sec("Activités de l'élève", li(F.eleve)), sec("Critères de réussite", li(F.criteres)),
+    sec("Différenciation", li(["Allègement : " + F.allegee, "Prolongement : " + F.prolongement])), dl ? el("p",{}, dl) : null);
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, body));
+}
 const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};
 function renderRefs(y){
   const Y = CUR.years[y]; $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar; park(); $("#resArea").replaceChildren();
@@ -868,14 +878,16 @@ function route(){
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
   if (h === "downloads") view = "dl";
+  let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) view = "fiche";
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
-  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl"); $("#viewStory").hidden = view !== "story";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "dl") renderDownloads();
+  if (view === "fiche") renderFiche(fm[1], fm[2]);
   if (view === "year") renderYear(y);
   if (view === "axis") { if (k === "refs") renderRefs(y); else if (k === "ens") renderTeacher(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
