@@ -21,9 +21,24 @@ import parcours, fiches_programme as _FP
 man["fiches"] = {fid: dict(title=F["title"], meta=f'{_FP.PRG["levels"][str(F["level"])]["year_fr"]} · {F["duree"]}', situation=F["situation"], steps=[t for t, _ in F["demarche"]], eleve=F["eleve"], criteres=F["criteres"], allegee=F["allegee"], prolongement=F["prolongement"]) for fid, F in _FP.FAMILIES.items()}
 man["ressources"] = json.load(open(os.path.join(HERE, "ressources.json"), encoding="utf-8"))
 man["etapes"] = json.load(open(os.path.join(HERE, "etapes.json"), encoding="utf-8"))
+import fiches_ar as _AR
+_far = {}
+for _fid, _d in _AR.AR.items():
+    _f = _d["fr"]
+    man["fiches"][_fid] = dict(title=_d["title"], meta=_d["year"] + " · " + _d["duree"], situation=_d["situation"], steps=_d["steps"], eleve=_d["eleve"], criteres=_d["criteres"], allegee=_d["allegee"], prolongement=_d["prolongement"])
+    _far[_d["title"]] = _f["title"]; _far[_d["year"] + " · " + _d["duree"]] = _f["year"] + " · " + _f["duree"]
+    for _k in ("situation", "allegee", "prolongement"): _far[_d[_k]] = _f[_k]
+    for _k in ("steps", "eleve", "criteres"):
+        for _a, _b in zip(_d[_k], _f[_k]): _far[_a] = _b
+for _i, (_t, _c) in enumerate(_AR.CATCH_STEPS):
+    _e = man["etapes"]["catch"][_i]; _far[_t] = _e["t"]; _far[_c] = _e["c"]; _e["t"], _e["c"] = _t, _c
+for _lst in man["etapes"]["contes"].values():
+    for _i, _e in enumerate(_lst): _far[f"{_AR.SCENE[0]} {_i + 1}"] = f"{_AR.SCENE[1]} {_i + 1}"; _e["t"] = f"{_AR.SCENE[0]} {_i + 1}"
+_far.update({k.strip(): v.strip() for k, v in _AR.HEAD.items()})
 man["parcours"], _pfr = parcours.export()
 FR = i18n_fr.build(man, games)
 FR["map"].update(_pfr)
+FR["map"].update(_far)
 for _l in list({**exercices.EXO, **secondaire.EXO}.values()):
     for _q in _l:
         FR["map"][_q["q"]] = _q["q_fr"]
@@ -852,6 +867,7 @@ function renderDownloads(){
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"التحميلات"}), el("p",{class:"pnote",text:"البرمجيات المستعملة في كل المستويات. الروابط تؤدي إلى المواقع الرسمية للبرمجيات."}), chips, groups,
     el("p",{class:"pnote",text:"لإضافة برنامج: عدّل الملف logiciels.js."})));
 }
+function syncImgs(){ document.querySelectorAll("img[data-fr-src]").forEach(i => { if (!i.dataset.arSrc) i.dataset.arSrc = i.getAttribute("src"); i.setAttribute("src", document.documentElement.lang === "fr" ? i.dataset.frSrc : i.dataset.arSrc); }); }
 function renderRessources(){
   $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← " + CUR.years["8"].ar; park(); $("#resArea").replaceChildren();
   const R = DATA.ressources || []; R.forEach(r => { FRMAP[r.ar] = r.fr; });
@@ -870,14 +886,14 @@ function renderFiche(fid, key){
   const steps = isC ? (DATA.etapes.contes[key] || []) : (DATA.etapes[fid] || []);
   const sec = (t, kids) => [el("h3",{text:t}), kids];
   const li = a => el("ul",{}, a.map(t => el("li",{text:t})));
-  const dl = isC ? (s && el("a",{class:"btn main",href:s.sb3,download:`${s.title}.sb3`,text:"Télécharger le projet Scratch (.sb3)"})) : (() => { const g = (DATA.games || []).find(x => x.cat === fid); return g && watchBtn(g); })();
-  const body = el("div",{class:"fiche",lang:"fr",dir:"ltr","data-nofr":""}, el("h2",{text:"Fiche d'activité : " + (isC && s ? s.title : F.title)}), el("p",{class:"pnote",text:F.meta}),
-    sec("Situation-problème", el("p",{class:"sit",text:F.situation})),
-    steps.length ? sec("Les étapes en images", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:(i + 1) + ". " + st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
-    sec("Déroulement", li(F.steps)), sec("Activités de l'élève", li(F.eleve)), sec("Critères de réussite", li(F.criteres)),
-    sec("Différenciation", li(["Allègement : " + F.allegee, "Prolongement : " + F.prolongement])),
+  const dl = isC ? (s && el("a",{class:"btn main",href:s.sb3,download:`${s.title}.sb3`,text:"تحميل مشروع سكراتش (.sb3)"})) : (() => { const g = (DATA.games || []).find(x => x.cat === fid); return g && watchBtn(g); })();
+  const body = el("div",{class:"fiche"}, el("h2",{}, el("span",{text:"بطاقة النشاط: "}), el("span",{text:isC && s ? s.title : F.title})), el("p",{class:"pnote",text:F.meta}),
+    sec("الوضعية المشكلة", el("p",{class:"sit",text:F.situation})),
+    steps.length ? sec("مراحل اللعبة بالصور", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img_ar || st.img,"data-fr-src":st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
+    sec("سير الحصة", li(F.steps)), sec("أنشطة التلميذ", li(F.eleve)), sec("معايير النجاح", li(F.criteres)),
+    sec("التمايز", el("ul",{}, el("li",{}, el("b",{text:"التخفيف: "}), el("span",{text:F.allegee})), el("li",{}, el("b",{text:"التوسيع: "}), el("span",{text:F.prolongement})))),
     dl ? el("p",{}, dl, fid === "catch" ? resBtn() : null) : null);
-  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, body));
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, body)); syncImgs();
 }
 const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};
 function renderRefs(y){
@@ -963,6 +979,7 @@ function setLang(l){
   if (l === "fr") { walk(document.body, toFr); document.title = FRMAP[document.documentElement.getAttribute("data-ar-title")] || document.title; startObs(); }
   else { walk(document.body, toAr); document.title = document.documentElement.getAttribute("data-ar-title"); }
   document.querySelectorAll(".langbtn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === l)));
+  syncImgs();
   try { localStorage.setItem("ateliers-contes-lang", l); } catch(e){}
 }
 document.querySelectorAll(".langbtn").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));

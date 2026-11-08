@@ -21,9 +21,11 @@ def place(a, x, y, size=None):
     s = (size or a["size"]) / 100; tx, ty = 240 + x - a["rcx"] * s, 180 - y - a["rcy"] * s
     inner = re.sub(r'^<\?xml[^>]*>\s*', '', a["svg"].strip()).replace("<svg", '<svg x="0" y="0"', 1)
     return f'<g transform="translate({tx:.1f},{ty:.1f}) scale({s})">{inner}</g>'
-def hud(score, lives):
-    return (f'<rect x="8" y="8" width="118" height="26" rx="8" fill="#fff" fill-opacity=".92" stroke="#1f4aa8" stroke-width="2"/><text x="18" y="26" font-family="Arial" font-size="14" font-weight="bold" fill="#1f4aa8">Points : {score}</text>'
-            f'<rect x="354" y="8" width="118" height="26" rx="8" fill="#fff" fill-opacity=".92" stroke="#c0392b" stroke-width="2"/><text x="364" y="26" font-family="Arial" font-size="14" font-weight="bold" fill="#c0392b">Vies : {lives}</text>')
+LBL = {"fr": dict(points="Points : ", vies="Vies : ", flag="1  Drapeau vert", fall="2  Chute", mouse="3  Souris", plus="+1 point", minus="−1 vie", fin="FIN"),
+       "ar": dict(points="النقاط: ", vies="الأرواح: ", flag="1  العلم الأخضر", fall="2  السقوط", mouse="3  الفأرة", plus="+1 نقطة", minus="−1 روح", fin="النهاية")}
+def hud(score, lives, L=LBL["fr"]):
+    return (f'<rect x="8" y="8" width="118" height="26" rx="8" fill="#fff" fill-opacity=".92" stroke="#1f4aa8" stroke-width="2"/><text x="18" y="26" font-family="Arial" font-size="14" font-weight="bold" fill="#1f4aa8">{L["points"]}{score}</text>'
+            f'<rect x="354" y="8" width="118" height="26" rx="8" fill="#fff" fill-opacity=".92" stroke="#c0392b" stroke-width="2"/><text x="364" y="26" font-family="Arial" font-size="14" font-weight="bold" fill="#c0392b">{L["vies"]}{lives}</text>')
 def tag(txt, x, y, color="#e8861c"):
     w = 9 * len(txt) + 18
     return f'<rect x="{x}" y="{y}" width="{w}" height="28" rx="14" fill="{color}"/><text x="{x + w/2}" y="{y + 19}" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#fff">{escape(txt)}</text>'
@@ -39,17 +41,19 @@ CATCH = [  # (caption, titre court, scène)
 def catch():
     A = sb3_art(os.path.join(ROOT, "jeux", "jeu_sindbad.sb3")); back, pl, it = A["Stage"], A["اللاعب"], A["الشيء"]
     defs = '<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e8861c"/></marker></defs>'
-    S = [  # (joueur x, objet (x,y) ou None, score, vies, décor supplémentaire)
-     (0, None, 0, 3, tag("1  Drapeau vert", 160, 150)),
-     (0, (-90, 150), 0, 3, arrow(150, 70, 150, 150) + tag("2  Chute", 215, 120)),
-     (60, (-90, 10), 0, 3, arrow(300, 275, 150, 275) + tag("3  Souris", 300, 215)),
-     (-90, (-90, -95), 1, 3, tag("+1 point", 150, 135, "#2e9e5b")),
-     (-90, (120, -150), 1, 2, tag("−1 vie", 300, 240, "#c0392b")),
-     (-90, None, 7, 0, f'<rect x="0" y="0" width="480" height="360" fill="#000" fill-opacity=".45"/><text x="240" y="195" text-anchor="middle" font-family="Arial" font-size="58" font-weight="bold" fill="#fff">FIN</text>')]
-    for n, (px, itx, sc_, lv, extra) in enumerate(S, 1):
-        body = defs + place(back, 0, 0, 100) + place(pl, px, -125) + (place(it, *itx) if itx else "") + hud(sc_, lv) + extra
-        open(os.path.join(OUT, f"catch-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{body}</svg>')
-    return [dict(img=f"fiches-activite/etapes/catch-{n}.svg", t=CATCH[n - 1][1], c=CATCH[n - 1][0]) for n in range(1, 7)]
+    for lang in ("fr", "ar"):
+        L = LBL[lang]; suffix = "" if lang == "fr" else "-ar"
+        S = [  # (joueur x, objet (x,y) ou None, score, vies, décor supplémentaire)
+         (0, None, 0, 3, tag(L["flag"], 160, 150)),
+         (0, (-90, 150), 0, 3, arrow(150, 70, 150, 150) + tag(L["fall"], 215, 120)),
+         (60, (-90, 10), 0, 3, arrow(300, 275, 150, 275) + tag(L["mouse"], 300, 215)),
+         (-90, (-90, -95), 1, 3, tag(L["plus"], 150, 135, "#2e9e5b")),
+         (-90, (120, -150), 1, 2, tag(L["minus"], 300, 240, "#c0392b")),
+         (-90, None, 7, 0, f'<rect x="0" y="0" width="480" height="360" fill="#000" fill-opacity=".45"/><text x="240" y="195" text-anchor="middle" font-family="Tajawal,Arial,sans-serif" font-size="58" font-weight="bold" fill="#fff">{L["fin"]}</text>')]
+        for n, (px, itx, sc_, lv, extra) in enumerate(S, 1):
+            body = defs + place(back, 0, 0, 100) + place(pl, px, -125) + (place(it, *itx) if itx else "") + hud(sc_, lv, L) + extra
+            open(os.path.join(OUT, f"catch{suffix}-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{body}</svg>')
+    return [dict(img=f"fiches-activite/etapes/catch-{n}.svg", img_ar=f"fiches-activite/etapes/catch-ar-{n}.svg", t=CATCH[n - 1][1], c=CATCH[n - 1][0]) for n in range(1, 7)]
 def contes():
     out = {}
     for key in sc.D:
