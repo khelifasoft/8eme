@@ -75,6 +75,12 @@ python3 generateur/enseignant.py   # fiches enseignant + seances.json
 python3 generateur/page.py         # index.html
 ```
 
+## Parcours de programmation et projets (7e, 8e, 9e)
+
+La page « Pensée logique et programmation » de chaque niveau est organisée en **parcours par compétences** : de petites activités Scratch, de niveau en niveau (par exemple en 8e : décomposer → variables → condition complète → boucles et hasard → modules → tester/corriger/optimiser), chacune avec sa compétence, ses 2-3 petites activités, un jeu ou un conte modèle à télécharger et une liste « Je suis capable de… ». Suivent des **projets de base** à réaliser (exigences et livrables). Les jeux et contes prêts à l'emploi sont rangés dans une bibliothèque repliée en bas de page.
+
+Modifier le parcours : `generateur/parcours.py` (textes arabe/français), puis `python3 generateur/page.py`.
+
 ## Téléchargements
 
 Rubrique « Téléchargements » (barre bleue, ou bouton de l'accueil) : logiciels utilisés dans tous les niveaux (Scratch, App Inventor, mBlock, Python, LibreOffice, Audacity, Shotcut, GIMP, SQLite, Filius…), filtrables par niveau, avec liens vers les sites officiels. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire).

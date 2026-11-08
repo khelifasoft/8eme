@@ -15,7 +15,10 @@ import exercices
 import secondaire
 man["exo"] = {**exercices.EXO, **secondaire.EXO}; man["act"] = exercices.ACT
 man["seances"] = json.load(open(os.path.join(HERE, "seances.json"), encoding="utf-8"))
+import parcours
+man["parcours"], _pfr = parcours.export()
 FR = i18n_fr.build(man, games)
+FR["map"].update(_pfr)
 for _l in list({**exercices.EXO, **secondaire.EXO}.values()):
     for _q in _l:
         FR["map"][_q["q"]] = _q["q_fr"]
@@ -24,7 +27,10 @@ for _l in exercices.ACT.values():
     for _a in _l:
         FR["map"][_a["t"]] = _a["t_fr"]; FR["map"][_a["d"]] = _a["d_fr"]
         if _a.get("ex"): FR["map"][_a["ex"]] = _a["ex_fr"]
-FR["map"].update({"التحميلات": "Téléchargements", "كل المستويات": "Tous les niveaux", "⬇ تحميل": "⬇ Télécharger", "⬇ التحميلات: سكراتش وبقية البرمجيات": "⬇ Téléchargements : Scratch et autres logiciels", "حمّله من صفحة التحميلات": "téléchargez-le depuis la page Téléchargements",
+FR["map"].update({"المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
+ "المستوى": "Niveau", "الكفاية": "Compétence", "الأنشطة الصغيرة": "Petites activités", "أنا قادر على…": "Je suis capable de…", "نموذج للتحميل": "Modèle à télécharger", "فتح القصة": "Ouvrir le conte", "مشاريع أساسية للإنجاز": "Projets de base à réaliser", "الصعوبة": "Difficulté", "المطلوب": "Exigences", "نماذج": "Modèles",
+ "الألعاب الجاهزة (مكتبة)": "Jeux prêts à l'emploi (bibliothèque)", "القصص الجاهزة (مكتبة)": "Contes prêts à l'emploi (bibliothèque)",
+ "التحميلات": "Téléchargements", "كل المستويات": "Tous les niveaux", "⬇ تحميل": "⬇ Télécharger", "⬇ التحميلات: سكراتش وبقية البرمجيات": "⬇ Téléchargements : Scratch et autres logiciels", "حمّله من صفحة التحميلات": "téléchargez-le depuis la page Téléchargements",
  "البرمجيات المستعملة في كل المستويات. الروابط تؤدي إلى المواقع الرسمية للبرمجيات.": "Les logiciels utilisés dans tous les niveaux. Les liens mènent aux sites officiels.", "لإضافة برنامج: عدّل الملف logiciels.js.": "Pour ajouter un logiciel : modifier le fichier logiciels.js.","فضاء التلميذ": "Espace élève", "فضاء الأستاذ": "Espace enseignant", "تمارين تفاعلية": "Exercices interactifs", "أنشطة للإنجاز": "Activités à réaliser",
  "اختر الإجابة الصحيحة. يظهر التصحيح مباشرة.": "Choisis la bonne réponse. La correction s'affiche tout de suite.", "إجابة صحيحة ✓": "Bonne réponse ✓", "إجابة خاطئة ✗": "Mauvaise réponse ✗",
  "إعادة المحاولة": "Recommencer", "للتلميذ: تمارين وأنشطة لإنجازها مع أمثلة وموارد.": "Pour l'élève : exercices et activités à réaliser, avec exemples et ressources.",
@@ -242,6 +248,10 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .dlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}.dlcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;display:flex;flex-direction:column;gap:6px}.dlcard h4{margin:0;font-size:17px}.dlcard p{margin:0;font-size:14px;flex:1}
 .dlmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.dlmeta .os{font-size:12px;color:#666}
 .space-d{margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:0 14px}.space-d>summary{cursor:pointer;font-weight:700;font-size:18px;color:#1e3a6e;padding:10px 0}.space-d[open]>summary{border-bottom:1px solid var(--line);margin-bottom:6px}
+.step{border:1px solid var(--line);border-radius:10px;margin:8px 0;background:#fff}.step>summary{cursor:pointer;padding:9px 12px;display:flex;align-items:center;gap:10px;font-size:16px}
+.step[open]>summary{border-bottom:1px solid var(--line)}.stbody{padding:6px 14px 12px}.stbody h5{margin:10px 0 4px;color:#1e3a6e}.stbody ol,.stbody ul{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
+.badge{background:#1e4fa8;color:#fff;border-radius:999px;min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;padding:0 8px}.badge.pj{background:#e8a21c;color:#222;letter-spacing:1px}
+.stbody .check{list-style:none;padding:0}.stbody .check li::before{content:"";display:inline-block;width:12px;height:12px;border:2px solid #1e4fa8;border-radius:3px;margin-inline-end:8px;vertical-align:-1px}
 </style>
 </head>
 <body>
@@ -715,7 +725,7 @@ renderHome();
 // ressources proposées dans chaque axe
 const RES = {"7-prog":["stories"], "8-prog":["games"], "9-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
 const RESCAT = {"7-create":"personnages", "8-create":"sons"};
-function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => $("#pool").append(n))); }
+function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => { if (n.classList && n.classList.contains("libwrap")) { [...n.children].filter(c => c.id).forEach(c => $("#pool").append(c)); n.remove(); } else $("#pool").append(n); })); }
 function quiz(list){
   let done = 0, good = 0; const sc = el("p",{class:"score"}); const box = el("div",{});
   const qs = list.map(q => {
@@ -729,12 +739,32 @@ function quiz(list){
   });
   box.append(sc, ...qs); return box;
 }
+function modelLinks(models){
+  return (models || []).map(m => {
+    const [kind, rest] = m.split(":");
+    if (kind === "story") { const s = DATA.stories.find(x => x.key === rest); return s ? el("a",{class:"btn",href:"#story-" + rest,text:"فتح القصة: " + s.title}) : null; }
+    const [cat, key] = rest.split("/"), g = (DATA.games || []).find(x => x.cat === cat && x.key === key);
+    return g ? el("a",{class:"btn",href:g.file,download:g.key + ".sb3",text:"نموذج للتحميل: " + g.title_ar}) : null;
+  });
+}
+function parcours(y){
+  const d = (DATA.parcours || {})[y]; if (!d) return [];
+  const out = [el("h3",{text:"المسار التعليمي: من نشاط إلى آخر",style:"margin-top:18px"}), el("p",{class:"pnote",text:"أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها."})];
+  d.steps.forEach((s, i) => out.push(el("details",{class:"step"}, el("summary",{}, el("span",{class:"badge",text:i + 1}), el("b",{text:s.t})),
+    el("div",{class:"stbody"}, el("p",{}, el("b",{text:"الكفاية: "}), s.comp), el("h5",{text:"الأنشطة الصغيرة"}), el("ol",{}, s.acts.map(t => el("li",{text:t}))),
+      s.models.length ? el("div",{class:"btns"}, modelLinks(s.models)) : null, el("h5",{text:"أنا قادر على…"}), el("ul",{class:"check"}, s.sais.map(t => el("li",{text:t})))))));
+  out.push(el("h3",{text:"مشاريع أساسية للإنجاز",style:"margin-top:18px"}));
+  d.projets.forEach(p => out.push(el("details",{class:"step proj"}, el("summary",{}, el("span",{class:"badge pj",text:"★".repeat(p.lvl)}), el("b",{text:p.t})),
+    el("div",{class:"stbody"}, el("p",{text:p.brief}), el("h5",{text:"المطلوب"}), el("ul",{}, p.req.map(t => el("li",{text:t}))), el("p",{class:"pnote",text:DATA.parcours.livrables}),
+      p.models.length ? el("div",{class:"btns"}, modelLinks(p.models)) : null))));
+  return out;
+}
 function axisExtras(y, k){
   const id = `${y}-${k}`, body = [], ex = (DATA.exo || {})[id], ac = (DATA.act || {})[id];
   if (/^s/.test(y)) body.push(el("p",{class:"pnote",text:"تمارين مقترحة غير رسمية: لم تُقدَّم بعد وثيقة منهاج رسمية لهذا المستوى، فالمواضيع عامة وتُكيَّف مع المنهاج الفعلي."}));
   if (ex) body.push(el("h3",{text:"تمارين تفاعلية"}), el("p",{class:"pnote",text:"اختر الإجابة الصحيحة. يظهر التصحيح مباشرة."}), quiz(ex));
   if (ac) { body.push(el("h3",{text:"أنشطة للإنجاز"})); ac.forEach(a => body.push(el("div",{class:"qz"}, el("p",{text:a.t}), el("p",{style:"font-weight:400",text:a.d}), a.ex ? el("p",{class:"pnote",text:a.ex}) : null, a.link ? el("a",{class:"btn",href:a.link,text:"الموارد"}) : null))); }
-  return [el("details",{class:"space-d"}, el("summary",{text:"فضاء التلميذ"}), body)];
+  return [...(k === "prog" ? parcours(y) : []), el("details",{class:"space-d"}, el("summary",{text:"فضاء التلميذ"}), body)];
 }
 function renderTeacher(y){
   const Y = CUR.years[y]; $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar; park(); $("#resArea").replaceChildren();
@@ -772,7 +802,9 @@ function renderAxis(y, k){
   $("#axisHead").firstChild.append(...axisExtras(y, k));
   park(); const res = $("#resArea"); const list = RES[`${y}-${k}`] || [];
   if (!list.length) res.append(el("p",{class:"empty",text:"ستُضاف موارد هذا المحور لاحقا."}));
-  list.forEach(id => res.append($("#" + id)));
+  const lw = k === "prog" && (DATA.parcours || {})[y] ? el("details",{class:"space-d libwrap"}, el("summary",{text: y === "7" ? "القصص الجاهزة (مكتبة)" : "الألعاب الجاهزة (مكتبة)"})) : null;
+  if (lw) res.append(lw);
+  list.forEach(id => (lw || res).append($("#" + id)));
   if (list.includes("library")) {
     [sel, vsel, tsel].forEach(x => x.hidden = false);
     $("#library .lead").textContent = "صور وأصوات ورسوم متحركة يمكنك استعمالها في أي قصة. اضغط «تحميل» ثم أضف الملف في سكراتش.";
