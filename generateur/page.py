@@ -7,7 +7,7 @@ import i18n_fr
 games = json.load(open(os.path.join(HERE, "jeux2_manifest.json"), encoding="utf-8"))
 games += json.load(open(os.path.join(HERE, "jeux3_manifest.json"), encoding="utf-8"))
 for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8")):
-    games.append(dict(g, cat="catch", cat_ar="التقاط الأشياء (لكل قصة لعبة)", cat_fr="Attrape-objets (un jeu par conte)"))
+    games.append(dict(g, cat="catch", cat_ar="لعبة التقاط الأشياء", cat_fr="Jeu d'attrape-objets"))
 man["games"] = games
 man["programme"] = json.load(open(os.path.join(HERE, "programme.json"), encoding="utf-8"))
 man["curriculum"] = json.load(open(os.path.join(HERE, "axes.json"), encoding="utf-8"))
@@ -648,11 +648,11 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
 // ---- jeux
-const GAME_CATS = ["catch"];
+const GAME_CATS = ["catch"], KEEP_GAMES = {catch: ["sindbad"]};  // un seul jeu retenu par catégorie affichée
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
   GAME_CATS.forEach(cat => {
-    const list = (DATA.games||[]).filter(x => x.cat === cat); if (!list.length) return;
+    const list = (DATA.games||[]).filter(x => x.cat === cat && (!KEEP_GAMES[cat] || KEEP_GAMES[cat].includes(x.key))); if (!list.length) return;
     g.append(el("h3",{class:"gcat"}, el("span",{text:list[0].cat_ar}), el("a",{class:"ficheln",href:`fiches-activite/${cat}.html`,target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"})));
     const row = el("div",{class:"gamegrid"});
     list.forEach(x => row.append(el("article",{class:"gcard"},
