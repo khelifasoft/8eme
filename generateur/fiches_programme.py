@@ -192,5 +192,6 @@ def make(fid, F):
 </body></html>"""
     open(os.path.join(OUT, fid + ".html"), "w", encoding="utf-8").write(html)
 
-for fid, F in FAMILIES.items(): make(fid, F)
-print("fiches :", len(FAMILIES), os.listdir(OUT))
+if __name__ == "__main__":
+    for fid, F in FAMILIES.items(): make(fid, F)
+    print("fiches :", len(FAMILIES), os.listdir(OUT))

@@ -27,7 +27,7 @@ for _l in exercices.ACT.values():
     for _a in _l:
         FR["map"][_a["t"]] = _a["t_fr"]; FR["map"][_a["d"]] = _a["d_fr"]
         if _a.get("ex"): FR["map"][_a["ex"]] = _a["ex_fr"]
-FR["map"].update({"المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
+FR["map"].update({"بطاقة النشاط (PDF)": "Fiche d'activité (PDF)", "بطاقة النشاط": "Fiche d'activité", "فتح PDF في نافذة جديدة": "Ouvrir le PDF dans un nouvel onglet","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
  "المستوى": "Niveau", "الكفاية": "Compétence", "الأنشطة الصغيرة": "Petites activités", "أنا قادر على…": "Je suis capable de…", "نموذج للتحميل": "Modèle à télécharger", "فتح القصة": "Ouvrir le conte", "مشاريع أساسية للإنجاز": "Projets de base à réaliser", "الصعوبة": "Difficulté", "المطلوب": "Exigences", "نماذج": "Modèles",
  "الألعاب الجاهزة (مكتبة)": "Jeux prêts à l'emploi (bibliothèque)", "القصص الجاهزة (مكتبة)": "Contes prêts à l'emploi (bibliothèque)",
  "التحميلات": "Téléchargements", "كل المستويات": "Tous les niveaux", "⬇ تحميل": "⬇ Télécharger", "⬇ التحميلات: سكراتش وبقية البرمجيات": "⬇ Téléchargements : Scratch et autres logiciels", "حمّله من صفحة التحميلات": "téléchargez-le depuis la page Téléchargements",
@@ -203,6 +203,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding:18px 0 40px;colo
 .vphead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .vphead h3{margin:0;font-size:19px;color:var(--ink)}
 .vpbody{aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden}
+.vpbody.tall{aspect-ratio:auto;height:78vh;background:#fff}
 .vpbody iframe,.vpbody video{width:100%;height:100%;border:0;display:block}
 .vpfoot{margin:8px 0 0;font-size:14px}
 .srcsites{max-width:520px;grid-template-columns:repeat(3,1fr);margin:6px 0 12px}
@@ -546,8 +547,16 @@ function openPlayer(v, info, title){
   const o = $("#vpOpen"); o.href = v.url; o.textContent = "فتح في الموقع الأصلي (" + info.host + ")";
   dlg2.showModal();
 }
-function closePlayer(){ if (dlg2.open) dlg2.close(); $("#vpBody").replaceChildren(); }
-dlg2.addEventListener("close", () => $("#vpBody").replaceChildren());
+function openFiche(fid, title){
+  const body = $("#vpBody"); body.replaceChildren(); body.classList.add("tall");
+  const src = `fiches-activite/pdf/${fid}.pdf`;
+  $("#vpTitle").textContent = title;
+  body.append(el("iframe",{src,title}));
+  const o = $("#vpOpen"); o.href = src; o.textContent = "فتح PDF في نافذة جديدة";
+  dlg2.showModal();
+}
+function closePlayer(){ $("#vpBody").classList.remove("tall"); if (dlg2.open) dlg2.close(); $("#vpBody").replaceChildren(); }
+dlg2.addEventListener("close", () => { $("#vpBody").replaceChildren(); $("#vpBody").classList.remove("tall"); });
 dlg2.addEventListener("click", e => { if (e.target === dlg2) closePlayer(); });
 $("#vpClose").addEventListener("click", closePlayer);
 
@@ -649,16 +658,17 @@ if ("serviceWorker" in navigator && secure) {
 }
 // ---- jeux
 const GAME_CATS = ["catch"];
+function ficheBtn(fid){ const b = el("button",{type:"button",class:"btn",text:"بطاقة النشاط (PDF)"}); b.addEventListener("click", () => openFiche(fid, "بطاقة النشاط")); return b; }
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
   GAME_CATS.forEach(cat => {
     const list = (DATA.games||[]).filter(x => x.cat === cat); if (!list.length) return;
-    g.append(el("h3",{class:"gcat"}, el("span",{text:list[0].cat_ar}), el("a",{class:"ficheln",href:`fiches-activite/${cat}.html`,target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"})));
+    g.append(el("h3",{class:"gcat"}, el("span",{text:list[0].cat_ar}), null));
     const row = el("div",{class:"gamegrid"});
     list.forEach(x => row.append(el("article",{class:"gcard"},
       el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
       el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
-        el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}))))));
+        el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}), ficheBtn(cat))))));
     g.append(row);
   });
   // jeux Scratch publiés sur scratch.mit.edu (liste dans jeux.js) : joués ici, sans quitter la page
@@ -687,8 +697,7 @@ function renderStoryHead(key){
     el("a",{class:"btn",href:s.doc,download:`ورقة ${s.title}.doc`,title:"للإصدارات القديمة من Word (2003 و2007)",text:"Word قديم (.doc)"}),
     el("a",{class:"btn",href:s.html,target:"_blank",rel:"noopener",text:"قراءة الورقة"}),
     el("a",{class:"btn",href:s.sb3,download:`${s.title}.sb3`,text:"مشروع سكراتش"}),
-    el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"})));
-  if (key !== "__general") kids.push(el("div",{class:"box2"}, el("b",{text:"الربط بالمنهاج: "}), el("a",{class:"ficheln",href:"fiches-activite/contes.html",target:"_blank",rel:"noopener",text:"بطاقة النشاط (بالفرنسية)"})));
+    el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"}), ficheBtn("contes")));
   h.append(el("div",{class:"storyhead"}, el("div",{class:"sbar",style:`background:${s.accent}`}), el("div",{class:"sbody"}, kids)));
 }
 

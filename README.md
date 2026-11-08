@@ -81,6 +81,10 @@ La page « Pensée logique et programmation » de chaque niveau est organisée e
 
 Modifier le parcours : `generateur/parcours.py` (textes arabe/français), puis `python3 generateur/page.py`.
 
+## Fiches d'activité (résumé PDF)
+
+Le bouton « Fiche d'activité (PDF) » placé à côté du téléchargement du jeu ou du conte ouvre dans une fenêtre un **résumé d'une page, en points** (situation-problème, capacités, déroulement, activités de l'élève, critères, différenciation). Les PDF sont dans `fiches-activite/pdf/`; pour les régénérer après une modification de `generateur/fiches_programme.py` : `python3 generateur/fiches_resume.py` (Node + Playwright requis). Les fiches complètes restent dans `fiches-activite/*.html`.
+
 ## Téléchargements
 
 Rubrique « Téléchargements » (barre bleue, ou bouton de l'accueil) : logiciels utilisés dans tous les niveaux (Scratch, App Inventor, mBlock, Python, LibreOffice, Audacity, Shotcut, GIMP, SQLite, Filius…), filtrables par niveau, avec liens vers les sites officiels. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire).
