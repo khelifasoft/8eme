@@ -8,8 +8,11 @@ games = json.load(open(os.path.join(HERE, "jeux2_manifest.json"), encoding="utf-
 games += json.load(open(os.path.join(HERE, "jeux3_manifest.json"), encoding="utf-8"))
 for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8")):
     games.append(dict(g, cat="catch", cat_ar="ألعاب سكراتش", cat_fr="Jeux Scratch"))
+for _g in json.load(open(os.path.join(HERE, "jeux4_manifest.json"), encoding="utf-8")):
+    games.append(dict(_g, cat="catch", cat_ar="ألعاب سكراتش", cat_fr="Jeux Scratch"))
+_EXTRA = {"sindbad": dict(video="jeux/videos/attrape-poissons.mp4", fiche="catch", res="catch"), "course": dict(video="jeux/videos/course.mp4", res="course")}
 for _g in games:
-    if _g["cat"] == "catch" and _g["key"] == "sindbad": _g["video"] = "jeux/videos/attrape-poissons.mp4"
+    if _g["cat"] == "catch": _g.update(_EXTRA.get(_g["key"], {}))
 man["games"] = games
 man["programme"] = json.load(open(os.path.join(HERE, "programme.json"), encoding="utf-8"))
 man["curriculum"] = json.load(open(os.path.join(HERE, "axes.json"), encoding="utf-8"))
@@ -47,7 +50,7 @@ for _l in exercices.ACT.values():
     for _a in _l:
         FR["map"][_a["t"]] = _a["t_fr"]; FR["map"][_a["d"]] = _a["d_fr"]
         if _a.get("ex"): FR["map"][_a["ex"]] = _a["ex_fr"]
-FR["map"].update({"شاهد فيديو اللعبة": "Regarder la vidéo du jeu", "فتح الفيديو في نافذة جديدة": "Ouvrir la vidéo dans un nouvel onglet","بطاقة النشاط": "Fiche d'activité", "موارد اللعبة": "Ressources du jeu", "موارد لعبة «اصطد الأسماك»": "Ressources du jeu « Attrape les poissons »", "الصور": "Images", "الأصوات": "Sons", "تحميل كل الموارد (.zip)": "Télécharger toutes les ressources (.zip)", "الصور والأصوات المستعملة في اللعبة. حمّلها ثم أضفها في سكراتش (رسم ← رفع، أو صوت ← رفع).": "Les images et sons utilisés dans le jeu. Télécharge-les puis ajoute-les dans Scratch (Costumes → Importer, ou Sons → Importer).","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
+FR["map"].update({"شاهد فيديو اللعبة": "Regarder la vidéo du jeu", "فتح الفيديو في نافذة جديدة": "Ouvrir la vidéo dans un nouvel onglet","بطاقة النشاط": "Fiche d'activité", "موارد اللعبة": "Ressources du jeu", "موارد لعبة": "Ressources du jeu", "الصور": "Images", "الأصوات": "Sons", "تحميل كل الموارد (.zip)": "Télécharger toutes les ressources (.zip)", "الصور والأصوات المستعملة في اللعبة. حمّلها ثم أضفها في سكراتش (رسم ← رفع، أو صوت ← رفع).": "Les images et sons utilisés dans le jeu. Télécharge-les puis ajoute-les dans Scratch (Costumes → Importer, ou Sons → Importer).","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
  "المستوى": "Niveau", "الكفاية": "Compétence", "الأنشطة الصغيرة": "Petites activités", "أنا قادر على…": "Je suis capable de…", "نموذج للتحميل": "Modèle à télécharger", "فتح القصة": "Ouvrir le conte", "مشاريع أساسية للإنجاز": "Projets de base à réaliser", "الصعوبة": "Difficulté", "المطلوب": "Exigences", "نماذج": "Modèles",
  "الألعاب الجاهزة (مكتبة)": "Jeux prêts à l'emploi (bibliothèque)", "القصص الجاهزة (مكتبة)": "Contes prêts à l'emploi (bibliothèque)",
  "التحميلات": "Téléchargements", "كل المستويات": "Tous les niveaux", "⬇ تحميل": "⬇ Télécharger", "⬇ التحميلات: سكراتش وبقية البرمجيات": "⬇ Téléchargements : Scratch et autres logiciels", "حمّله من صفحة التحميلات": "téléchargez-le depuis la page Téléchargements",
@@ -677,7 +680,7 @@ function watchBtn(x){
   b.addEventListener("click", () => { openPlayer({url:x.video}, {kind:"video", host:"", src:x.video}, x.title_ar); $("#vpOpen").href = x.video; $("#vpOpen").textContent = "فتح الفيديو في نافذة جديدة"; });
   return b;
 }
-function resBtn(){ return el("a",{class:"btn",href:"#ressources-catch",text:"موارد اللعبة"}); }
+function resBtn(id){ return el("a",{class:"btn",href:"#ressources-" + id,text:"موارد اللعبة"}); }
 function ficheBtn(fid, key){ return el("a",{class:"btn",href:"#fiche-" + fid + (key ? "-" + key : ""),text:"بطاقة النشاط"}); }
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
@@ -688,7 +691,7 @@ function renderGames(){
     list.forEach(x => row.append(el("article",{class:"gcard"},
       el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
       el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
-        el("div",{class:"btns"}, watchBtn(x), ficheBtn(cat), resBtn())))));
+        el("div",{class:"btns"}, watchBtn(x), x.fiche ? ficheBtn(x.fiche) : null, x.res ? resBtn(x.res) : null)))));
     g.append(row);
   });
   // jeux Scratch publiés sur scratch.mit.edu (liste dans jeux.js) : joués ici, sans quitter la page
@@ -868,14 +871,14 @@ function renderDownloads(){
     el("p",{class:"pnote",text:"لإضافة برنامج: عدّل الملف logiciels.js."})));
 }
 function syncImgs(){ document.querySelectorAll("img[data-fr-src]").forEach(i => { if (!i.dataset.arSrc) i.dataset.arSrc = i.getAttribute("src"); i.setAttribute("src", document.documentElement.lang === "fr" ? i.dataset.frSrc : i.dataset.arSrc); }); }
-function renderRessources(){
+function renderRessources(id){
   $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← " + CUR.years["8"].ar; park(); $("#resArea").replaceChildren();
-  const R = DATA.ressources || []; R.forEach(r => { FRMAP[r.ar] = r.fr; });
+  const RG = (DATA.ressources || {})[id] || {items:[], zip:""}, R = RG.items, game = (DATA.games || []).find(x => x.res === id) || {title_ar:""}; R.forEach(r => { FRMAP[r.ar] = r.fr; });
   const card = r => el("article",{class:"dlcard"}, r.type === "image" ? el("img",{src:r.file,alt:r.ar,class:"rprev",loading:"lazy"}) : el("audio",{src:r.file,controls:"",preload:"none",class:"rprev"}),
     el("h4",{text:r.ar}), el("a",{class:"btn main",href:r.file,download:r.file.split("/").pop(),text:"⬇ تحميل"}));
-  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"موارد لعبة «اصطد الأسماك»"}),
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{}, el("span",{text:"موارد لعبة"}), " «", el("span",{text:game.title_ar}), "»"),
     el("p",{class:"pnote",text:"الصور والأصوات المستعملة في اللعبة. حمّلها ثم أضفها في سكراتش (رسم ← رفع، أو صوت ← رفع)."}),
-    el("p",{}, el("a",{class:"btn main",href:"jeux/ressources/ressources-attrape-poissons.zip",download:"ressources-attrape-poissons.zip",text:"تحميل كل الموارد (.zip)"})),
+    el("p",{}, el("a",{class:"btn main",href:RG.zip,download:RG.zip.split("/").pop(),text:"تحميل كل الموارد (.zip)"})),
     el("h3",{text:"الصور"}), el("div",{class:"dlgrid"}, R.filter(r => r.type === "image").map(card)),
     el("h3",{text:"الأصوات"}), el("div",{class:"dlgrid"}, R.filter(r => r.type === "son").map(card))));
 }
@@ -892,7 +895,7 @@ function renderFiche(fid, key){
     steps.length ? sec("مراحل اللعبة بالصور", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img_ar || st.img,"data-fr-src":st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
     sec("سير الحصة", li(F.steps)), sec("أنشطة التلميذ", li(F.eleve)), sec("معايير النجاح", li(F.criteres)),
     sec("التمايز", el("ul",{}, el("li",{}, el("b",{text:"التخفيف: "}), el("span",{text:F.allegee})), el("li",{}, el("b",{text:"التوسيع: "}), el("span",{text:F.prolongement})))),
-    dl ? el("p",{}, dl, fid === "catch" ? resBtn() : null) : null);
+    dl ? el("p",{}, dl, fid === "catch" ? resBtn("catch") : null) : null);
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, body)); syncImgs();
 }
 const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};
@@ -916,7 +919,7 @@ function route(){
   if (h === "games") h = "y8-prog"; if (h === "stories") h = "y7-prog";
   let view = "home", y = null, k = null, key = null, m;
   if (h === "downloads") view = "dl";
-  if (h === "ressources-catch") view = "res";
+  let rm = h.match(/^ressources-([a-z]+)$/); if (rm) view = "res";
   let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) view = "fiche";
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
@@ -927,7 +930,7 @@ function route(){
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "dl") renderDownloads();
   if (view === "fiche") renderFiche(fm[1], fm[2]);
-  if (view === "res") renderRessources();
+  if (view === "res") renderRessources(rm[1]);
   if (view === "year") renderYear(y);
   if (view === "axis") { if (k === "refs") renderRefs(y); else if (k === "ens") renderTeacher(y); else renderAxis(y, k); }
   ynav.querySelectorAll(".ydrop").forEach(d => { if (d.dataset.year === y) d.setAttribute("data-current",""); else d.removeAttribute("data-current"); });
