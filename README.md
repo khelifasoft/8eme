@@ -106,7 +106,7 @@ Sous la section **« Jeux Scratch »** des pages 8e et 9e (`#y8-prog`), la rubri
 
 ## Téléchargements
 
-Rubrique « Téléchargements » (bouton de la page d'accueil) : logiciels utilisés dans tous les niveaux (Scratch, App Inventor, mBlock, Python, LibreOffice, Audacity, Shotcut, GIMP, SQLite, Filius…), filtrables par niveau, avec liens vers les sites officiels. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire).
+Rubrique « Téléchargements » (bouton de la page d'accueil) : logiciels utilisés en 7e, 8e et 9e (Scratch, App Inventor, mBlock, Arduino IDE, LibreOffice, Audacity, Shotcut, GIMP, Inkscape, 7-Zip), filtrables par niveau, avec liens vers les sites officiels. Les logiciels réservés aux niveaux secondaires (Python, Thonny, Visual Studio Code, DB Browser for SQLite, Filius) restent dans `logiciels.js` mais ne sont pas affichés tant que `MENU_YEARS` (dans `generateur/page.py`) ne contient que 7, 8 et 9. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire).
 
 ## Régénérer les fiches
 

@@ -812,11 +812,14 @@ function renderDownloads(){
   L.forEach(s => { FRMAP[s.ar] = s.desc_fr; });
   Object.values(C).forEach(c => { FRMAP[c[0]] = c[1]; });
   YEARS.forEach(y => { FRMAP[CUR.years[y].short_ar] = CUR.years[y].short_fr; });
-  const ok = s => dlLevel === "all" || s.levels === "all" || s.levels.includes(dlLevel);
-  const chips = el("div",{class:"dlchips"}, [["all","كل المستويات"], ...YEARS.map(y => [y, CUR.years[y].ar])].map(([v, t]) => { const b = el("button",{type:"button",class:"chip",text:t,"aria-pressed":String(dlLevel === v)}); b.addEventListener("click", () => { dlLevel = v; renderDownloads(); }); return b; }));
+  if (dlLevel !== "all" && !MENU_YEARS.includes(dlLevel)) dlLevel = "all";
+  // seuls les niveaux du menu (7e, 8e, 9e) sont proposés : les logiciels réservés aux niveaux secondaires restent dans logiciels.js mais ne sont pas affichés
+  const shown = s => s.levels === "all" || s.levels.some(y => MENU_YEARS.includes(y));
+  const ok = s => shown(s) && (dlLevel === "all" || s.levels === "all" || s.levels.includes(dlLevel));
+  const chips = el("div",{class:"dlchips"}, [["all","كل المستويات"], ...MENU_YEARS.map(y => [y, CUR.years[y].ar])].map(([v, t]) => { const b = el("button",{type:"button",class:"chip",text:t,"aria-pressed":String(dlLevel === v)}); b.addEventListener("click", () => { dlLevel = v; renderDownloads(); }); return b; }));
   const groups = Object.keys(C).map(c => { const items = L.filter(s => s.cat === c && ok(s)); if (!items.length) return null;
     return el("section",{}, el("h3",{text:C[c][0]}), el("div",{class:"dlgrid"}, items.map(s => el("article",{class:"dlcard"}, el("h4",{text:s.name}), el("p",{text:s.ar}),
-      el("div",{class:"dlmeta"}, s.levels === "all" ? el("span",{class:"lvl",text:"كل المستويات"}) : s.levels.map(y => el("span",{class:"lvl",text:CUR.years[y].short_ar})), el("span",{class:"os",dir:"ltr",text:s.os})),
+      el("div",{class:"dlmeta"}, s.levels === "all" ? el("span",{class:"lvl",text:"كل المستويات"}) : s.levels.filter(y => MENU_YEARS.includes(y)).map(y => el("span",{class:"lvl",text:CUR.years[y].short_ar})), el("span",{class:"os",dir:"ltr",text:s.os})),
       el("a",{class:"btn main",href:s.url,target:"_blank",rel:"noopener",text:"⬇ تحميل"}))))); });
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"التحميلات"}), el("p",{class:"pnote",text:"البرمجيات المستعملة في كل المستويات. الروابط تؤدي إلى المواقع الرسمية للبرمجيات."}), chips, groups,
     el("p",{class:"pnote",text:"لإضافة برنامج: عدّل الملف logiciels.js."})));
