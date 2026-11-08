@@ -29,7 +29,7 @@ for _l in exercices.ACT.values():
     for _a in _l:
         FR["map"][_a["t"]] = _a["t_fr"]; FR["map"][_a["d"]] = _a["d_fr"]
         if _a.get("ex"): FR["map"][_a["ex"]] = _a["ex_fr"]
-FR["map"].update({"بطاقة النشاط": "Fiche d'activité","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
+FR["map"].update({"بطاقة النشاط": "Fiche d'activité", "موارد تساعد على الإنشاء": "Ressources pour créer","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
  "المستوى": "Niveau", "الكفاية": "Compétence", "الأنشطة الصغيرة": "Petites activités", "أنا قادر على…": "Je suis capable de…", "نموذج للتحميل": "Modèle à télécharger", "فتح القصة": "Ouvrir le conte", "مشاريع أساسية للإنجاز": "Projets de base à réaliser", "الصعوبة": "Difficulté", "المطلوب": "Exigences", "نماذج": "Modèles",
  "الألعاب الجاهزة (مكتبة)": "Jeux prêts à l'emploi (bibliothèque)", "القصص الجاهزة (مكتبة)": "Contes prêts à l'emploi (bibliothèque)",
  "التحميلات": "Téléchargements", "كل المستويات": "Tous les niveaux", "⬇ تحميل": "⬇ Télécharger", "⬇ التحميلات: سكراتش وبقية البرمجيات": "⬇ Téléchargements : Scratch et autres logiciels", "حمّله من صفحة التحميلات": "téléchargez-le depuis la page Téléchargements",
@@ -653,6 +653,7 @@ if ("serviceWorker" in navigator && secure) {
 }
 // ---- jeux
 const GAME_CATS = ["catch"];
+function resBtn(y){ return el("a",{class:"btn",href:`#y${y}-create`,text:"موارد تساعد على الإنشاء"}); }
 function ficheBtn(fid, key){ return el("a",{class:"btn",href:"#fiche-" + fid + (key ? "-" + key : ""),text:"بطاقة النشاط"}); }
 function renderGames(){
   const g = $("#gameGrid"); g.replaceChildren();
@@ -663,7 +664,7 @@ function renderGames(){
     list.forEach(x => row.append(el("article",{class:"gcard"},
       el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
       el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
-        el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}), ficheBtn(cat))))));
+        el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}), ficheBtn(cat), resBtn("8"))))));
     g.append(row);
   });
   // jeux Scratch publiés sur scratch.mit.edu (liste dans jeux.js) : joués ici, sans quitter la page
@@ -692,7 +693,7 @@ function renderStoryHead(key){
     el("a",{class:"btn",href:s.doc,download:`ورقة ${s.title}.doc`,title:"للإصدارات القديمة من Word (2003 و2007)",text:"Word قديم (.doc)"}),
     el("a",{class:"btn",href:s.html,target:"_blank",rel:"noopener",text:"قراءة الورقة"}),
     el("a",{class:"btn",href:s.sb3,download:`${s.title}.sb3`,text:"مشروع سكراتش"}),
-    el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"}), ficheBtn("contes", s.key)));
+    el("a",{class:"btn",href:s.pack,download:`حزمة ${s.title}.zip`,text:"كل شيء (.zip)"}), ficheBtn("contes", s.key), resBtn("7")));
   h.append(el("div",{class:"storyhead"}, el("div",{class:"sbar",style:`background:${s.accent}`}), el("div",{class:"sbody"}, kids)));
 }
 
@@ -854,7 +855,12 @@ function renderFiche(fid, key){
     sec("Situation-problème", el("p",{class:"sit",text:F.situation})),
     steps.length ? sec("Les étapes en images", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:(i + 1) + ". " + st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
     sec("Déroulement", li(F.steps)), sec("Activités de l'élève", li(F.eleve)), sec("Critères de réussite", li(F.criteres)),
-    sec("Différenciation", li(["Allègement : " + F.allegee, "Prolongement : " + F.prolongement])), dl ? el("p",{}, dl) : null);
+    sec("Différenciation", li(["Allègement : " + F.allegee, "Prolongement : " + F.prolongement])), sec("Ressources pour t'aider à créer", el("ul",{class:"reslinks"},
+      el("li",{}, el("a",{href:isC ? "#y7-create" : "#y8-create",text:"Bibliothèque : personnages, décors, sons et animations à télécharger"})),
+      el("li",{}, el("a",{href:"#downloads",text:"Télécharger Scratch et les autres logiciels"})),
+      el("li",{}, el("a",{href:"https://scratch.mit.edu/projects/editor/",target:"_blank",rel:"noopener",text:"Ouvrir Scratch en ligne"})),
+      el("li",{}, el("a",{href:isC ? "#y7-refs" : "#y8-refs",text:"Références et documents du niveau"})))),
+    dl ? el("p",{}, dl) : null);
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, body));
 }
 const REFTYPES = {pdf:"PDF", site:"موقع", livre:"كتاب", outil:"أداة"};
