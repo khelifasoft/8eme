@@ -739,7 +739,7 @@ function renderTeacher(y){
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
 }
 // pages dont on ne garde que les ressources (sans en-tête, parcours ni espace élève)
-const BARE = new Set(["8-prog"]);
+const BARE = new Set(["7-prog", "8-prog", "9-prog"]);
 function renderAxis(y, k){
   const P = CUR.pages[`${y}-${k}`], Y = CUR.years[y];
   $("#axisBack").href = "#y" + y; $("#axisBack").textContent = "← " + Y.ar;
