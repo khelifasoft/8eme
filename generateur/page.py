@@ -7,7 +7,7 @@ import i18n_fr
 games = json.load(open(os.path.join(HERE, "jeux2_manifest.json"), encoding="utf-8"))
 games += json.load(open(os.path.join(HERE, "jeux3_manifest.json"), encoding="utf-8"))
 for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8")):
-    games.append(dict(g, cat="catch", cat_ar="لعبة التقاط الأشياء", cat_fr="Jeu d'attrape-objets"))
+    games.append(dict(g, cat="catch", cat_ar="ألعاب سكراتش", cat_fr="Jeux Scratch"))
 for _g in games:
     if _g["cat"] == "catch" and _g["key"] == "sindbad": _g["video"] = "jeux/videos/attrape-poissons.mp4"
 man["games"] = games
