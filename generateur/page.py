@@ -8,6 +8,8 @@ games = json.load(open(os.path.join(HERE, "jeux2_manifest.json"), encoding="utf-
 games += json.load(open(os.path.join(HERE, "jeux3_manifest.json"), encoding="utf-8"))
 for g in json.load(open(os.path.join(HERE, "jeux_manifest.json"), encoding="utf-8")):
     games.append(dict(g, cat="catch", cat_ar="لعبة التقاط الأشياء", cat_fr="Jeu d'attrape-objets"))
+for _g in games:
+    if _g["cat"] == "catch" and _g["key"] == "sindbad": _g["video"] = "jeux/videos/attrape-poissons.mp4"
 man["games"] = games
 man["programme"] = json.load(open(os.path.join(HERE, "programme.json"), encoding="utf-8"))
 man["curriculum"] = json.load(open(os.path.join(HERE, "axes.json"), encoding="utf-8"))
@@ -30,7 +32,7 @@ for _l in exercices.ACT.values():
     for _a in _l:
         FR["map"][_a["t"]] = _a["t_fr"]; FR["map"][_a["d"]] = _a["d_fr"]
         if _a.get("ex"): FR["map"][_a["ex"]] = _a["ex_fr"]
-FR["map"].update({"بطاقة النشاط": "Fiche d'activité", "موارد اللعبة": "Ressources du jeu", "موارد لعبة «اصطد الأسماك»": "Ressources du jeu « Attrape les poissons »", "الصور": "Images", "الأصوات": "Sons", "تحميل كل الموارد (.zip)": "Télécharger toutes les ressources (.zip)", "الصور والأصوات المستعملة في اللعبة. حمّلها ثم أضفها في سكراتش (رسم ← رفع، أو صوت ← رفع).": "Les images et sons utilisés dans le jeu. Télécharge-les puis ajoute-les dans Scratch (Costumes → Importer, ou Sons → Importer).","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
+FR["map"].update({"شاهد فيديو اللعبة": "Regarder la vidéo du jeu", "فتح الفيديو في نافذة جديدة": "Ouvrir la vidéo dans un nouvel onglet","بطاقة النشاط": "Fiche d'activité", "موارد اللعبة": "Ressources du jeu", "موارد لعبة «اصطد الأسماك»": "Ressources du jeu « Attrape les poissons »", "الصور": "Images", "الأصوات": "Sons", "تحميل كل الموارد (.zip)": "Télécharger toutes les ressources (.zip)", "الصور والأصوات المستعملة في اللعبة. حمّلها ثم أضفها في سكراتش (رسم ← رفع، أو صوت ← رفع).": "Les images et sons utilisés dans le jeu. Télécharge-les puis ajoute-les dans Scratch (Costumes → Importer, ou Sons → Importer).","المسار التعليمي: من نشاط إلى آخر": "Parcours : d'une activité à l'autre", "أنهِ كل مستوى قبل الانتقال إلى الذي بعده. كل نشاط صغير يستند إلى لعبة أو قصة جاهزة تفتحها في سكراتش وتعدّلها.": "Termine chaque niveau avant de passer au suivant. Chaque petite activité s'appuie sur un jeu ou un conte prêt à ouvrir dans Scratch et à modifier.",
  "المستوى": "Niveau", "الكفاية": "Compétence", "الأنشطة الصغيرة": "Petites activités", "أنا قادر على…": "Je suis capable de…", "نموذج للتحميل": "Modèle à télécharger", "فتح القصة": "Ouvrir le conte", "مشاريع أساسية للإنجاز": "Projets de base à réaliser", "الصعوبة": "Difficulté", "المطلوب": "Exigences", "نماذج": "Modèles",
  "الألعاب الجاهزة (مكتبة)": "Jeux prêts à l'emploi (bibliothèque)", "القصص الجاهزة (مكتبة)": "Contes prêts à l'emploi (bibliothèque)",
  "التحميلات": "Téléchargements", "كل المستويات": "Tous les niveaux", "⬇ تحميل": "⬇ Télécharger", "⬇ التحميلات: سكراتش وبقية البرمجيات": "⬇ Téléchargements : Scratch et autres logiciels", "حمّله من صفحة التحميلات": "téléchargez-le depuis la page Téléchargements",
@@ -655,6 +657,11 @@ if ("serviceWorker" in navigator && secure) {
 }
 // ---- jeux
 const GAME_CATS = ["catch"];
+function watchBtn(x){
+  const b = el("button",{type:"button",class:"btn main",text:"شاهد فيديو اللعبة"});
+  b.addEventListener("click", () => { openPlayer({url:x.video}, {kind:"video", host:"", src:x.video}, x.title_ar); $("#vpOpen").href = x.video; $("#vpOpen").textContent = "فتح الفيديو في نافذة جديدة"; });
+  return b;
+}
 function resBtn(){ return el("a",{class:"btn",href:"#ressources-catch",text:"موارد اللعبة"}); }
 function ficheBtn(fid, key){ return el("a",{class:"btn",href:"#fiche-" + fid + (key ? "-" + key : ""),text:"بطاقة النشاط"}); }
 function renderGames(){
@@ -666,7 +673,7 @@ function renderGames(){
     list.forEach(x => row.append(el("article",{class:"gcard"},
       el("img",{class:"gcover",src:x.cover,alt:x.title_ar,loading:"lazy"}),
       el("div",{class:"gbody"}, el("h3",{text:x.title_ar}), el("p",{text:x.how_ar}),
-        el("div",{class:"btns"}, el("a",{class:"btn main",href:x.file,download:x.key+".sb3",text:"تحميل اللعبة (.sb3)"}), ficheBtn(cat), resBtn())))));
+        el("div",{class:"btns"}, watchBtn(x), ficheBtn(cat), resBtn())))));
     g.append(row);
   });
   // jeux Scratch publiés sur scratch.mit.edu (liste dans jeux.js) : joués ici, sans quitter la page
@@ -863,7 +870,7 @@ function renderFiche(fid, key){
   const steps = isC ? (DATA.etapes.contes[key] || []) : (DATA.etapes[fid] || []);
   const sec = (t, kids) => [el("h3",{text:t}), kids];
   const li = a => el("ul",{}, a.map(t => el("li",{text:t})));
-  const dl = isC ? (s && el("a",{class:"btn main",href:s.sb3,download:`${s.title}.sb3`,text:"Télécharger le projet Scratch (.sb3)"})) : (() => { const g = (DATA.games || []).find(x => x.cat === fid); return g && el("a",{class:"btn main",href:g.file,download:g.key + ".sb3",text:"Télécharger le jeu (.sb3)"}); })();
+  const dl = isC ? (s && el("a",{class:"btn main",href:s.sb3,download:`${s.title}.sb3`,text:"Télécharger le projet Scratch (.sb3)"})) : (() => { const g = (DATA.games || []).find(x => x.cat === fid); return g && watchBtn(g); })();
   const body = el("div",{class:"fiche",lang:"fr",dir:"ltr","data-nofr":""}, el("h2",{text:"Fiche d'activité : " + (isC && s ? s.title : F.title)}), el("p",{class:"pnote",text:F.meta}),
     sec("Situation-problème", el("p",{class:"sit",text:F.situation})),
     steps.length ? sec("Les étapes en images", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:(i + 1) + ". " + st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
