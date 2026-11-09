@@ -55,7 +55,7 @@ for _k, _v in _thfr.items():
     FR["map"].setdefault(_k, _v)
 FR["rules"] += [["^ح(\\d+)$", "S$1"], ["^(.+) · ح(\\d+)$", "$1 · S$2"]]   # numéros de séance : ح22 -> S22
 FR["map"].update({"⬇ تثبيت سكراتش على الحاسوب": "⬇ Installer Scratch sur l'ordinateur", "⬇ تثبيت سكراتش على Windows": "⬇ Installer Scratch pour Windows", "⬇ تثبيت سكراتش على macOS": "⬇ Installer Scratch pour macOS", "مقترح لنظامك": "Conseillé pour ton système", "⬇ اختصار هذا الموقع على سطح المكتب": "⬇ Raccourci de ce site sur le bureau", "تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance",
- "مذكرات الدفتر": "Fiches du cahier", "مذكرات الدفتر (للطباعة)": "Fiches du cahier (à imprimer)", "مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)": "Fiches du cahier (à imprimer et à coller dans le cahier de l'élève)",
+ "مذكرات الدفتر": "Fiches du cahier", "طباعة البطاقة (PDF)": "Imprimer la fiche (PDF)", "مذكرات الدفتر (للطباعة)": "Fiches du cahier (à imprimer)", "مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)": "Fiches du cahier (à imprimer et à coller dans le cahier de l'élève)",
  "فتح المذكرات للطباعة": "Ouvrir les fiches (impression)", "PDF بالعربية": "PDF en arabe", "PDF en français": "PDF en français", "PDF بالعربية مع الإجابات": "PDF en arabe avec corrigé", "PDF avec corrigé": "PDF en français avec corrigé", "مذكرة الدفتر لهذه الحصة": "Fiche du cahier pour cette séance",
  "ورقة A4 لكل حصة: جمل ناقصة، أثر مكتوب للإتمام، وسكربت نصف منجز يُنهى في القسم.": "Une feuille A4 par séance : phrases à trous, trace écrite à compléter et script à moitié terminé à finir en classe.",
  "لكل حصة برمجة ورقة واحدة بحجم A4: جمل ناقصة للإتمام، والأثر المكتوب (جدول أو مخطط أو بطاقة)، وسكربت نصف منجز يُنهيه التلاميذ في القسم، وما يجب حفظه. تُطبع الأجزاء الفارغة، ويمكن عرض الإجابات للأستاذ. اقتراح غير رسمي قابل للتعديل.": "Une feuille A4 par séance de programmation : phrases à trous à compléter, trace écrite (tableau, schéma ou carte), script à moitié terminé que les élèves finissent en classe, et ce qu'il faut retenir. Les parties vides s'impriment ; l'enseignant peut afficher le corrigé. Proposition non officielle, à adapter."})
@@ -332,6 +332,7 @@ a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
 .instbtns{display:flex;flex-direction:column;gap:8px}.instrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.instrow .mine{font-size:12px;font-weight:700;color:#1d6b3b;background:#e4f6e8;border-radius:999px;padding:0 10px}
 #getinst{font-size:16px;padding:8px 18px;white-space:nowrap}
 .cahierbox{border:2px solid #1e4fa8;border-radius:12px;padding:6px 16px 12px;margin:16px 0;background:#f4f8ff}.cahierbox h3{margin:6px 0 4px;color:#1e4fa8;font-size:18px}.cahierbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.cahierbtns .btn{min-width:150px}
+.pdfrow{margin:6px 0}html[lang=fr] .pdf-ar,html:not([lang=fr]) .pdf-fr{display:none}
 /*__THEORIE_CSS__*/
 </style>
 </head>
@@ -1097,7 +1098,9 @@ function renderFiche(fid, key){
   const sec = (t, kids) => [el("h3",{text:t}), kids];
   const li = a => el("ul",{}, a.map(t => el("li",{text:t})));
   const dl = isC ? (s && el("a",{class:"btn main",href:s.sb3,download:`${s.title}.sb3`,text:"تحميل مشروع سكراتش (.sb3)"})) : (() => { const g = (DATA.games || []).find(x => x.fiche === fid); return g && watchBtn(g); })();
+  const pdfn = "fiches-activite/pdf/fiche-" + fid + (isC ? "-" + key : "");
   const body = el("div",{class:"fiche"}, el("h2",{}, el("span",{text:"بطاقة النشاط: "}), el("span",{text:isC && s ? s.title : F.title})), el("p",{class:"pnote",text:F.meta}),
+    el("p",{class:"pdfrow"}, el("a",{class:"btn main pdf-ar",href:pdfn + "-ar.pdf",target:"_blank",rel:"noopener",text:"طباعة البطاقة (PDF)"}), el("a",{class:"btn main pdf-fr",href:pdfn + "-fr.pdf",target:"_blank",rel:"noopener",text:"Imprimer la fiche (PDF)","data-nofr":""})),
     sec("الوضعية المشكلة", el("p",{class:"sit",text:F.situation})),
     steps.length ? sec("مراحل اللعبة بالصور", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img_ar || st.img,"data-fr-src":st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
     sec("سير الحصة", li(F.steps)), sec("أنشطة التلميذ", li(F.eleve)), sec("معايير النجاح", li(F.criteres)),
