@@ -148,9 +148,14 @@ def retain_from(notions):
 
 
 def fiche(y, s):
-    base = S.SEANCES[y][s - 1]; p = PL.PLAN[y][s]; ar = PL.AR_TXT[(y, s)]
-    title = (base["title"], ar[0]); obj = (base["obj"][0].upper() + base["obj"][1:], ar[1]); trace = (base["trace"], ar[2])
-    spec = CD.SPEC[(y, s)]
+    if isinstance(s, str):      # séance complémentaire proposée (cahier_extra.py)
+        import cahier_extra as CE; e = CE.EXTRA[s]
+        title, obj, trace = e["title"], e["obj"], e["trace"]; spec = dict(form=e["form"], script=None, fill=e["fill"], retain=e["retain"])
+        p = dict(new=[], deep=[], core=[], support=[], challenge=[], acq=e["acq"]); seed = int(y) * 100 + ord(s[0]) * 7 + int(s[1:])
+    else:
+        base = S.SEANCES[y][s - 1]; p = PL.PLAN[y][s]; ar = PL.AR_TXT[(y, s)]
+        title = (base["title"], ar[0]); obj = (base["obj"][0].upper() + base["obj"][1:], ar[1]); trace = (base["trace"], ar[2])
+        spec = CD.SPEC[(y, s)]; seed = int(y) * 100 + s
     notions = [i for i in NID if i in p["new"] + p["deep"]]
     fill = spec.get("fill") or fill_from(notions)
     retain = spec.get("retain") or retain_from(notions) or [("Je relis ma fiche et je termine les parties à compléter.", "أعيد قراءة مذكرتي وأكمل الأجزاء الناقصة.")]
@@ -158,7 +163,7 @@ def fiche(y, s):
     wf, wa = [], []
     for pair in fill:
         a, b = words(pair); wf += a; wa += b
-    rnd = random.Random(int(y) * 100 + s); rnd.shuffle(wf); rnd.shuffle(wa)
+    rnd = random.Random(seed); rnd.shuffle(wf); rnd.shuffle(wa)
     bank = '<div class="bank"><b>' + tp("Mots à placer :", "كلمات للاستعمال:") + "</b> " + both(lambda l: " ".join(f'<span class="wd">{escape(w)}</span>' for w in (wa if l == "ar" else wf))) + "</div>" if wf else ""
     fills = '<ol class="fills">' + "".join(f"<li>{t(x)}</li>" for x in fill) + "</ol>" + bank
     form = "".join(render(x) for x in spec["form"])
@@ -248,9 +253,10 @@ JS = r'''
 
 def page(y):
     seances = sorted(PL.PLAN[y])
-    fiches = "".join(fiche(y, s) for s in seances)
+    extra = ["M1", "M2", "M3", "A1", "A2", "A3"] if y == "9" else []
+    fiches = "".join(fiche(y, s) for s in seances + extra)
     lv = YEAR[y]
-    sel = "".join(f'<option value="{s}">{s} · {escape(S.SEANCES[y][s - 1]["title"])}</option>' for s in seances)
+    sel = "".join(f'<option value="{s}">{s} · {escape(S.SEANCES[y][s - 1]["title"])}</option>' for s in seances) + "".join(f'<option value="{k}">{k} · {escape(__import__("cahier_extra").EXTRA[k]["title"][0])}</option>' for k in extra)
     html = f'''<!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{escape(lv[1])} — دفتر التلميذ · {escape(lv[0])} — Cahier de l’élève</title><style>{CSS}</style></head>
