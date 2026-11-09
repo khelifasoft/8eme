@@ -48,6 +48,11 @@ FR["map"].update(_afr)
 import planning as _PL
 man["planning"], _pfr2 = _PL.export()
 FR["map"].update(_pfr2)
+import theorie as _TH, theorie_js as _TH_JS
+man["theorie"], _thfr = _TH.export()
+for _k, _v in _thfr.items():
+    if FR["map"].get(_k, _v) != _v: print("traduction différente (théorie) :", repr(_k), "|", repr(FR["map"][_k]), "|", repr(_v))
+    FR["map"].setdefault(_k, _v)
 FR["rules"] += [["^ح(\\d+)$", "S$1"], ["^(.+) · ح(\\d+)$", "$1 · S$2"]]   # numéros de séance : ح22 -> S22
 FR["map"].update({"⬇ تثبيت سكراتش على الحاسوب": "⬇ Installer Scratch sur l'ordinateur", "⬇ تثبيت سكراتش على Windows": "⬇ Installer Scratch pour Windows", "⬇ تثبيت سكراتش على macOS": "⬇ Installer Scratch pour macOS", "مقترح لنظامك": "Conseillé pour ton système", "⬇ اختصار هذا الموقع على سطح المكتب": "⬇ Raccourci de ce site sur le bureau", "تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance"})
 for _l in list({**exercices.EXO, **secondaire.EXO}.values()):
@@ -322,6 +327,7 @@ a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
 @media print{.topbar,#yearnav,#axisBack,.dlchips,.actprog,footer,.hero,.langbtn{display:none!important}body{background:#fff}.planpage .step{break-inside:avoid;page-break-inside:avoid}.actdone,.actcb{display:none}.actgrid.mini{grid-template-columns:repeat(4,1fr)}}
 .instbtns{display:flex;flex-direction:column;gap:8px}.instrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.instrow .mine{font-size:12px;font-weight:700;color:#1d6b3b;background:#e4f6e8;border-radius:999px;padding:0 10px}
 #getinst{font-size:16px;padding:8px 18px;white-space:nowrap}
+/*__THEORIE_CSS__*/
 </style>
 </head>
 <body>
@@ -377,6 +383,7 @@ a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
   <div id="storyRes"></div>
 </div>
 <div id="pool" hidden>
+<section id="theory"></section>
 <section id="stories">
   <h2>اختر قصتك</h2>
   <p class="lead">لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.</p>
@@ -721,6 +728,7 @@ if ("serviceWorker" in navigator && secure) {
   navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !sessionStorage.getItem("sw-reloaded")) { try { sessionStorage.setItem("sw-reloaded","1"); } catch(e){} location.reload(); } });
 }
 // ---- jeux
+/*__THEORIE_JS__*/
 // ---- case « Fait » des activités Scratch : progression enregistrée dans ce navigateur (localStorage)
 const DONE_KEY = "scratch-activites-faites";
 const Done = (() => {
@@ -730,6 +738,7 @@ const Done = (() => {
            count: pred => DATA.activites ? DATA.activites.acts.filter(a => mem.includes(a.n) && (!pred || pred(a))).length : 0, reset(){ mem = []; save(); } };
 })();
 function updateProgress(){
+  updateTheoryProgress();
   const D = DATA.activites; if (!D) return;
   document.querySelectorAll("[data-lvl-prog]").forEach(e => { const n = +e.dataset.lvlProg, L = D.levels.find(x => x.n === n); e.textContent = Done.count(a => a.lvl === n) + " / " + L.count; });
   document.querySelectorAll("[data-all-prog]").forEach(e => { e.textContent = Done.count() + " / " + D.total; });
@@ -811,7 +820,7 @@ function showStory(key){
 const ynav = $("#yearnav");
 MENU_YEARS.forEach(y => {
   const Y = CUR.years[y];
-  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), el("li",{class:"ov"}, el("a",{href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
+  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), TH.years.includes(y) ? el("li",{class:"ov"}, el("a",{href:"#theorie",text:U.hubTitle})) : null, el("li",{class:"ov"}, el("a",{href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
   const btn = el("button",{class:"ybtn",type:"button","aria-expanded":"false","aria-haspopup":"true"}, el("span",{class:"yl",text:Y.ar}), el("span",{class:"ys",text:Y.short_ar}), el("i",{class:"car",text:"▾"}));
   const d = el("div",{class:"ydrop","data-year":y}, btn, ul);
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
@@ -821,14 +830,14 @@ function closeMenus(){ ynav.querySelectorAll(".ydrop").forEach(d => { d.removeAt
 document.addEventListener("click", e => { if (!e.target.closest(".ydrop")) closeMenus(); else if (e.target.closest(".sub a")) closeMenus(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenus(); });
 
-function axisLinks(y){ return CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,text:CUR.pages[`${y}-${k}`].title_ar}))).concat([el("li",{}, el("a",{href:`#y${y}-refs`,style:"font-weight:700",text:"المراجع"}))]); }
+function axisLinks(y){ return CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,text:CUR.pages[`${y}-${k}`].title_ar}))).concat(TH.years.includes(y) ? [el("li",{}, el("a",{href:"#theorie",text:U.hubTitle}))] : [], [el("li",{}, el("a",{href:`#y${y}-refs`,style:"font-weight:700",text:"المراجع"}))]); }
 function renderHome(){
   const c = $("#yearCards"); c.replaceChildren();
   MENU_YEARS.forEach(y => c.append(el("article",{class:"ycard"}, el("a",{class:"yh",href:"#y"+y,style:"text-decoration:none",text:CUR.years[y].ar}), el("ul",{}, axisLinks(y)))));
 }
 renderHome();
 // ressources proposées dans chaque axe
-const RES = {"7-prog":["stories"], "8-prog":["games"], "9-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
+const RES = {"7-prog":["theory","stories"], "8-prog":["games"], "9-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
 const RESCAT = {"7-create":"personnages", "8-create":"sons"};
 function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => { if (n.classList && n.classList.contains("libwrap")) { [...n.children].filter(c => c.id).forEach(c => $("#pool").append(c)); n.remove(); } else $("#pool").append(n); })); }
 function quiz(list){
@@ -913,6 +922,7 @@ function renderAxis(y, k){
   const lw = k === "prog" && list.length && (DATA.parcours || {})[y] && !bare ? el("details",{class:"space-d libwrap",open:""}, el("summary",{text: y === "7" ? "القصص الجاهزة (مكتبة)" : "الألعاب الجاهزة (مكتبة)"})) : null;
   if (lw) res.append(lw);
   list.forEach(id => (lw || res).append($("#" + id)));
+  if (list.includes("theory")) renderTheorySection();
   if (list.includes("library")) {
     [sel, vsel, tsel].forEach(x => x.hidden = false);
     $("#library .lead").textContent = "صور وأصوات ورسوم متحركة يمكنك استعمالها في أي قصة. اضغط «تحميل» ثم أضف الملف في سكراتش.";
@@ -999,7 +1009,9 @@ function renderPlanning(y){
   };
   const seance = (s, i) => {
     const ns = [...s.core, ...s.support, ...s.challenge];
+    const thy = y === "7" ? (TH.bySeance[s.s] || []).map(k => TH.lessons.find(l => l.n === k)) : [];
     const body = el("div",{class:"stbody"}, el("p",{}, el("b",{text:"الهدف"}), " : ", s.obj),
+      thy.length ? el("p",{}, el("b",{text:U.theoryLbl}), " : ", thy.map(l => [el("a",{class:"chip",href:"#cours-" + l.n,text:l.t}), " "])) : null,
       s.new.length ? el("p",{}, el("b",{text:"المفاهيم الجديدة"}), " : ", chips(s.new, "n")) : null, s.deep.length ? el("p",{}, el("b",{text:"المفاهيم المعمَّقة"}), " : ", chips(s.deep, "d")) : null,
       s.re.filter(i => i !== "seq" && i !== "event").length ? el("p",{}, el("b",{text:"المفاهيم الموظَّفة من جديد"}), " : ", chips(s.re.filter(i => i !== "seq" && i !== "event"), "r")) : null,
       el("p",{class:"pnote"}, el("span",{text:"المفاهيم المكتسبة في نهاية الحصة"}), " : ", el("b",{text:s.cum + " / " + P.notions.length})),
@@ -1099,18 +1111,22 @@ function route(){
   let ad = h.match(/^activite-(\d+)$/); if (ad) { view = "actd"; y = "8"; }
   let pm = h.match(/^planning-(7|8|9)$/); if (pm) { view = "plan"; y = pm[1]; }
   let rm = h.match(/^ressources-([a-z]+)$/); if (rm) { view = "res"; y = "8"; }
+  if (h === "theorie") { view = "th"; y = "7"; }
+  let tl = h.match(/^cours-([1-9])$/); if (tl && TH.lessons.some(l => l.n === +tl[1])) { view = "thl"; y = "7"; }
   let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) { view = "fiche"; y = fm[1] === "contes" ? "7" : "8"; }
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
-  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd" || view === "plan"); $("#viewStory").hidden = view !== "story";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd" || view === "plan" || view === "th" || view === "thl"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "dl") renderDownloads();
   if (view === "act") renderActivites(am[1] ? +am[1] : 0);
   if (view === "actd") renderActivite(+ad[1]);
   if (view === "plan") renderPlanning(pm[1]);
+  if (view === "th") renderTheoryHub();
+  if (view === "thl") renderLesson(+tl[1]);
   if (view === "fiche") renderFiche(fm[1], fm[2]);
   if (view === "res") renderRessources(rm[1]);
   if (view === "year") renderYear(y);
@@ -1179,5 +1195,6 @@ if (want === "fr") setLang("fr");
 </html>
 '''
 import datetime
+TPL = TPL.replace("/*__THEORIE_JS__*/", _TH_JS.JS).replace("/*__THEORIE_CSS__*/", _TH_JS.CSS)
 open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8").write(TPL.replace("__DATA__", json.dumps(man, ensure_ascii=False)).replace("__FRMAP__", json.dumps(FR["map"], ensure_ascii=False)).replace("__FRRULES__", json.dumps(FR["rules"], ensure_ascii=False)).replace("__BUILD__", "نسخة " + datetime.date.today().isoformat()))
 print("index.html", os.path.getsize(os.path.join(ROOT, "index.html")) // 1024, "Ko")

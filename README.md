@@ -119,6 +119,31 @@ Les activités et les jeux sont organisés en **séances de 60 minutes** (celles
 - **Fiches imprimables** (`enseignant/niveau-N.html`, générées par `python3 generateur/enseignant.py`) : le tableau de répartition indique les activités de chaque séance de programmation, la **progression des notions** est imprimable, et la fiche de chaque séance de programmation reprend la démarche, l'autonomie, les notions, les activités et les acquis. Le planning du site s'imprime aussi (bouton « Imprimer le planning »).
 - **Modifier le planning** : `generateur/planning.py` (dictionnaire `PLAN` : notions nouvelles, activités, jeux, autonomie, acquis ; textes arabes des séances dans `AR_TXT`), puis `python3 generateur/enseignant.py` et `python3 generateur/page.py`. Proposition non officielle à adapter.
 
+## Théorie Scratch (page 7e, avant les contes)
+
+Sur la page **7e → « Programmation »** (`#y7-prog`), la rubrique **« نظرية سكراتش / Théorie Scratch »** précède les contes. Elle propose **sept mini-leçons** pour comprendre Scratch avant de programmer (la 8e n'a pas de théorie ; la 9e non plus). Accès : cartes de la page 7e, menu de la 7e et carte de la 7e sur l'accueil (« Théorie Scratch »), page `#theorie` (toutes les leçons, **aide-mémoire imprimable** sur une page A4 : schéma de l'écran, 12 mots de Scratch en arabe / français / anglais, six règles d'or), leçons `#cours-1` à `#cours-7`. La page de chaque séance du planning 7e (`#planning-7`) et la fiche imprimable de séance (`enseignant/niveau-7.html`) indiquent les leçons à lire.
+
+| Leçon | Titre | Séance du planning 7e |
+|---|---|---|
+| 1 | Qu'est-ce qu'un programme ? (algorithme, programme, jeu du robot) | S22 |
+| 2 | Scratch en un coup d'œil (les huit zones de l'écran) | S23 |
+| 3 | Les blocs de Scratch (9 familles, 5 formes) | S23 |
+| 4 | Séquence et événements | S23 |
+| 5 | Lutins, costumes, décors et coordonnées (+ messages) | S24 |
+| 6 | Répéter : les boucles | S25 |
+| 7 | Décider : conditions et capteurs | S26 |
+
+**Gabarit identique pour chaque leçon** : objectif, question d'accroche, comparaison de la vie courante, rappel de la leçon précédente, l'essentiel en deux phrases, images (illustrations dessinées pour le site et images des activités liées), **activités interactives**, vocabulaire arabe / français / anglais, erreurs fréquentes, « À retenir », **« Teste-toi » (5 questions corrigées automatiquement, réponses mélangées à chaque essai)**, activités liées du planning, défi et case « Fait ».
+
+**Activités interactives** (pas de serveur, tout se passe dans le navigateur) : remettre un texte ou un script en ordre (flèches ▲ ▼ puis « Vérifier »), **exécution pas à pas** d'un script (petit interprète de blocs : avancer, tourner, dire, stylo, « répéter n fois », « si… sinon » ; le bloc en cours est surligné, le lutin glisse sur la scène, la branche non exécutée est grisée ; un pronostic « Que va faire ce script ? » est proposé avant l'exécution), **schéma cliquable de l'écran de Scratch** (explorer, puis jeu « Où est… ? »), **lire et placer des coordonnées** en cliquant sur la scène, QCM de familles de blocs et d'événements.
+
+**Progression** : case « Fait » (cartes et pages) et meilleur score du « Teste-toi » mémorisés dans le navigateur de l'élève (`localStorage`, clés `scratch-theorie-faites` et `scratch-theorie-scores`) ; la barre « Ta progression » indique « n / 7 ».
+
+- Contenu : `generateur/theorie_data.py` (les sept leçons ; chaque texte est un couple français / arabe), `theorie_core.py` (blocs, QCM et activités), `theorie.py` (glossaire, règles d'or, zones du schéma, textes de l'interface, export vers la page et contrôles de cohérence : `python3 generateur/theorie.py`), `theorie_img.py` (images dans `theorie/` : couvertures des leçons, figure des formes de blocs, schéma de l'écran), `theorie_js.py` (JavaScript et CSS de la rubrique, insérés dans `index.html` par `page.py`).
+- Les images sont des **schémas dessinés** (pas de captures de l'éditeur Scratch). Les textes arabes sont une proposition à relire.
+- **Étendre à une autre année** (par exemple la 9e) : ajouter son numéro à `YEARS` dans `generateur/theorie.py` (liens du menu et de l'accueil) et `"theory"` à `RES` dans `generateur/page.py` (`"9-prog": ["theory", "games"]`), puis adapter dans `theorie_js.py` les liens de retour `#y7-prog` et `#planning-7`. Le contenu des leçons est celui de la 7e : à compléter (par exemple variables, modules, tester et corriger pour la 8e et la 9e).
+- Régénérer : `python3 generateur/theorie.py` (contrôles + images), `python3 generateur/enseignant.py` (fiches imprimables), `python3 generateur/page.py`.
+
 ## Téléchargements
 
 Rubrique « Téléchargements » (bouton de la page d'accueil) : logiciels utilisés en 7e, 8e et 9e (Scratch, App Inventor, mBlock, Arduino IDE, LibreOffice, Audacity, Shotcut, GIMP, Inkscape, 7-Zip), filtrables par niveau, avec liens vers les sites officiels. Les logiciels réservés aux niveaux secondaires (Python, Thonny, Visual Studio Code, DB Browser for SQLite, Filius) restent dans `logiciels.js` mais ne sont pas affichés tant que `MENU_YEARS` (dans `generateur/page.py`) ne contient que 7, 8 et 9. Pour ajouter ou modifier un logiciel : éditer `logiciels.js` (aucune régénération nécessaire). **Scratch 3 sur le bureau** : le bouton « Installer Scratch » de l'accueil et la carte « Scratch 3 (version hors ligne) » de la page Téléchargements proposent des **liens directs** vers les installateurs officiels (`https://downloads.scratch.mit.edu/desktop/Scratch%20Setup.exe` pour Windows, `.../Scratch.dmg` pour macOS ; ces adresses redirigent vers la dernière version, 3.32.1 au 09/11/2026) ; le bouton du système détecté passe en premier, et un bouton mène à la page officielle `https://scratch.mit.edu/download` pour les autres systèmes. L'éditeur en ligne a son lien direct : `https://scratch.mit.edu/projects/editor/`. Un bouton « Raccourci de ce site sur le bureau » est aussi disponible sur la page.

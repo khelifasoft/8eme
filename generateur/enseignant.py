@@ -82,6 +82,7 @@ def build_year(y):
             extra = (f'<h2>Progression : notions et autonomie</h2><p><b>Niveau d\'autonomie :</b> {E(pl["auto"])} — séance {pl["k"]} du planning Scratch de l\'année ; notions acquises à la fin de la séance : {pl["cum"]} / {len(PL.NOTIONS)}</p>'
                      + lst("Notions nouvelles", pl["new"]) + lst("Notions approfondies", pl["deep"]) + lst("Notions réinvesties", pl["re"])
                      + (f'<h2>Activités et jeux (collection « Activités Scratch » du site)</h2><ul>{acts}{gms}</ul>' if acts or gms else "")
+                     + (f'<h2>Théorie Scratch à lire (rubrique « Théorie Scratch » du site)</h2><ul>{"".join("<li>Leçon " + str(n) + " — " + E(t) + "</li>" for n, t in pl["theory"])}</ul>' if pl["theory"] else "")
                      + (f'<p><b>Complément :</b> {E(pl["extra"])}</p>' if pl["extra"] else "")
                      + (f'<h2>Je sais…</h2><ul>{"".join("<li>" + E(a) + "</li>" for a in pl["acq"])}</ul>' if pl["acq"] else ""))
         res = RES.get((y, s["module"]))

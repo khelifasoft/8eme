@@ -336,8 +336,12 @@ def export():
 def french_year(y):
     """version française d'une année, pour les fiches imprimables des enseignants (enseignant.py) : {n° de séance : infos}"""
     rows, uses, enrich = build(); out = {}
+    import theorie_data as TD                      # leçons de « Théorie Scratch » à lire pour chaque séance (7e seulement)
+    th = {}
+    if y == "7":
+        for L in TD.LESSONS: th.setdefault(L["seance"], []).append((L["n"], L["title"][0]))
     for r in rows[y]:
-        out[r["s"]] = dict(k=r["k"], auto=AUTO[r["auto"]][0], new=[NT[i][0] for i in r["new"]], deep=[NT[i][0] for i in r["deep"]], re=[NT[i][0] for i in r["re"] if i not in ("seq", "event")], cum=r["cum"],
+        out[r["s"]] = dict(theory=th.get(r["s"], []), k=r["k"], auto=AUTO[r["auto"]][0], new=[NT[i][0] for i in r["new"]], deep=[NT[i][0] for i in r["deep"]], re=[NT[i][0] for i in r["re"] if i not in ("seq", "event")], cum=r["cum"],
                            acts=[(role, n, ACT[n]["title"][0]) for role in ("core", "support", "challenge") for n in r[role]], games=[(k, gtitle(k, g)[0], m) for k, g, m in r["games"]],
                            phases=[(a, m, c) for a, b, m, c, d in r["phases"]], acq=[a[0] for a in (r["acq"] or [])], extra=(r["extra"][0] if r["extra"] else None))
     return out
