@@ -335,11 +335,7 @@ def export():
     for i, key in enumerate(["M1", "M2", "M3", "A1", "A2", "A3"], 1):
         e = CE.EXTRA[key]; app = key[0] == "A"
         sim = ("l'émulateur ou l'application compagnon", "المحاكي أو التطبيقة المرافقة") if app else ("le simulateur MakeCode", "محاكي MakeCode")
-        ph = [(("Rappel", "تذكير"), 5, ("Réactiver la séance précédente (chaîne capteur → décision → actionneur, ou composants et événements).", "تنشيط الحصة السابقة (سلسلة ملتقط ← قرار ← محرّك، أو المكوّنات والأحداث).")),
-              (("Situation déclenchante", "وضعية الانطلاق"), 10, (f"Présenter un besoin concret et demander : que doit faire l'objet ou l'application ? Objectif : {e['obj'][0]}", f"عرض حاجة ملموسة والسؤال: ماذا يجب أن يفعل الشيء أو التطبيقة؟ الهدف: {e['obj'][1]}")),
-              (("Découverte guidée", "اكتشاف موجَّه"), 15, (f"Manipuler {sim[0]} avec l'enseignant qui modélise au vidéoprojecteur.", f"تجريب {sim[1]} مع شرح الأستاذ على جهاز العرض.")),
-              (("Entraînement différencié", "تدريب متمايز"), 20, ("Les élèves complètent la fiche du cahier et finissent le programme ; version allégée : un seul événement ; défi : ajouter une deuxième réaction.", "يُكمل التلاميذ مذكرة الدفتر وينهون البرنامج؛ نسخة مخففة: حدث واحد؛ تحدٍّ: إضافة ردّ فعل ثان.")),
-              (("Mise en commun et trace écrite", "المقاسمة والأثر المكتوب"), 10, (f"Faire expliquer la démarche puis compléter la trace écrite : {e['trace'][0]}.", f"جعل التلاميذ يشرحون السير ثم إتمام الأثر المكتوب: {e['trace'][1]}."))]
+        ph = [(t_, m, d_) for t_, m, d_ in CE.PHASES[key]]
         ex.append(dict(y="9", s=key, k=i, t=P_(e["title"]), obj=P_(e["obj"]), trace=P_(e["trace"]), type=P_(("Proposition", "اقتراح")), tk="manip", auto="semi", auto_t=P_(AUTO["semi"]),
                        new=[], deep=[], re=[], core=[], support=[], challenge=[], games=[], acq=[P_(a) for a in e["acq"]], extra=None, cum=len(NID),
                        phases=[dict(t=P_(a), min=m, d=P_(d)) for a, m, d in ph]))
