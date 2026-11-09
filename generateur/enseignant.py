@@ -59,6 +59,24 @@ def matrix_html(y):
     body = "".join(f'<tr><td>{E(n)}</td><td class="n">{"✓" if known else ""}</td>' + "".join(f'<td class="n">{sym[c]}</td>' for c in cells) + "</tr>" for n, known, cells in lines)
     return (f'<h2>Progression cumulative des notions Scratch (module « programmation »)</h2><p>● notion nouvelle · ◆ notion approfondie · ○ notion réinvestie · ✓ acquise les années précédentes. '
             f'Chaque séance s\'appuie sur les précédentes ; l\'autonomie des élèves augmente peu à peu (guidé, semi-guidé, autonome).</p><table><tr><th>Notion</th><th>Acquis antérieurs</th>{head}</tr>{body}</table>')
+def extra_fiches(y):
+    """9e : fiches des séances complémentaires proposées (objet programmable micro:bit, application mobile App Inventor), cahier_extra.py"""
+    if y != "9": return ""
+    import cahier_extra as CE
+    out = '<section class="fiche" id="complement"><h1>Séances complémentaires proposées (aide pédagogique 2026)</h1><p>Objet programmable (micro:bit) et application mobile (App Inventor). Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet.</p></section>'
+    for key in ["M1", "M2", "M3", "A1", "A2", "A3"]:
+        e = CE.EXTRA[key]; kind = "Objet programmable (micro:bit)" if key[0] == "M" else "Application mobile (App Inventor)"
+        ph = "".join(f'<tr><td>{E(t[0])}</td><td class="n">{m} min</td><td>{E(d[0])}</td></tr>' for t, m, d in CE.PHASES[key])
+        acq = "".join(f"<li>{E(a[0])}</li>" for a in e["acq"])
+        out += f'''<section class="fiche" id="s{key}"><h1>Fiche pédagogique — séance complémentaire {key}</h1>
+<p><span class="tag">{E(YEARS[9][0])}</span> <span class="tag">{kind}</span> <span class="tag">60 min</span> <span class="tag">Proposition</span></p>
+<h2>Titre de la séance</h2><p><b>{E(e["title"][0])}</b></p><h2>Objectif (l'élève sera capable de…)</h2><p>{E(e["obj"][0])}</p>
+<h2>Matériel et ressources</h2><p>Ordinateurs avec accès à {"l'éditeur MakeCode micro:bit (simulateur, sans carte)" if key[0] == "M" else "App Inventor (émulateur ou application compagnon)"} ; fiche du cahier de l'élève : <b>cahier/cahier-9.html#s{key}</b>.</p>
+<h2>Démarche (60 minutes)</h2><table><tr><th>Phase</th><th>Durée</th><th>Déroulement</th></tr>{ph}</table>
+<h2>Trace écrite</h2><p>{E(e["trace"][0])}</p><h2>Je sais…</h2><ul>{acq}</ul>
+<h2>Évaluation et différenciation</h2><ul><li>Observer : l'élève atteint-il l'objectif sans aide ? (✓ / ~ / ✗)</li><li>Soutien : version allégée de la fiche (un seul événement ou composant).</li><li>Approfondissement : le défi proposé dans la démarche.</li></ul>
+<h2>Remarques du professeur après la séance</h2><p style="min-height:50px;border:1px dashed #aaa"></p></section>'''
+    return out
 def build_year(y):
     L = SEANCES[y]; Y = YEARS[int(y)]; rows = []; fiches = []
     plan = PL.french_year(y) if y in PL.PLAN else {}
@@ -103,7 +121,7 @@ def build_year(y):
 <div class="warn"><b>Proposition à adapter — document non officiel.</b> Cette répartition est construite à partir des domaines et des capacités du curriculum, à raison d'<b>une séance de 60 minutes par semaine</b> (27 séances, 9 par trimestre). Elle ne remplace ni le programme officiel ni les instructions de l'inspection : chaque professeur l'ajuste selon son calendrier (compléter la colonne « Date »).</div>
 <table><tr><th>Séance</th><th>Trim.</th><th>Date</th><th>Module</th><th>Titre</th><th>Type</th><th>Activités Scratch (n°) et jeux</th></tr>{"".join(rows)}</table>
 {matrix_html(y)}
-{"".join(fiches)}</div></body></html>'''
+{"".join(fiches)}{extra_fiches(y)}</div></body></html>'''
     open(os.path.join(OUT, f"niveau-{y}.html"), "w", encoding="utf-8").write(html)
 data = {}
 for y in SEANCES:
