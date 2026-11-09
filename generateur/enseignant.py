@@ -83,6 +83,7 @@ def build_year(y):
                      + lst("Notions nouvelles", pl["new"]) + lst("Notions approfondies", pl["deep"]) + lst("Notions réinvesties", pl["re"])
                      + (f'<h2>Activités et jeux (collection « Activités Scratch » du site)</h2><ul>{acts}{gms}</ul>' if acts or gms else "")
                      + (f'<h2>Théorie Scratch à lire (rubrique « Théorie Scratch » du site)</h2><ul>{"".join("<li>Leçon " + str(n) + " — " + E(t) + "</li>" for n, t in pl["theory"])}</ul>' if pl["theory"] else "")
+                     + f'<h2>Fiche du cahier de l\'élève</h2><p>À imprimer et à coller dans le cahier (phrases à trous, trace écrite à compléter, script à moitié terminé à finir en classe) : <b>cahier/cahier-{y}.html#s{i}</b> ou page {pl["k"]} du PDF <b>cahier/cahier-{y}-fr.pdf</b> (version arabe : <b>cahier-{y}-ar.pdf</b>). Le corrigé s\'affiche avec la case « Afficher le corrigé » ou dans les PDF « corrigé ».</p>'
                      + (f'<p><b>Complément :</b> {E(pl["extra"])}</p>' if pl["extra"] else "")
                      + (f'<h2>Je sais…</h2><ul>{"".join("<li>" + E(a) + "</li>" for a in pl["acq"])}</ul>' if pl["acq"] else ""))
         res = RES.get((y, s["module"]))

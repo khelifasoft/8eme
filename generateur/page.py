@@ -54,7 +54,11 @@ for _k, _v in _thfr.items():
     if FR["map"].get(_k, _v) != _v: print("traduction différente (théorie) :", repr(_k), "|", repr(FR["map"][_k]), "|", repr(_v))
     FR["map"].setdefault(_k, _v)
 FR["rules"] += [["^ح(\\d+)$", "S$1"], ["^(.+) · ح(\\d+)$", "$1 · S$2"]]   # numéros de séance : ح22 -> S22
-FR["map"].update({"⬇ تثبيت سكراتش على الحاسوب": "⬇ Installer Scratch sur l'ordinateur", "⬇ تثبيت سكراتش على Windows": "⬇ Installer Scratch pour Windows", "⬇ تثبيت سكراتش على macOS": "⬇ Installer Scratch pour macOS", "مقترح لنظامك": "Conseillé pour ton système", "⬇ اختصار هذا الموقع على سطح المكتب": "⬇ Raccourci de ce site sur le bureau", "تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance"})
+FR["map"].update({"⬇ تثبيت سكراتش على الحاسوب": "⬇ Installer Scratch sur l'ordinateur", "⬇ تثبيت سكراتش على Windows": "⬇ Installer Scratch pour Windows", "⬇ تثبيت سكراتش على macOS": "⬇ Installer Scratch pour macOS", "مقترح لنظامك": "Conseillé pour ton système", "⬇ اختصار هذا الموقع على سطح المكتب": "⬇ Raccourci de ce site sur le bureau", "تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance",
+ "مذكرات الدفتر": "Fiches du cahier", "مذكرات الدفتر (للطباعة)": "Fiches du cahier (à imprimer)", "مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)": "Fiches du cahier (à imprimer et à coller dans le cahier de l'élève)",
+ "فتح المذكرات للطباعة": "Ouvrir les fiches (impression)", "PDF بالعربية": "PDF en arabe", "PDF en français": "PDF en français", "PDF بالعربية مع الإجابات": "PDF en arabe avec corrigé", "PDF avec corrigé": "PDF en français avec corrigé", "مذكرة الدفتر لهذه الحصة": "Fiche du cahier pour cette séance",
+ "ورقة A4 لكل حصة: جمل ناقصة، أثر مكتوب للإتمام، وسكربت نصف منجز يُنهى في القسم.": "Une feuille A4 par séance : phrases à trous, trace écrite à compléter et script à moitié terminé à finir en classe.",
+ "لكل حصة برمجة ورقة واحدة بحجم A4: جمل ناقصة للإتمام، والأثر المكتوب (جدول أو مخطط أو بطاقة)، وسكربت نصف منجز يُنهيه التلاميذ في القسم، وما يجب حفظه. تُطبع الأجزاء الفارغة، ويمكن عرض الإجابات للأستاذ. اقتراح غير رسمي قابل للتعديل.": "Une feuille A4 par séance de programmation : phrases à trous à compléter, trace écrite (tableau, schéma ou carte), script à moitié terminé que les élèves finissent en classe, et ce qu'il faut retenir. Les parties vides s'impriment ; l'enseignant peut afficher le corrigé. Proposition non officielle, à adapter."})
 for _l in list({**exercices.EXO, **secondaire.EXO}.values()):
     for _q in _l:
         FR["map"][_q["q"]] = _q["q_fr"]
@@ -327,6 +331,7 @@ a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
 @media print{.topbar,#yearnav,#axisBack,.dlchips,.actprog,footer,.hero,.langbtn{display:none!important}body{background:#fff}.planpage .step{break-inside:avoid;page-break-inside:avoid}.actdone,.actcb{display:none}.actgrid.mini{grid-template-columns:repeat(4,1fr)}}
 .instbtns{display:flex;flex-direction:column;gap:8px}.instrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.instrow .mine{font-size:12px;font-weight:700;color:#1d6b3b;background:#e4f6e8;border-radius:999px;padding:0 10px}
 #getinst{font-size:16px;padding:8px 18px;white-space:nowrap}
+.cahierbox{border:2px solid #1e4fa8;border-radius:12px;padding:6px 16px 12px;margin:16px 0;background:#f4f8ff}.cahierbox h3{margin:6px 0 4px;color:#1e4fa8;font-size:18px}.cahierbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.cahierbtns .btn{min-width:150px}
 /*__THEORIE_CSS__*/
 </style>
 </head>
@@ -820,7 +825,7 @@ function showStory(key){
 const ynav = $("#yearnav");
 MENU_YEARS.forEach(y => {
   const Y = CUR.years[y];
-  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), TH.years.includes(y) ? el("li",{class:"ov"}, el("a",{href:"#theorie",text:U.hubTitle})) : null, el("li",{class:"ov"}, el("a",{href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
+  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), TH.years.includes(y) ? el("li",{class:"ov"}, el("a",{href:"#theorie",text:U.hubTitle})) : null, el("li",{class:"ov"}, el("a",{href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})), el("li",{class:"ov"}, el("a",{href:`cahier/cahier-${y}.html`,target:"_blank",rel:"noopener",text:"مذكرات الدفتر"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
   const btn = el("button",{class:"ybtn",type:"button","aria-expanded":"false","aria-haspopup":"true"}, el("span",{class:"yl",text:Y.ar}), el("span",{class:"ys",text:Y.short_ar}), el("i",{class:"car",text:"▾"}));
   const d = el("div",{class:"ydrop","data-year":y}, btn, ul);
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
@@ -839,7 +844,7 @@ renderHome();
 // ressources proposées dans chaque axe
 const RES = {"7-prog":["theory","stories"], "8-prog":["games"], "9-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
 const RESCAT = {"7-create":"personnages", "8-create":"sons"};
-function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => { if (n.classList && n.classList.contains("libwrap")) { [...n.children].filter(c => c.id).forEach(c => $("#pool").append(c)); n.remove(); } else $("#pool").append(n); })); }
+function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => { if (n.classList && n.classList.contains("tmp")) n.remove(); else if (n.classList && n.classList.contains("libwrap")) { [...n.children].filter(c => c.id).forEach(c => $("#pool").append(c)); n.remove(); } else $("#pool").append(n); })); }
 function quiz(list){
   let done = 0, good = 0; const sc = el("p",{class:"score"}); const box = el("div",{});
   const qs = list.map(q => {
@@ -886,13 +891,24 @@ function renderTeacher(y){
   if (!L) { kids.push(el("p",{class:"pnote",text:"لم تُدرج بعد وثيقة منهاج هذا المستوى. ستتوفر بطاقات الأستاذ عند إضافتها."})); }
   else {
     kids.push(el("h3",{text:"التوزيع السنوي المقترح"}), el("p",{class:"pnote",text:"اقتراح غير رسمي قابل للتعديل: حصة واحدة مدتها 60 دقيقة في الأسبوع (27 حصة، 9 في كل ثلاثي)."}),
-      el("p",{}, el("a",{class:"btn main",href:`enseignant/niveau-${y}.html`,target:"_blank",rel:"noopener",text:"طباعة التوزيع وبطاقات الحصص"}), " ", el("a",{class:"btn main",href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})),
+      el("p",{}, el("a",{class:"btn main",href:`enseignant/niveau-${y}.html`,target:"_blank",rel:"noopener",text:"طباعة التوزيع وبطاقات الحصص"}), " ", el("a",{class:"btn main",href:`#planning-${y}`,text:"تخطيط حصص سكراتش"}), " ", el("a",{class:"btn main",href:`cahier/cahier-${y}.html`,target:"_blank",rel:"noopener",text:"مذكرات الدفتر (للطباعة)"})),
       el("div",{style:"overflow-x:auto",dir:"ltr"}, el("table",{class:"sctable"}, el("tr",{}, ["Séance","Trim.","Module","Titre","Type",""].map(h => el("th",{text:h}))),
         L.map(s => el("tr",{class:s.type === "eval" ? "ev" : s.type === "projet" ? "pr" : ""}, el("td",{text:"S" + s.n}), el("td",{text:"T" + s.tri}), el("td",{text:s.mod_fr}), el("td",{text:s.title}), el("td",{text:s.type}),
           el("td",{}, el("a",{href:`enseignant/niveau-${y}.html#s${s.n}`,target:"_blank",rel:"noopener",text:"Fiche"})))))),
       el("p",{class:"pnote",text:"لتعديل التوزيع: غيّر الملف generateur/seances.py ثم أعد توليد الصفحات."}));
   }
   $("#axisHead").replaceChildren(el("div",{class:"axhead"}, kids));
+}
+// « Cahier de l'élève » : fiches à imprimer et à coller dans le cahier, une par séance de programmation (cahier/cahier-N.html et PDF)
+function cahierLinks(y){
+  const a = (href, text, main, dl) => el("a",{class:"btn" + (main ? " main" : ""),href,target:"_blank",rel:"noopener",text,...(dl ? {download:href.split("/").pop()} : {})});
+  return [a(`cahier/cahier-${y}.html`, "فتح المذكرات للطباعة", true), a(`cahier/cahier-${y}-ar.pdf`, "PDF بالعربية", false, true), a(`cahier/cahier-${y}-fr.pdf`, "PDF en français", false, true),
+          a(`cahier/cahier-${y}-ar-corrige.pdf`, "PDF بالعربية مع الإجابات", false, true), a(`cahier/cahier-${y}-fr-corrige.pdf`, "PDF avec corrigé", false, true)];
+}
+function cahierBox(y){
+  return el("section",{class:"cahierbox tmp"}, el("h3",{text:"مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)"}),
+    el("p",{class:"pnote",text:"لكل حصة برمجة ورقة واحدة بحجم A4: جمل ناقصة للإتمام، والأثر المكتوب (جدول أو مخطط أو بطاقة)، وسكربت نصف منجز يُنهيه التلاميذ في القسم، وما يجب حفظه. تُطبع الأجزاء الفارغة، ويمكن عرض الإجابات للأستاذ. اقتراح غير رسمي قابل للتعديل."}),
+    el("div",{class:"btns cahierbtns"}, cahierLinks(y)));
 }
 // pages dont on ne garde que les ressources (sans en-tête, parcours ni espace élève)
 const BARE = new Set(["7-prog", "8-prog", "9-prog"]);
@@ -923,6 +939,7 @@ function renderAxis(y, k){
   if (lw) res.append(lw);
   list.forEach(id => (lw || res).append($("#" + id)));
   if (list.includes("theory")) renderTheorySection();
+  if (k === "prog" && ["7","8","9"].includes(y)) res.append(cahierBox(y));
   if (list.includes("library")) {
     [sel, vsel, tsel].forEach(x => x.hidden = false);
     $("#library .lead").textContent = "صور وأصوات ورسوم متحركة يمكنك استعمالها في أي قصة. اضغط «تحميل» ثم أضف الملف في سكراتش.";
@@ -1012,6 +1029,7 @@ function renderPlanning(y){
     const thy = y === "7" ? (TH.bySeance[s.s] || []).map(k => TH.lessons.find(l => l.n === k)) : [];
     const body = el("div",{class:"stbody"}, el("p",{}, el("b",{text:"الهدف"}), " : ", s.obj),
       thy.length ? el("p",{}, el("b",{text:U.theoryLbl}), " : ", thy.map(l => [el("a",{class:"chip",href:"#cours-" + l.n,text:l.t}), " "])) : null,
+      el("p",{}, el("a",{class:"btn",href:`cahier/cahier-${y}.html#s${s.s}`,target:"_blank",rel:"noopener",text:"مذكرة الدفتر لهذه الحصة"})),
       s.new.length ? el("p",{}, el("b",{text:"المفاهيم الجديدة"}), " : ", chips(s.new, "n")) : null, s.deep.length ? el("p",{}, el("b",{text:"المفاهيم المعمَّقة"}), " : ", chips(s.deep, "d")) : null,
       s.re.filter(i => i !== "seq" && i !== "event").length ? el("p",{}, el("b",{text:"المفاهيم الموظَّفة من جديد"}), " : ", chips(s.re.filter(i => i !== "seq" && i !== "event"), "r")) : null,
       el("p",{class:"pnote"}, el("span",{text:"المفاهيم المكتسبة في نهاية الحصة"}), " : ", el("b",{text:s.cum + " / " + P.notions.length})),
@@ -1030,6 +1048,7 @@ function renderPlanning(y){
   $("#axisHead").replaceChildren(el("div",{class:"axhead planpage"}, el("h2",{}, el("span",{text:"تخطيط حصص سكراتش"}), " – ", el("span",{text:Y.label})), tabs,
     el("p",{class:"pnote",text:"اقتراح غير رسمي قابل للتعديل: حصة واحدة مدتها 60 دقيقة في الأسبوع، وهي حصص وحدة «البرمجة» من التوزيع السنوي. تتراكم المفاهيم من حصة إلى أخرى وتزداد استقلالية التلاميذ شيئا فشيئا."}),
     el("p",{class:"pnote",text:"موجَّه: الأستاذ يشرح والتلميذ يتبع المراحل. شبه موجَّه: ينطلق التلميذ من الهدف والنتيجة المنتظرة. مستقل: يقرر التلميذ وينجز وحده."}),
+    el("div",{class:"cahierbox"}, el("h3",{text:"مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)"}), el("p",{class:"pnote",text:"ورقة A4 لكل حصة: جمل ناقصة، أثر مكتوب للإتمام، وسكربت نصف منجز يُنهى في القسم."}), el("div",{class:"btns cahierbtns"}, cahierLinks(y))),
     bar, el("h3",{text:"خريطة المفاهيم"}), mx, legend, el("h3",{text:"السير (60 دقيقة)"}), Y.seances.map(seance),
     P.enrich.length ? [el("h3",{text:"للتوسع (خارج التخطيط)"}), el("p",{class:"pnote",text:"بعضها يستعمل النسخ أو القوائم أو «و» المنطقية: وهي تتجاوز إطار المنهاج."}), el("div",{class:"actgrid mini"}, enr)] : null));
   syncImgs(); updateProgress();
