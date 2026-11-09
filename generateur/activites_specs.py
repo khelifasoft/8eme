@@ -101,4 +101,19 @@ SPECS.update({
           before=S("mer", [I("p:sindbad", 0, -70, 80), I("a:poisson", -60, 60, 60)], tags=[("projet original", "المشروع الأصلي", 0, 140, "#777")]),
           after=S("mer", [I("p:sindbad", 0, -70, 80), I("a:poisson", -60, 60, 90), I("d:etoile", 90, 80, 45)], bubble=("Remix de « Attrape les poissons » par Sami", "نسخة معدّلة من «اصطد الأسماك» بقلم سامي", 0, -10), tags=[("remix ✓", "نسخة معدّلة ✓", 0, 140, "#2e9e5b")])),
 })
-assert sorted(SPECS) == list(range(1, 64)), sorted(set(range(1, 64)) - set(SPECS))
+
+def traffic(active):
+    on = {"green": "#2ecc40", "orange": "#ff9f1c", "red": "#e63946"}; dim = "#4a4a4a"
+    return ('<rect x="236" y="190" width="8" height="120" fill="#555"/><rect x="198" y="40" width="84" height="156" rx="14" fill="#2b2b2b" stroke="#111" stroke-width="3"/>' +
+            "".join(f'<circle cx="240" cy="{cy}" r="22" fill="{on[c] if c == active else dim}" stroke="#111" stroke-width="2"/>' for cy, c in ((76, "red"), (118, "orange"), (160, "green"))))
+WATER = '<path d="M240,150 l-30,-34 M240,150 l-12,-44 M240,150 l12,-44 M240,150 l30,-34" fill="none" stroke="#3fa9f5" stroke-width="5" stroke-linecap="round"/>'
+SPRINK = '<rect x="226" y="150" width="28" height="12" rx="3" fill="#777"/><rect x="236" y="160" width="8" height="40" fill="#666"/>'
+SPECS.update({
+ 64: dict(script=[b("flag"), F([b("costume", "basculer sur le costume feu vert", "بدّل إلى زي الضوء الأخضر"), IF(C("touche espace pressée ? (bouton du piéton)", "هل المسافة مضغوطة؟ (زر المشاة)"), [b("costume", "basculer sur le costume feu orange", "بدّل إلى زي الضوء البرتقالي"), b("wait", "attendre 1 seconde", "انتظر ثانية"), b("costume", "basculer sur le costume feu rouge", "بدّل إلى زي الضوء الأحمر"), b("wait", "attendre 3 secondes", "انتظر 3 ثوان"), b("costume", "basculer sur le costume feu vert", "بدّل إلى زي الضوء الأخضر")])])],
+          before=S("village_route", [I("p:garcon", -130, -80, 60)], raw=[traffic("green")], tags=[("feu vert pour les voitures", "أخضر للسيارات", 0, 150, "#2e9e5b")]),
+          after=S("village_route", [I("p:garcon", -130, -80, 60)], raw=[traffic("red")], tags=[("capteur : bouton pressé", "المستشعر: الزر مضغوط", -135, 110, "#5CB1D6"), ("actionneur : feu rouge", "المنفّذ: الضوء الأحمر", 125, 150, "#c0392b")])),
+ 65: dict(script=[b("flag"), b("setv", "mettre humidité à 60", "اجعل الرطوبة = 60"), F([b("chv", "ajouter -1 à humidité", "غيّر الرطوبة بمقدار -1"), IFE(C("humidité < 30", "الرطوبة < 30"), [b("costume", "basculer sur le costume arrosage en marche", "بدّل إلى زي السقي الشغّال"), b("chv", "ajouter 5 à humidité", "غيّر الرطوبة بمقدار 5")], [b("costume", "basculer sur le costume arrosage arrêté", "بدّل إلى زي السقي المتوقف")]), b("wait", "attendre 0,2 seconde", "انتظر 0٫2 ثانية")])],
+          before=S("jardin", [I("d:fleurs", 0, -90, 130)], raw=[SPRINK], hud=[("Humidité", "الرطوبة", 34)], tags=[("actionneur : arrosage arrêté", "المنفّذ: السقي متوقف", 0, 120, "#777")]),
+          after=S("jardin", [I("d:fleurs", 0, -90, 130)], raw=[SPRINK, WATER], hud=[("Humidité", "الرطوبة", 28)], tags=[("capteur : humidité 28 < 30", "المستشعر: الرطوبة 28 < 30", 0, 140, "#5CB1D6"), ("actionneur : arrosage en marche", "المنفّذ: السقي شغّال", 0, 100, "#2e9e5b")])),
+})
+assert sorted(SPECS) == list(range(1, 66)), sorted(set(range(1, 66)) - set(SPECS))

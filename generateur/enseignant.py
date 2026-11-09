@@ -6,6 +6,7 @@ from html import escape as E
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); sys.path.insert(0, HERE)
 from seances import SEANCES
 from curriculum import AX, YEARS
+import planning as PL
 OUT = os.path.join(ROOT, "enseignant"); os.makedirs(OUT, exist_ok=True)
 TYPES = {"decouverte": "Découverte", "manip": "Manipulation", "projet": "Projet", "eval": "Évaluation"}
 # phases d'une séance de 60 min : (phase, minutes, professeur, élève)
@@ -46,16 +47,43 @@ table{width:100%;border-collapse:collapse;margin:8px 0}th,td{border:1px solid #b
 .t-eval{background:#fde8e8!important}.t-projet{background:#e8f5e9!important}td.n{white-space:nowrap}
 @media print{.toolbar,.noprint{display:none}body{padding:0}.wrap{max-width:none}a{color:inherit;text-decoration:none}@page{size:A4;margin:14mm}}"""
 def fmt(s, s_): return s.format(t=s_["title"].lower().rstrip("."), a=s_["act"].rstrip("."), r=s_["trace"].rstrip("."))
+def acts_cell(pl):
+    if not pl: return ""
+    a = ", ".join(f"{n}" for r, n, t in pl["acts"]); g = " ; ".join(("jeu : " if k == "game" else "conte : ") + t for k, t, m in pl["games"])
+    return " · ".join(x for x in (a, g) if x)
+def matrix_html(y):
+    """progression des notions du module « programmation » : ● nouvelle, ◆ approfondie, ○ réinvestie (voir le planning des séances Scratch du site)"""
+    if y not in PL.PLAN: return ""
+    cols, lines = PL.matrix(y); sym = {"N": "●", "A": "◆", "R": "○", "": ""}
+    head = "".join(f"<th>S{c}</th>" for c in cols)
+    body = "".join(f'<tr><td>{E(n)}</td><td class="n">{"✓" if known else ""}</td>' + "".join(f'<td class="n">{sym[c]}</td>' for c in cells) + "</tr>" for n, known, cells in lines)
+    return (f'<h2>Progression cumulative des notions Scratch (module « programmation »)</h2><p>● notion nouvelle · ◆ notion approfondie · ○ notion réinvestie · ✓ acquise les années précédentes. '
+            f'Chaque séance s\'appuie sur les précédentes ; l\'autonomie des élèves augmente peu à peu (guidé, semi-guidé, autonome).</p><table><tr><th>Notion</th><th>Acquis antérieurs</th>{head}</tr>{body}</table>')
 def build_year(y):
     L = SEANCES[y]; Y = YEARS[int(y)]; rows = []; fiches = []
+    plan = PL.french_year(y) if y in PL.PLAN else {}
     for i, s in enumerate(L, 1):
         tri = (i - 1) // 9 + 1; mod = AX[s["module"]][0] if s["module"] in AX else ("Production numérique" if s["module"] == "prod" else s["module"])
         if y == "9" and s["module"] == "prog": mod = "Initiation à la logique et à la programmation"
         if y == "9" and s["module"] == "prod": mod = "Production numérique (tableur)"
         s["mod_fr"] = mod; s["n"] = i; s["tri"] = tri
-        rows.append(f'<tr class="t-{s["type"] if s["type"] in ("eval","projet") else ""}"><td class="n">S{i}</td><td>T{tri}</td><td>…… / ……</td><td>{E(mod)}</td><td><a href="#s{i}">{E(s["title"])}</a></td><td>{TYPES[s["type"]]}</td></tr>')
+        rows.append(f'<tr class="t-{s["type"] if s["type"] in ("eval","projet") else ""}"><td class="n">S{i}</td><td>T{tri}</td><td>…… / ……</td><td>{E(mod)}</td><td><a href="#s{i}">{E(s["title"])}</a></td><td>{TYPES[s["type"]]}</td><td>{E(acts_cell(plan.get(i)))}</td></tr>')
         ph = "".join(f'<tr><td>{E(p)}</td><td class="n">{m} min</td><td>{E(fmt(t, s))}</td><td>{E(e)}</td></tr>' for p, m, t, e in PHASES[s["type"]])
         assert sum(m for _, m, _, _ in PHASES[s["type"]]) == 60
+        demarche = f'<table><tr><th>Phase</th><th>Durée</th><th>Activité du professeur</th><th>Activité de l\'élève</th></tr>{ph}</table>'
+        extra = ""
+        if i in plan:   # séance du module « programmation » : démarche et progression du planning Scratch
+            pl = plan[i]
+            demarche = "<table><tr><th>Phase</th><th>Durée</th><th>Déroulement</th></tr>" + "".join(f'<tr><td>{E(a)}</td><td class="n">{m} min</td><td>{E(c)}</td></tr>' for a, m, c in pl["phases"]) + "</table>"
+            lst = lambda t, l: f'<p><b>{t} :</b> {E(", ".join(l))}</p>' if l else ""
+            roles = {"core": "Activité principale", "support": "Pour s'entraîner", "challenge": "Défi"}
+            acts = "".join(f'<li>{roles[r]} : n° {n} — {E(t)}</li>' for r, n, t in pl["acts"])
+            gms = "".join(f'<li>{"Jeu" if k == "game" else "Conte"} : {E(t)} ({"vidéo à regarder" if m == "watch" else "à jouer / à modifier"})</li>' for k, t, m in pl["games"])
+            extra = (f'<h2>Progression : notions et autonomie</h2><p><b>Niveau d\'autonomie :</b> {E(pl["auto"])} — séance {pl["k"]} du planning Scratch de l\'année ; notions acquises à la fin de la séance : {pl["cum"]} / {len(PL.NOTIONS)}</p>'
+                     + lst("Notions nouvelles", pl["new"]) + lst("Notions approfondies", pl["deep"]) + lst("Notions réinvesties", pl["re"])
+                     + (f'<h2>Activités et jeux (collection « Activités Scratch » du site)</h2><ul>{acts}{gms}</ul>' if acts or gms else "")
+                     + (f'<p><b>Complément :</b> {E(pl["extra"])}</p>' if pl["extra"] else "")
+                     + (f'<h2>Je sais…</h2><ul>{"".join("<li>" + E(a) + "</li>" for a in pl["acq"])}</ul>' if pl["acq"] else ""))
         res = RES.get((y, s["module"]))
         fiches.append(f'''<section class="fiche" id="s{i}"><h1>Fiche pédagogique — séance {i} / 27</h1>
 <p><span class="tag">{E(Y[0])}</span> <span class="tag">{E(mod)}</span> <span class="tag">{TYPES[s["type"]]}</span> <span class="tag">60 min</span></p>
@@ -63,15 +91,16 @@ def build_year(y):
 <h2>Titre de la séance</h2><p><b>{E(s["title"])}</b></p>
 <h2>Objectif (l'élève sera capable de…)</h2><p>{E(s["obj"][0].upper() + s["obj"][1:])}.</p>
 <h2>Matériel et ressources</h2><p>{E(MAT.get(s["module"], ""))}{(" " + E(res)) if res else ""}</p>
-<h2>Démarche (60 minutes)</h2><table><tr><th>Phase</th><th>Durée</th><th>Activité du professeur</th><th>Activité de l'élève</th></tr>{ph}</table>
-<h2>Trace écrite</h2><p>{E(s["trace"])}</p>
+<h2>Démarche (60 minutes)</h2>{demarche}
+{extra}<h2>Trace écrite</h2><p>{E(s["trace"])}</p>
 <h2>Évaluation et différenciation</h2><ul><li>Observer : l'élève atteint-il l'objectif sans aide ? (✓ / ~ / ✗)</li><li>Soutien : donner un modèle et réduire la tâche à une seule étape.</li><li>Approfondissement : demander de justifier ou de proposer une amélioration.</li></ul>
 <h2>Remarques du professeur après la séance</h2><p style="min-height:50px;border:1px dashed #aaa"></p></section>''')
     html = f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Accès enseignant — {E(Y[0])}</title><style>{CSS}</style></head><body><div class="wrap">
 <div class="toolbar"><button onclick="print()">Imprimer</button><a href="../index.html#y{y}-ens">← Retour au site</a></div>
 <h1>Répartition annuelle — {E(Y[0])}</h1>
 <div class="warn"><b>Proposition à adapter — document non officiel.</b> Cette répartition est construite à partir des domaines et des capacités du curriculum, à raison d'<b>une séance de 60 minutes par semaine</b> (27 séances, 9 par trimestre). Elle ne remplace ni le programme officiel ni les instructions de l'inspection : chaque professeur l'ajuste selon son calendrier (compléter la colonne « Date »).</div>
-<table><tr><th>Séance</th><th>Trim.</th><th>Date</th><th>Module</th><th>Titre</th><th>Type</th></tr>{"".join(rows)}</table>
+<table><tr><th>Séance</th><th>Trim.</th><th>Date</th><th>Module</th><th>Titre</th><th>Type</th><th>Activités Scratch (n°) et jeux</th></tr>{"".join(rows)}</table>
+{matrix_html(y)}
 {"".join(fiches)}</div></body></html>'''
     open(os.path.join(OUT, f"niveau-{y}.html"), "w", encoding="utf-8").write(html)
 data = {}

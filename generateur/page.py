@@ -45,6 +45,11 @@ FR = i18n_fr.build(man, games)
 FR["map"].update(_pfr)
 FR["map"].update(_far)
 FR["map"].update(_afr)
+import planning as _PL
+man["planning"], _pfr2 = _PL.export()
+FR["map"].update(_pfr2)
+FR["rules"] += [["^ح(\\d+)$", "S$1"], ["^(.+) · ح(\\d+)$", "$1 · S$2"]]   # numéros de séance : ح22 -> S22
+FR["map"].update({"تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance"})
 for _l in list({**exercices.EXO, **secondaire.EXO}.values()):
     for _q in _l:
         FR["map"][_q["q"]] = _q["q_fr"]
@@ -307,6 +312,14 @@ a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
 .actthumb{position:relative;aspect-ratio:4/3;background:#eef3fb}.actthumb img{width:100%;height:100%;object-fit:cover;display:block}.actthumb .badge{position:absolute;top:8px;right:8px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 @media (max-width:600px){.actgrid{grid-template-columns:repeat(2,1fr);gap:10px}.actcard h4{font-size:13.5px;padding:8px 9px 10px}}
 .actcard h4{margin:0;padding:10px 12px 12px;font-size:15px;line-height:1.4;color:#1e3a6e;text-align:start}
+.planpage h3{margin:20px 0 6px;color:#1e3a6e}.mxwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+.mx{border-collapse:collapse;width:100%;font-size:14px;table-layout:fixed}.mx th:first-child,.mx td:first-child{width:27%}.mx th:nth-child(2):not(:last-child){}.lvlprog,.allprog,[data-sc-acts]{direction:ltr;unicode-bidi:isolate}.mx th,.mx td{border:1px solid var(--line);padding:4px 8px;text-align:center}.mx th{background:#eaf1fb;color:#1e3a6e}.mx td.mxn{text-align:start;font-weight:600;white-space:nowrap}.mx td.mxk{color:#2e9e5b;font-weight:700}
+.mx-n{color:#1d6b3b;font-weight:700;background:#e4f6e8}.mx-d{color:#1e4fa8;font-weight:700;background:#e6efff}.mx-r{color:#777;background:#f6f6f6}td.mx-n,td.mx-d,td.mx-r{font-size:16px}.lg{padding:0 6px;border-radius:6px}
+.nchip{display:inline-block;border-radius:999px;padding:1px 10px;font-size:13px;margin:2px 0}.nchip.n{background:#e4f6e8;color:#1d6b3b}.nchip.d{background:#e6efff;color:#1e4fa8}.nchip.r{background:#f0f0f0;color:#555}
+.autopill{font-size:12px;font-weight:700;border-radius:999px;padding:0 10px;color:#fff}.autopill.guide{background:#6aa9ff}.autopill.semi{background:#2f6fd6}.autopill.auto{background:#1b3a82}
+.phases td,.phases th{vertical-align:top;text-align:start}.phases td.n{white-space:nowrap}.gamerow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0}.usesrow{margin:6px 0}
+.actgrid.mini{grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px}.rolerow{display:flex;flex-wrap:wrap;gap:6px 22px}.rolegrp{flex:1 1 180px}.actgrid.mini .actcard h4{font-size:13.5px;padding:7px 9px 6px}
+@media print{.topbar,#yearnav,#axisBack,.dlchips,.actprog,footer,.hero,.langbtn{display:none!important}body{background:#fff}.planpage .step{break-inside:avoid;page-break-inside:avoid}.actdone,.actcb{display:none}.actgrid.mini{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
@@ -444,7 +457,7 @@ const CATS = [
   {id:"sons", name:"الأصوات", subs:{effets:"مؤثرات صوتية", musique:"موسيقى", voix:"أصوات جاهزة"}},
 ];
 const $ = s => document.querySelector(s);
-const el = (t, a={}, ...kids) => { const e = document.createElement(t); for (const k in a){ if(k==="class") e.className=a[k]; else if(k==="text") e.textContent=a[k]; else e.setAttribute(k,a[k]); } kids.flat().forEach(c=>c&&e.append(c)); return e; };
+const el = (t, a={}, ...kids) => { const e = document.createElement(t); for (const k in a){ if(k==="class") e.className=a[k]; else if(k==="text") e.textContent=a[k]; else e.setAttribute(k,a[k]); } kids.flat(Infinity).forEach(c=>c&&e.append(c)); return e; };
 const state = {cat:"lieux", sub:"", q:"", story:""};
 // ---- lien avec le programme (Pensée logique et programmation)
 const PRG = DATA.programme;
@@ -715,6 +728,7 @@ function updateProgress(){
   document.querySelectorAll("[data-lvl-prog]").forEach(e => { const n = +e.dataset.lvlProg, L = D.levels.find(x => x.n === n); e.textContent = Done.count(a => a.lvl === n) + " / " + L.count; });
   document.querySelectorAll("[data-all-prog]").forEach(e => { e.textContent = Done.count() + " / " + D.total; });
   document.querySelectorAll(".actbar > i").forEach(e => { e.style.width = (100 * Done.count() / D.total) + "%"; });
+  document.querySelectorAll("[data-sc-acts]").forEach(e => { const ns = e.dataset.scActs.split(",").filter(Boolean).map(Number); e.textContent = ns.filter(n => Done.has(n)).length + " / " + ns.length; });
   document.querySelectorAll("[data-act]").forEach(e => { const d = Done.has(+e.dataset.act); e.classList.toggle("is-done", d); const cb = e.querySelector("input.actcb"); if (cb) cb.checked = d; });
   document.querySelectorAll("button.donebtn").forEach(b => { const d = Done.has(+b.dataset.n); b.setAttribute("aria-pressed", String(d)); const t = d ? "تم ✓" : "علّم النشاط كمنجز"; if (b.textContent !== t && b.dataset.t !== t) { b.textContent = t; b.dataset.t = t; } });
 }
@@ -791,7 +805,7 @@ function showStory(key){
 const ynav = $("#yearnav");
 MENU_YEARS.forEach(y => {
   const Y = CUR.years[y];
-  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
+  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), el("li",{class:"ov"}, el("a",{href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
   const btn = el("button",{class:"ybtn",type:"button","aria-expanded":"false","aria-haspopup":"true"}, el("span",{class:"yl",text:Y.ar}), el("span",{class:"ys",text:Y.short_ar}), el("i",{class:"car",text:"▾"}));
   const d = el("div",{class:"ydrop","data-year":y}, btn, ul);
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
@@ -857,7 +871,7 @@ function renderTeacher(y){
   if (!L) { kids.push(el("p",{class:"pnote",text:"لم تُدرج بعد وثيقة منهاج هذا المستوى. ستتوفر بطاقات الأستاذ عند إضافتها."})); }
   else {
     kids.push(el("h3",{text:"التوزيع السنوي المقترح"}), el("p",{class:"pnote",text:"اقتراح غير رسمي قابل للتعديل: حصة واحدة مدتها 60 دقيقة في الأسبوع (27 حصة، 9 في كل ثلاثي)."}),
-      el("p",{}, el("a",{class:"btn main",href:`enseignant/niveau-${y}.html`,target:"_blank",rel:"noopener",text:"طباعة التوزيع وبطاقات الحصص"})),
+      el("p",{}, el("a",{class:"btn main",href:`enseignant/niveau-${y}.html`,target:"_blank",rel:"noopener",text:"طباعة التوزيع وبطاقات الحصص"}), " ", el("a",{class:"btn main",href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})),
       el("div",{style:"overflow-x:auto",dir:"ltr"}, el("table",{class:"sctable"}, el("tr",{}, ["Séance","Trim.","Module","Titre","Type",""].map(h => el("th",{text:h}))),
         L.map(s => el("tr",{class:s.type === "eval" ? "ev" : s.type === "projet" ? "pr" : ""}, el("td",{text:"S" + s.n}), el("td",{text:"T" + s.tri}), el("td",{text:s.mod_fr}), el("td",{text:s.title}), el("td",{text:s.type}),
           el("td",{}, el("a",{href:`enseignant/niveau-${y}.html#s${s.n}`,target:"_blank",rel:"noopener",text:"Fiche"})))))),
@@ -928,28 +942,78 @@ function renderDownloads(){
 function syncImgs(){ document.querySelectorAll("img[data-fr-src]").forEach(i => { if (!i.dataset.arSrc) i.dataset.arSrc = i.getAttribute("src"); i.setAttribute("src", document.documentElement.lang === "fr" ? i.dataset.frSrc : i.dataset.arSrc); }); }
 function actChip(k){ const b = DATA.activites.blocks[k]; return el("span",{class:"blk " + b[0],text:b[1]}); }
 function actImg(a, k, alt){ return el("img",{src:a.img[k][1],"data-fr-src":a.img[k][0],alt,loading:"lazy"}); }
+// carte d'une activité (image « après exécution », titre dessous, case « Fait ») : grille des niveaux et planning des séances
+function actCard(a){
+  const cb = el("input",{type:"checkbox",class:"actcb","aria-label":"تم"}); cb.checked = Done.has(a.n); cb.addEventListener("change", () => { Done.toggle(a.n); updateProgress(); });
+  return el("div",{class:"actcard","data-l":a.lvl,"data-act":a.n}, el("a",{class:"actlink",href:"#activite-" + a.n,title:a.t}, el("div",{class:"actthumb"}, actImg(a, "apres", a.t), el("span",{class:"badge pj",text:a.n})), el("h4",{text:a.t})),
+    el("label",{class:"actdone"}, cb, el("span",{text:"تم"})));
+}
 function renderActivites(openLevel){
   $("#axisBack").href = "#y8-prog"; $("#axisBack").textContent = "← ألعاب سكراتش"; park(); $("#resArea").replaceChildren();
   const D = DATA.activites;
   // une grille d'images par niveau : pour chaque activité, une image explicative (la scène après exécution), son titre en dessous et une case « Fait »
-  const card = a => { const cb = el("input",{type:"checkbox",class:"actcb","aria-label":"تم"}); cb.checked = Done.has(a.n); cb.addEventListener("change", () => { Done.toggle(a.n); updateProgress(); });
-    return el("div",{class:"actcard","data-l":a.lvl,"data-act":a.n}, el("a",{class:"actlink",href:"#activite-" + a.n,title:a.t}, el("div",{class:"actthumb"}, actImg(a, "apres", a.t), el("span",{class:"badge pj",text:a.n})), el("h4",{text:a.t})),
-      el("label",{class:"actdone"}, cb, el("span",{text:"تم"}))); };
   const sec = L => el("section",{class:"actsec",id:"lvl-" + L.n,"data-l":L.n}, el("div",{class:"acthead"}, el("span",{class:"badge",text:L.n}), el("h3",{text:L.t}), el("span",{class:"lvlf",text:L.diff}), el("span",{class:"lvlprog","data-lvl-prog":L.n})),
-    el("p",{class:"pnote",text:L.obj}), el("div",{class:"actgrid"}, D.acts.filter(a => a.lvl === L.n).map(card)));
+    el("p",{class:"pnote",text:L.obj}), el("div",{class:"actgrid"}, D.acts.filter(a => a.lvl === L.n).map(actCard)));
   const jump = el("div",{class:"dlchips"}, D.levels.map(L => el("a",{class:"chip",href:"#activites-" + L.n,"aria-pressed":String(L.n === openLevel),text:L.t.split(" – ")[0]})));
   const reset = el("button",{type:"button",class:"btn",text:"مسح تقدّمي"});
   reset.addEventListener("click", () => { if (confirm(document.documentElement.lang === "fr" ? "Effacer toute ta progression ?" : "هل تريد مسح كل تقدّمك؟")) { Done.reset(); updateProgress(); } });
   const prog = el("div",{class:"actprog"}, el("b",{text:"تقدّمك:"}), el("span",{class:"allprog","data-all-prog":""}), el("div",{class:"actbar"}, el("i",{})), reset);
-  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:D.title}), el("p",{class:"pnote",text:D.intro}), prog, el("p",{class:"pnote",text:"يُحفظ تقدّمك في هذا المتصفح فقط."}), jump, D.levels.map(sec)));
+  const planLinks = el("p",{}, el("b",{text:"التخطيط حسب الحصص"}), " : ", ["7","8","9"].map(v => [el("a",{class:"btn",href:"#planning-" + v,text:DATA.planning.years[v].label}), " "]));
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:D.title}), el("p",{class:"pnote",text:D.intro}), planLinks, prog, el("p",{class:"pnote",text:"يُحفظ تقدّمك في هذا المتصفح فقط."}), jump, D.levels.map(sec)));
   syncImgs(); updateProgress();
   window.__scrollTo = openLevel ? "lvl-" + openLevel : null;
+}
+function renderPlanning(y){
+  const P = DATA.planning, Y = P.years[y], D = DATA.activites, NOT = {};
+  P.notions.forEach(n => NOT[n.id] = n.t);
+  $("#axisBack").href = "#y" + y + "-ens"; $("#axisBack").textContent = "← فضاء الأستاذ"; park(); $("#resArea").replaceChildren();
+  const act = n => D.acts.find(a => a.n === n);
+  const tabs = el("div",{class:"dlchips"}, ["7","8","9"].map(v => el("a",{class:"chip",href:"#planning-" + v,"aria-pressed":String(v === y),text:P.years[v].label})));
+  // carte des notions : lignes = notions, colonnes = séances ; ● nouvelle, ◆ approfondie, ○ réinvestie
+  const known = new Set(); for (const yy of ["7","8","9"]) { if (yy === y) break; P.years[yy].seances.forEach(s => s.new.forEach(i => known.add(i))); }
+  const cols = Y.seances, ids = P.notions.map(n => n.id).filter(id => known.has(id) || cols.some(s => s.new.includes(id)));
+  const sym = (s, id) => s.new.includes(id) ? ["n","●"] : s.deep.includes(id) ? ["d","◆"] : s.re.includes(id) ? ["r","○"] : ["","" ];
+  const mx = el("div",{class:"mxwrap"}, el("table",{class:"mx"}, el("thead",{}, el("tr",{}, el("th",{text:"المفهوم"}), known.size ? el("th",{text:"مكتسبات السنوات السابقة"}) : null, cols.map(s => el("th",{},"ح" + s.s)))),
+    el("tbody",{}, ids.map(id => el("tr",{}, el("td",{class:"mxn",text:NOT[id]}), known.size ? el("td",{class:"mxk",text:known.has(id) ? "✓" : ""}) : null, cols.map(s => { const [c, t] = sym(s, id); return el("td",{class:"mx" + (c ? " mx-" + c : "")}, t); }))))));
+  const legend = el("p",{class:"pnote"}, el("span",{class:"mx-n lg",text:"●"}), " ", el("span",{text:"جديد"}), "  ", el("span",{class:"mx-d lg",text:"◆"}), " ", el("span",{text:"معمَّق"}), "  ", el("span",{class:"mx-r lg",text:"○"}), " ", el("span",{text:"موظَّف من جديد"}));
+  const chips = (list, cls) => list.map(i => [el("span",{class:"nchip " + cls,text:NOT[i]}), " "]);
+  const grid = (ns) => el("div",{class:"actgrid mini"}, ns.map(n => actCard(act(n))));
+  const game = g => {
+    if (g.kind === "story") { const s = DATA.stories.find(x => x.key === g.key); return s ? el("div",{class:"gamerow"}, el("b",{text:s.title}), el("a",{class:"btn",href:"#story-" + g.key,text:"فتح القصة"})) : null; }
+    const x = (DATA.games || []).find(q => q.key === g.key); if (!x) return null;
+    return el("div",{class:"gamerow"}, el("b",{text:x.title_ar}), watchBtn(x), x.fiche ? ficheBtn(x.fiche) : null);
+  };
+  const seance = (s, i) => {
+    const ns = [...s.core, ...s.support, ...s.challenge];
+    const body = el("div",{class:"stbody"}, el("p",{}, el("b",{text:"الهدف"}), " : ", s.obj),
+      s.new.length ? el("p",{}, el("b",{text:"المفاهيم الجديدة"}), " : ", chips(s.new, "n")) : null, s.deep.length ? el("p",{}, el("b",{text:"المفاهيم المعمَّقة"}), " : ", chips(s.deep, "d")) : null,
+      s.re.filter(i => i !== "seq" && i !== "event").length ? el("p",{}, el("b",{text:"المفاهيم الموظَّفة من جديد"}), " : ", chips(s.re.filter(i => i !== "seq" && i !== "event"), "r")) : null,
+      el("p",{class:"pnote"}, el("span",{text:"المفاهيم المكتسبة في نهاية الحصة"}), " : ", el("b",{text:s.cum + " / " + P.notions.length})),
+      el("h5",{text:"السير (60 دقيقة)"}), el("table",{class:"sctable phases"}, el("thead",{}, el("tr",{}, el("th",{text:"المرحلة"}), el("th",{text:"المدة"}), el("th",{text:"الوصف"}))),
+        el("tbody",{}, s.phases.map(p => el("tr",{}, el("td",{text:p.t}), el("td",{class:"n"}, p.min + " ", el("span",{text:"د"})), el("td",{text:p.d}))))),
+      ns.length ? el("div",{class:"rolerow"}, [["core","النشاط الرئيسي"],["support","للتدرّب"],["challenge","تحدٍّ"]].filter(([k]) => s[k].length).map(([k, t]) => el("div",{class:"rolegrp"}, el("h5",{text:t}), grid(s[k])))) : null,
+      s.games.length ? [el("h5",{text:"الألعاب والقصص"}), s.games.map(game)] : null, s.extra && !s.core.length ? null : null,
+      s.acq.length ? [el("h5",{text:"أنا قادر على…"}), el("ul",{class:"check"}, s.acq.map(t => el("li",{text:t})))] : null, el("p",{class:"pnote"}, el("b",{text:"الأثر المكتوب"}), " : ", s.trace));
+    return el("details",{class:"step seanc","data-auto":s.auto}, el("summary",{}, el("span",{class:"badge",text:s.s}), el("b",{text:s.t}), el("span",{class:"lvlf",text:s.type}), el("span",{class:"autopill " + s.auto,text:s.auto_t}),
+      ns.length ? el("span",{class:"lvlprog","data-sc-acts":ns.join(",")}) : null), body);
+  };
+  const enr = P.enrich.map(n => actCard(act(n)));
+  const bar = el("div",{class:"actprog"}, el("button",{type:"button",class:"btn",text:"فتح الكل"}), el("button",{type:"button",class:"btn",text:"طي الكل"}), el("button",{type:"button",class:"btn main",text:"طباعة التخطيط"}));
+  const [bo, bc, bp] = bar.children;
+  bo.addEventListener("click", () => document.querySelectorAll("#axisHead details.seanc").forEach(d => d.open = true)); bc.addEventListener("click", () => document.querySelectorAll("#axisHead details.seanc").forEach(d => d.open = false)); bp.addEventListener("click", () => { bo.click(); window.print(); });
+  $("#axisHead").replaceChildren(el("div",{class:"axhead planpage"}, el("h2",{}, el("span",{text:"تخطيط حصص سكراتش"}), " – ", el("span",{text:Y.label})), tabs,
+    el("p",{class:"pnote",text:"اقتراح غير رسمي قابل للتعديل: حصة واحدة مدتها 60 دقيقة في الأسبوع، وهي حصص وحدة «البرمجة» من التوزيع السنوي. تتراكم المفاهيم من حصة إلى أخرى وتزداد استقلالية التلاميذ شيئا فشيئا."}),
+    el("p",{class:"pnote",text:"موجَّه: الأستاذ يشرح والتلميذ يتبع المراحل. شبه موجَّه: ينطلق التلميذ من الهدف والنتيجة المنتظرة. مستقل: يقرر التلميذ وينجز وحده."}),
+    bar, el("h3",{text:"خريطة المفاهيم"}), mx, legend, el("h3",{text:"السير (60 دقيقة)"}), Y.seances.map(seance),
+    P.enrich.length ? [el("h3",{text:"للتوسع (خارج التخطيط)"}), el("p",{class:"pnote",text:"بعضها يستعمل النسخ أو القوائم أو «و» المنطقية: وهي تتجاوز إطار المنهاج."}), el("div",{class:"actgrid mini"}, enr)] : null));
+  syncImgs(); updateProgress();
 }
 function renderActivite(n){
   const D = DATA.activites, a = D.acts.find(x => x.n === n); if (!a) return;
   const L = D.levels.find(x => x.n === a.lvl), prev = D.acts.find(x => x.n === n - 1), next = D.acts.find(x => x.n === n + 1);
   $("#axisBack").href = "#activites-" + a.lvl; $("#axisBack").textContent = "← مجموعة الأنشطة"; park(); $("#resArea").replaceChildren();
   const row = k => el("div",{class:"blkhelp"}, actChip(k), el("p",{text:D.blocks[k][2]}));
+  const uses = ((DATA.planning || {}).uses || {})[n] || [];
   const fig = (k, cap) => el("figure",{}, actImg(a, k, cap), el("figcaption",{text:cap}));
   const mkDone = () => { const x = el("button",{type:"button",class:"btn donebtn","data-n":a.n,"aria-pressed":"false"}); x.addEventListener("click", () => { Done.toggle(a.n); updateProgress(); }); return x; };
   const doneBtn = mkDone(), doneBtn2 = mkDone();
@@ -957,6 +1021,7 @@ function renderActivite(n){
     el("div",{class:"acthead"}, el("span",{class:"badge pj",text:a.n}), el("span",{class:"lvlf",text:L.diff}), el("span",{class:"pnote",text:L.t}), doneBtn),
     el("h2",{text:a.t}),
     el("h3",{text:"الهدف"}), el("p",{text:a.obj}),
+    uses.length ? el("p",{class:"usesrow"}, el("b",{text:"تُستعمل في الحصة"}), " : ", uses.map(u => [el("a",{class:"chip",href:"#planning-" + u.y,text:DATA.planning.years[u.y].label + " · " + "ح" + u.s}), " "])) : null,
     el("h3",{text:"الكتل المستعملة ودورها"}), a.blocks.map(row),
     el("h3",{text:"السكربت الكامل"}), el("div",{class:"scriptimg"}, actImg(a, "script", a.t)),
     el("h3",{text:"الإنجاز خطوة بخطوة"}), el("ol",{class:"bigsteps"}, a.steps.map(t => el("li",{text:t}))),
@@ -1018,18 +1083,20 @@ function route(){
   if (h === "downloads") view = "dl";
   let am = h.match(/^activites(?:-([1-6]))?$/); if (am) { view = "act"; y = "8"; }
   let ad = h.match(/^activite-(\d+)$/); if (ad) { view = "actd"; y = "8"; }
+  let pm = h.match(/^planning-(7|8|9)$/); if (pm) { view = "plan"; y = pm[1]; }
   let rm = h.match(/^ressources-([a-z]+)$/); if (rm) { view = "res"; y = "8"; }
   let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) { view = "fiche"; y = fm[1] === "contes" ? "7" : "8"; }
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
-  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd"); $("#viewStory").hidden = view !== "story";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd" || view === "plan"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "dl") renderDownloads();
   if (view === "act") renderActivites(am[1] ? +am[1] : 0);
   if (view === "actd") renderActivite(+ad[1]);
+  if (view === "plan") renderPlanning(pm[1]);
   if (view === "fiche") renderFiche(fm[1], fm[2]);
   if (view === "res") renderRessources(rm[1]);
   if (view === "year") renderYear(y);
