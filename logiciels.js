@@ -2,8 +2,13 @@
 // levels : "all" ou liste de niveaux ["7","8","9","s1","s2","s3","s4"]. Les liens pointent vers les sites officiels.
 window.LOGICIELS = [
  {cat:"prog", name:"Scratch 3 (version hors ligne)", fr:"Scratch 3 (version hors ligne)", levels:["7","8","9"], url:"https://scratch.mit.edu/download",
-  ar:"بيئة البرمجة المرئية لإنجاز القصص والألعاب. تعمل دون اتصال بالإنترنت.", desc_fr:"Environnement de programmation visuelle pour créer contes et jeux, utilisable hors ligne.", os:"Windows · macOS · Android"},
- {cat:"prog", name:"Scratch en ligne", fr:"Scratch en ligne", levels:["7","8","9"], url:"https://scratch.mit.edu/projects/editor/",
+  ar:"بيئة البرمجة المرئية لإنجاز القصص والألعاب. تعمل دون اتصال بالإنترنت. اضغط على الزر المناسب لنظامك: يبدأ التنزيل مباشرة.", desc_fr:"Environnement de programmation visuelle pour créer contes et jeux, utilisable hors ligne. Clique sur le bouton de ton système : le téléchargement démarre directement.", os:"Windows · macOS",
+  // boutons d'installation sur le bureau : liens directs vers les installateurs officiels (redirigés vers la dernière version) ; vérifiés le 09/11/2026 (Scratch 3.32.1)
+  links:[
+   {os:"windows", direct:true, url:"https://downloads.scratch.mit.edu/desktop/Scratch%20Setup.exe", ar:"⬇ تثبيت على Windows (.exe)", fr:"⬇ Installer pour Windows (.exe)", note_ar:"حوالي 200 ميغابايت", note_fr:"environ 200 Mo"},
+   {os:"mac", direct:true, url:"https://downloads.scratch.mit.edu/desktop/Scratch.dmg", ar:"⬇ تثبيت على macOS (.dmg)", fr:"⬇ Installer pour macOS (.dmg)", note_ar:"حوالي 340 ميغابايت", note_fr:"environ 340 Mo"},
+   {url:"https://scratch.mit.edu/download", ar:"صفحة التحميل الرسمية (أنظمة أخرى)", fr:"Page officielle de téléchargement (autres systèmes)"}]},
+ {cat:"prog", name:"Scratch 3 en ligne (lien direct)", fr:"Scratch 3 en ligne (lien direct)", levels:["7","8","9"], url:"https://scratch.mit.edu/projects/editor/",
   ar:"محرر سكراتش داخل المتصفح دون تثبيت.", desc_fr:"Éditeur Scratch dans le navigateur, sans installation.", os:"Web"},
  {cat:"prog", name:"MIT App Inventor", fr:"MIT App Inventor", levels:["9"], url:"https://appinventor.mit.edu/",
   ar:"إنشاء تطبيقات للهاتف بالكتل البرمجية.", desc_fr:"Création d'applications mobiles par blocs.", os:"Web"},

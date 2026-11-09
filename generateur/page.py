@@ -49,7 +49,7 @@ import planning as _PL
 man["planning"], _pfr2 = _PL.export()
 FR["map"].update(_pfr2)
 FR["rules"] += [["^ح(\\d+)$", "S$1"], ["^(.+) · ح(\\d+)$", "$1 · S$2"]]   # numéros de séance : ح22 -> S22
-FR["map"].update({"تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance"})
+FR["map"].update({"⬇ تثبيت سكراتش على الحاسوب": "⬇ Installer Scratch sur l'ordinateur", "⬇ تثبيت سكراتش على Windows": "⬇ Installer Scratch pour Windows", "⬇ تثبيت سكراتش على macOS": "⬇ Installer Scratch pour macOS", "مقترح لنظامك": "Conseillé pour ton système", "⬇ اختصار هذا الموقع على سطح المكتب": "⬇ Raccourci de ce site sur le bureau", "تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance"})
 for _l in list({**exercices.EXO, **secondaire.EXO}.values()):
     for _q in _l:
         FR["map"][_q["q"]] = _q["q_fr"]
@@ -320,6 +320,8 @@ a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
 .phases td,.phases th{vertical-align:top;text-align:start}.phases td.n{white-space:nowrap}.gamerow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0}.usesrow{margin:6px 0}
 .actgrid.mini{grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px}.rolerow{display:flex;flex-wrap:wrap;gap:6px 22px}.rolegrp{flex:1 1 180px}.actgrid.mini .actcard h4{font-size:13.5px;padding:7px 9px 6px}
 @media print{.topbar,#yearnav,#axisBack,.dlchips,.actprog,footer,.hero,.langbtn{display:none!important}body{background:#fff}.planpage .step{break-inside:avoid;page-break-inside:avoid}.actdone,.actcb{display:none}.actgrid.mini{grid-template-columns:repeat(4,1fr)}}
+.instbtns{display:flex;flex-direction:column;gap:8px}.instrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.instrow .mine{font-size:12px;font-weight:700;color:#1d6b3b;background:#e4f6e8;border-radius:999px;padding:0 10px}
+#getinst{font-size:16px;padding:8px 18px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -334,6 +336,7 @@ a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
 <section class="hero" id="hero"><div class="wrap">
   <div class="head"><h1>Curriculum Informatique en Tunisie</h1>
   <div class="hbtns"><a class="btn alt" id="getscratch" href="#downloads">⬇ التحميلات: سكراتش وبقية البرمجيات</a>
+  <a class="btn main" id="getinst" href="#downloads">⬇ تثبيت سكراتش على الحاسوب</a>
   <a class="btn" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">فتح سكراتش على الإنترنت</a>
   <button type="button" class="btn main" id="install" hidden>⬇ اختصار على سطح المكتب</button></div></div>
   <p>المنهاج والمراجع والموارد التعليمية لمادة الإعلامية في تونس، من السنة السابعة إلى السنة التاسعة.</p>
@@ -683,6 +686,9 @@ const ua = navigator.userAgent;
 const OS = /android/i.test(ua) ? "android" : /iphone|ipad|ipod/i.test(ua) ? "ios" : /windows/i.test(ua) ? "windows" : /mac/i.test(ua) ? "mac" : "linux";
 const TITLE = "ورشة القصص", FILE = "Atelier-contes";
 if (!standalone()) instBtn.hidden = false;
+// bouton d'accueil « installer Scratch » : lien direct vers l'installateur de ton système (Windows ou macOS), sinon vers la page Téléchargements
+{ const gi = $("#getinst"), L = (window.LOGICIELS || []).find(s => s.links), m = L && L.links.find(l => l.os === OS);
+  if (m) { gi.href = m.url; gi.removeAttribute("target"); gi.textContent = OS === "windows" ? "⬇ تثبيت سكراتش على Windows" : "⬇ تثبيت سكراتش على macOS"; } }
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; instBtn.hidden = false; });
 window.addEventListener("appinstalled", () => { deferred = null; instBtn.hidden = true; });
 
@@ -921,10 +927,17 @@ function renderYear(y){
   $("#resArea").replaceChildren();
 }
 let dlLevel = "all";
+// boutons d'installation sur le bureau : le bouton de ton système (Windows ou macOS) passe en premier et en couleur
+function instButtons(links){
+  const mine = links.find(l => l.os === OS);
+  const ordered = mine ? [mine, ...links.filter(l => l !== mine)] : links;
+  return el("div",{class:"instbtns"}, ordered.map((l, i) => el("div",{class:"instrow"}, el("a",{class:"btn" + (l === mine ? " main" : ""),href:l.url,rel:"noopener",...(l.direct ? {} : {target:"_blank"}),text:l.ar}),
+    l === mine ? el("span",{class:"mine",text:"مقترح لنظامك"}) : null, l.note_ar ? el("small",{class:"os",text:l.note_ar}) : null)));
+}
 function renderDownloads(){
   $("#axisBack").href = "#home"; $("#axisBack").textContent = "← الرئيسية"; park(); $("#resArea").replaceChildren();
   const L = window.LOGICIELS || [], C = window.LOGICIEL_CATS || {};
-  L.forEach(s => { FRMAP[s.ar] = s.desc_fr; });
+  L.forEach(s => { FRMAP[s.ar] = s.desc_fr; (s.links || []).forEach(l => { FRMAP[l.ar] = l.fr; if (l.note_ar) FRMAP[l.note_ar] = l.note_fr; }); });
   Object.values(C).forEach(c => { FRMAP[c[0]] = c[1]; });
   YEARS.forEach(y => { FRMAP[CUR.years[y].short_ar] = CUR.years[y].short_fr; });
   if (dlLevel !== "all" && !MENU_YEARS.includes(dlLevel)) dlLevel = "all";
@@ -935,8 +948,9 @@ function renderDownloads(){
   const groups = Object.keys(C).map(c => { const items = L.filter(s => s.cat === c && ok(s)); if (!items.length) return null;
     return el("section",{}, el("h3",{text:C[c][0]}), el("div",{class:"dlgrid"}, items.map(s => el("article",{class:"dlcard"}, el("h4",{text:s.name}), el("p",{text:s.ar}),
       el("div",{class:"dlmeta"}, s.levels === "all" ? el("span",{class:"lvl",text:"كل المستويات"}) : s.levels.filter(y => MENU_YEARS.includes(y)).map(y => el("span",{class:"lvl",text:CUR.years[y].short_ar})), el("span",{class:"os",dir:"ltr",text:s.os})),
-      el("a",{class:"btn main",href:s.url,target:"_blank",rel:"noopener",text:"⬇ تحميل"}))))); });
-  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"التحميلات"}), el("p",{class:"pnote",text:"البرمجيات المستعملة في كل المستويات. الروابط تؤدي إلى المواقع الرسمية للبرمجيات."}), chips, groups,
+      s.links ? instButtons(s.links) : el("a",{class:"btn main",href:s.url,target:"_blank",rel:"noopener",text:"⬇ تحميل"}))))); });
+  const shortcutBtn = el("button",{type:"button",class:"btn",text:"⬇ اختصار هذا الموقع على سطح المكتب"}); shortcutBtn.addEventListener("click", () => $("#install").click());
+  $("#axisHead").replaceChildren(el("div",{class:"axhead"}, el("h2",{text:"التحميلات"}), el("p",{class:"pnote",text:"البرمجيات المستعملة في كل المستويات. الروابط تؤدي إلى المواقع الرسمية للبرمجيات."}), el("p",{}, shortcutBtn), chips, groups,
     el("p",{class:"pnote",text:"لإضافة برنامج: عدّل الملف logiciels.js."})));
 }
 function syncImgs(){ document.querySelectorAll("img[data-fr-src]").forEach(i => { if (!i.dataset.arSrc) i.dataset.arSrc = i.getAttribute("src"); i.setAttribute("src", document.documentElement.lang === "fr" ? i.dataset.frSrc : i.dataset.arSrc); }); }
