@@ -110,8 +110,11 @@ PDF = {
    pist=L(("Favoriser des débats à partir de situations significatives amenant l'apprenant à analyser des données.", "تفضيل النقاشات انطلاقا من وضعيات ذات دلالة تدفع المتعلم إلى تحليل المعطيات."), ("Inciter les apprenants à la créativité et à l'innovation.", "تشجيع المتعلمين على الإبداع والابتكار."), ("Inviter les apprenants à la collaboration et à la publication de leurs projets.", "دعوة المتعلمين إلى التعاون ونشر مشاريعهم."))),
 }
 SRC = ("Source : Curriculum d'informatique – 7ème, 8ème et 9ème année de base (9ème : École numérique, année scolaire 2018-2019).", "المصدر: منهاج الإعلامية – السنوات 7 و8 و9 من التعليم الأساسي (السنة 9: المدرسة الرقمية، السنة الدراسية 2018-2019).")
-AIDE_SRC = ("Aide pédagogique – Informatique (Ministère de l'Éducation, septembre 2025) : détails transcrits des photographies, à relire avec le document.", "المساعدة البيداغوجية: الإعلامية (وزارة التربية، سبتمبر 2025): تفاصيل منقولة من الصور، تُراجَع مع الوثيقة.")
-AXES_BY_YEAR = {7: ["env", "net", "create", "prog"], 8: ["env", "net", "create", "prog"], 9: ["prog", "prod"]}
+AIDE_SRC = ("Aide pédagogique – Informatique (Ministère de l'Éducation, septembre 2026) : détails transcrits des photographies, à relire avec le document.", "المساعدة البيداغوجية: الإعلامية (وزارة التربية، سبتمبر 2026): تفاصيل منقولة من الصور، تُراجَع مع الوثيقة.")
+# 9e : domaines « Environnement » et « Internet » ajoutés d'après l'aide pédagogique de septembre 2026
+PDF[(9, "env")] = dict(comps=L((A[(9, "env")]["comp_fr"], A[(9, "env")]["comp_ar"])), life=None)
+PDF[(9, "net")] = dict(comps=L((A[(9, "net")]["comp_fr"], A[(9, "net")]["comp_ar"])), life=None)
+AXES_BY_YEAR = {7: ["env", "net", "create", "prog"], 8: ["env", "net", "create", "prog"], 9: ["env", "net", "prog", "prod"]}
 
 def build():
     pages = {}

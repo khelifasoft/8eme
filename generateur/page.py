@@ -924,7 +924,7 @@ function renderAxis(y, k){
   if (P.pist_ar.length) kids.push(el("h3",{text:"مسالك مقترحة"}), el("ul",{}, P.pist_ar.map(t => el("li",{text:t}))));
   if (!/^s/.test(y)) kids.push(el("p",{class:"pnote",text:CUR.src_ar}));
   if (P.aide) {
-    const A2 = P.aide, d = [el("summary",{text:"تفاصيل من المساعدة البيداغوجية (2025)"}), el("p",{text:A2.comp_ar})];
+    const A2 = P.aide, d = [el("summary",{text:"تفاصيل من المساعدة البيداغوجية (2026)"}), el("p",{text:A2.comp_ar})];
     A2.parts.forEach(x => d.push(el("h3",{text:x.t_ar,style:"font-size:16px"}), el("ul",{}, x.i_ar.map(t => el("li",{text:t})))));
     if (A2.know_ar.length) d.push(el("h3",{text:"المعارف المرتبطة"}), el("ul",{}, A2.know_ar.map(t => el("li",{text:t}))));
     if (A2.cad_ar.length) d.push(el("h3",{text:"توجيهات الإطار"}), el("ul",{}, A2.cad_ar.map(t => el("li",{text:t}))));

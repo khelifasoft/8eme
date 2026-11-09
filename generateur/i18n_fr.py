@@ -31,7 +31,7 @@ UI = {
  "PDF": "PDF", "موقع": "Site", "كتاب": "Livre", "أداة": "Outil",
 
  "الكفايات المراد تنميتها": "Compétences à développer", "الممارسات المنتظرة": "Pratiques envisagées", "مسالك مقترحة": "Pistes à envisager",
- "تفاصيل من المساعدة البيداغوجية (2025)": "Détails de l'Aide pédagogique (2025)", "الكفاية الحياتية المستهدفة:": "Compétence de vie visée :",
+ "تفاصيل من المساعدة البيداغوجية (2026)": "Détails de l'Aide pédagogique (2026)", "الكفاية الحياتية المستهدفة:": "Compétence de vie visée :",
 
  "نظرة عامة": "Aperçu de l'année", "المحاور الدراسية حسب السنة": "Les axes d'étude par année", "اختر سنتك، ثم المحور الذي تريد دراسته.": "Choisis ton année, puis l'axe que tu veux étudier.",
  "اختر سنتك ثم المحور الذي تريد دراسته من القائمة أعلاه.": "Choisis ton année, puis l'axe que tu veux étudier dans le menu ci-dessus.",
