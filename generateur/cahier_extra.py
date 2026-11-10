@@ -109,3 +109,10 @@ PHASES = {
         (M_, 10, ("Chaque groupe présente son application en une minute et dit une chose réussie et une à améliorer. Compléter la trace écrite.", "يعرض كل فوج تطبيقته في دقيقة ويذكر نقطة نجاح وأخرى للتحسين. إتمام الأثر المكتوب."))],
 }
 for _k, _p in PHASES.items(): assert sum(x[1] for x in _p) == 60, _k
+
+# ----------------------------------------------------------------------------- cours « Sécurité informatique » (8e) : securite.py
+import securite as SE
+for _k, _d in SE.SEC.items():
+    EXTRA[_k] = dict(title=_d["title"], obj=_d["obj"], trace=_d["trace"], fill=_d["fill"], form=_d["form"], retain=_d["retain"], acq=_d["acq"], phases=_d["phases"], kind=("Sécurité informatique", "أمن المعلوميات"))
+    PHASES[_k] = _d["phases"]
+YEAR_EXTRA = {"9": ["M1", "M2", "M3", "A1", "A2", "A3"], "8": ["S1", "S2", "S3", "S4"]}

@@ -48,8 +48,10 @@ FR["map"].update(_afr)
 import planning as _PL
 man["planning"], _pfr2 = _PL.export()
 FR["map"].update(_pfr2)
-import theorie as _TH, theorie_js as _TH_JS
+import theorie as _TH, theorie_js as _TH_JS, securite as _SE, securite_js as _SE_JS
 man["theorie"], _thfr = _TH.export()
+man["securite"], _sefr = _SE.export()
+for _k, _v in _sefr.items(): FR["map"].setdefault(_k, _v)
 for _k, _v in _thfr.items():
     if FR["map"].get(_k, _v) != _v: print("traduction différente (théorie) :", repr(_k), "|", repr(FR["map"][_k]), "|", repr(_v))
     FR["map"].setdefault(_k, _v)
@@ -826,7 +828,7 @@ function showStory(key){
 const ynav = $("#yearnav");
 MENU_YEARS.forEach(y => {
   const Y = CUR.years[y];
-  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), TH.years.includes(y) ? el("li",{class:"ov"}, el("a",{href:"#theorie",text:U.hubTitle})) : null, el("li",{class:"ov"}, el("a",{href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})), el("li",{class:"ov"}, el("a",{href:`cahier/cahier-${y}.html`,target:"_blank",rel:"noopener",text:"مذكرات الدفتر"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
+  const ul = el("ul",{class:"sub"}, el("li",{class:"ov"}, el("a",{href:"#y"+y,text:"نظرة عامة"})), CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,"data-ax":k,text:CUR.pages[`${y}-${k}`].title_ar}))), el("li",{class:"ov"}, el("a",{href:`#y${y}-ens`,text:"فضاء الأستاذ"})), TH.years.includes(y) ? el("li",{class:"ov"}, el("a",{href:"#theorie",text:U.hubTitle})) : null, y === "8" ? el("li",{class:"ov"}, el("a",{href:"#securite",text:SU.title})) : null, el("li",{class:"ov"}, el("a",{href:`#planning-${y}`,text:"تخطيط حصص سكراتش"})), el("li",{class:"ov"}, el("a",{href:`cahier/cahier-${y}.html`,target:"_blank",rel:"noopener",text:"مذكرات الدفتر"})), el("li",{class:"ov"}, el("a",{href:`#y${y}-refs`,text:"المراجع"})));
   const btn = el("button",{class:"ybtn",type:"button","aria-expanded":"false","aria-haspopup":"true"}, el("span",{class:"yl",text:Y.ar}), el("span",{class:"ys",text:Y.short_ar}), el("i",{class:"car",text:"▾"}));
   const d = el("div",{class:"ydrop","data-year":y}, btn, ul);
   btn.addEventListener("click", e => { e.stopPropagation(); const open = !d.hasAttribute("data-open"); closeMenus(); if (open) { d.setAttribute("data-open",""); btn.setAttribute("aria-expanded","true"); } });
@@ -836,7 +838,7 @@ function closeMenus(){ ynav.querySelectorAll(".ydrop").forEach(d => { d.removeAt
 document.addEventListener("click", e => { if (!e.target.closest(".ydrop")) closeMenus(); else if (e.target.closest(".sub a")) closeMenus(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenus(); });
 
-function axisLinks(y){ return CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,text:CUR.pages[`${y}-${k}`].title_ar}))).concat(TH.years.includes(y) ? [el("li",{}, el("a",{href:"#theorie",text:U.hubTitle}))] : [], [el("li",{}, el("a",{href:`#y${y}-refs`,style:"font-weight:700",text:"المراجع"}))]); }
+function axisLinks(y){ return CUR.by_year[y].map(k => el("li",{}, el("a",{href:`#y${y}-${k}`,text:CUR.pages[`${y}-${k}`].title_ar}))).concat(TH.years.includes(y) ? [el("li",{}, el("a",{href:"#theorie",text:U.hubTitle}))] : [], y === "8" ? [el("li",{}, el("a",{href:"#securite",text:SU.title}))] : [], [el("li",{}, el("a",{href:`#y${y}-refs`,style:"font-weight:700",text:"المراجع"}))]); }
 function renderHome(){
   const c = $("#yearCards"); c.replaceChildren();
   MENU_YEARS.forEach(y => c.append(el("article",{class:"ycard"}, el("a",{class:"yh",href:"#y"+y,style:"text-decoration:none",text:CUR.years[y].ar}), el("ul",{}, axisLinks(y)))));
@@ -941,6 +943,7 @@ function renderAxis(y, k){
   list.forEach(id => (lw || res).append($("#" + id)));
   if (list.includes("theory")) renderTheorySection();
   if (k === "prog" && ["7","8","9"].includes(y)) res.append(cahierBox(y));
+  if (k === "env" && y === "8") res.append(secBox());
   if (list.includes("library")) {
     [sel, vsel, tsel].forEach(x => x.hidden = false);
     $("#library .lead").textContent = "صور وأصوات ورسوم متحركة يمكنك استعمالها في أي قصة. اضغط «تحميل» ثم أضف الملف في سكراتش.";
@@ -1051,7 +1054,7 @@ function renderPlanning(y){
     el("p",{class:"pnote",text:"موجَّه: الأستاذ يشرح والتلميذ يتبع المراحل. شبه موجَّه: ينطلق التلميذ من الهدف والنتيجة المنتظرة. مستقل: يقرر التلميذ وينجز وحده."}),
     y === "9" ? el("div",{class:"cahierbox"}, el("h3",{text:"حصص مقترحة إضافية: الشيء القابل للبرمجة وتطبيقة الهاتف"}), el("p",{class:"pnote",text:"اقتراح غير رسمي (المساعدة البيداغوجية 2026): ثلاث حصص حول بطاقة micro:bit (اكتشاف، مدخلات ومخرجات، قياس وقرار وفعل) وثلاث حصص حول تطبيقة هاتف بـ App Inventor (الواجهة، الأحداث، الاختبار والتوليد). لكل حصة مذكرة في آخر مذكرات 9."})) : null,
     el("div",{class:"cahierbox"}, el("h3",{text:"مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)"}), el("p",{class:"pnote",text:"ورقة A4 لكل حصة: جمل ناقصة، أثر مكتوب للإتمام، وسكربت نصف منجز يُنهى في القسم."}), el("div",{class:"btns cahierbtns"}, cahierLinks(y))),
-    bar, el("h3",{text:"خريطة المفاهيم"}), mx, legend, el("h3",{text:"السير (60 دقيقة)"}), Y.seances.map(seance), (Y.extra || []).length ? [el("h3",{text:"حصص إضافية مقترحة (المساعدة البيداغوجية 2026)"}), el("p",{class:"pnote",text:"الشيء القابل للبرمجة (micro:bit) وتطبيقة الهاتف (App Inventor). اقتراح غير رسمي خارج التوزيع السنوي: يُدرج مكان حصص مراجعة أو في مشروع."}), Y.extra.map(seance)] : null,
+    bar, el("h3",{text:"خريطة المفاهيم"}), mx, legend, el("h3",{text:"السير (60 دقيقة)"}), Y.seances.map(seance), (Y.extra || []).length ? [el("h3",{text:Y.extraT}), el("p",{class:"pnote",text:Y.extraN}), Y.extra.map(seance)] : null,
     P.enrich.length ? [el("h3",{text:"للتوسع (خارج التخطيط)"}), el("p",{class:"pnote",text:"بعضها يستعمل النسخ أو القوائم أو «و» المنطقية: وهي تتجاوز إطار المنهاج."}), el("div",{class:"actgrid mini"}, enr)] : null));
   syncImgs(); updateProgress();
 }
@@ -1135,13 +1138,14 @@ function route(){
   let pm = h.match(/^planning-(7|8|9)$/); if (pm) { view = "plan"; y = pm[1]; }
   let rm = h.match(/^ressources-([a-z]+)$/); if (rm) { view = "res"; y = "8"; }
   if (h === "theorie") { view = "th"; y = "7"; }
+  if (h === "securite") { view = "sec"; y = "8"; }
   let tl = h.match(/^cours-([1-9])$/); if (tl && TH.lessons.some(l => l.n === +tl[1])) { view = "thl"; y = "7"; }
   let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) { view = "fiche"; y = fm[1] === "contes" ? "7" : "8"; }
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
-  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd" || view === "plan" || view === "th" || view === "thl"); $("#viewStory").hidden = view !== "story";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd" || view === "plan" || view === "th" || view === "thl" || view === "sec"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "dl") renderDownloads();
@@ -1149,6 +1153,7 @@ function route(){
   if (view === "actd") renderActivite(+ad[1]);
   if (view === "plan") renderPlanning(pm[1]);
   if (view === "th") renderTheoryHub();
+  if (view === "sec") renderSecurite();
   if (view === "thl") renderLesson(+tl[1]);
   if (view === "fiche") renderFiche(fm[1], fm[2]);
   if (view === "res") renderRessources(rm[1]);
@@ -1218,6 +1223,6 @@ if (want === "fr") setLang("fr");
 </html>
 '''
 import datetime
-TPL = TPL.replace("/*__THEORIE_JS__*/", _TH_JS.JS).replace("/*__THEORIE_CSS__*/", _TH_JS.CSS)
+TPL = TPL.replace("/*__THEORIE_JS__*/", _TH_JS.JS + _SE_JS.JS).replace("/*__THEORIE_CSS__*/", _TH_JS.CSS + _SE_JS.CSS)
 open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8").write(TPL.replace("__DATA__", json.dumps(man, ensure_ascii=False)).replace("__FRMAP__", json.dumps(FR["map"], ensure_ascii=False)).replace("__FRRULES__", json.dumps(FR["rules"], ensure_ascii=False)).replace("__BUILD__", "نسخة " + datetime.date.today().isoformat()))
 print("index.html", os.path.getsize(os.path.join(ROOT, "index.html")) // 1024, "Ko")

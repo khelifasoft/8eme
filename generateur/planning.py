@@ -329,19 +329,20 @@ def export():
         data["years"][y] = dict(label=P_(YEARLBL[y]), seances=ys)
     for n, u in uses.items():
         data["uses"][n] = [dict(y=y, s=s, role=role) for y, s, role in u]
-    # séances complémentaires proposées en 9e (objet programmable, application mobile) : cahier_extra.py
+    # séances complémentaires proposées (cahier_extra.py) : 9e objet programmable / application mobile ; 8e cours « Sécurité informatique »
     import cahier_extra as CE
-    ex = []
-    for i, key in enumerate(["M1", "M2", "M3", "A1", "A2", "A3"], 1):
-        e = CE.EXTRA[key]; app = key[0] == "A"
-        sim = ("l'émulateur ou l'application compagnon", "المحاكي أو التطبيقة المرافقة") if app else ("le simulateur MakeCode", "محاكي MakeCode")
-        ph = [(t_, m, d_) for t_, m, d_ in CE.PHASES[key]]
-        ex.append(dict(y="9", s=key, k=i, t=P_(e["title"]), obj=P_(e["obj"]), trace=P_(e["trace"]), type=P_(("Proposition", "اقتراح")), tk="manip", auto="semi", auto_t=P_(AUTO["semi"]),
-                       new=[], deep=[], re=[], core=[], support=[], challenge=[], games=[], acq=[P_(a) for a in e["acq"]], extra=None, cum=len(NID),
-                       phases=[dict(t=P_(a), min=m, d=P_(d)) for a, m, d in ph]))
-    data["years"]["9"]["extra"] = ex
-    P_(("Séances complémentaires proposées (aide pédagogique 2026)", "حصص إضافية مقترحة (المساعدة البيداغوجية 2026)"))
-    P_(("Objet programmable (micro:bit) et application mobile (App Inventor). Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet.", "الشيء القابل للبرمجة (micro:bit) وتطبيقة الهاتف (App Inventor). اقتراح غير رسمي خارج التوزيع السنوي: يُدرج مكان حصص مراجعة أو في مشروع."))
+    TXT = {"9": (("Séances complémentaires proposées (aide pédagogique 2026)", "حصص إضافية مقترحة (المساعدة البيداغوجية 2026)"),
+                 ("Objet programmable (micro:bit) et application mobile (App Inventor). Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet.", "الشيء القابل للبرمجة (micro:bit) وتطبيقة الهاتف (App Inventor). اقتراح غير رسمي خارج التوزيع السنوي: يُدرج مكان حصص مراجعة أو في مشروع.")),
+           "8": (("Cours « Sécurité informatique » en 4 séances (domaine Environnement informatique)", "درس «أمن المعلوميات» في 4 حصص (مجال بيئة العمل المعلوماتية)"),
+                 ("Menaces et protection : indicateurs, logiciels malveillants et piratage, communautés virtuelles, protection des données. Chaque séance a son cas d'introduction, sa vidéo (page « Sécurité informatique ») et sa fiche du cahier. Proposition non officielle, hors répartition annuelle.", "التهديدات والحماية: المؤشرات، البرمجيات الخبيثة والقرصنة، المجتمعات الافتراضية، حماية المعطيات. لكل حصة حالة انطلاق وفيديو (صفحة «أمن المعلوميات») ومذكرة دفتر. اقتراح غير رسمي خارج التوزيع السنوي."))}
+    for yy, keys in CE.YEAR_EXTRA.items():
+        ex = []
+        for i, key in enumerate(keys, 1):
+            e = CE.EXTRA[key]; ph = CE.PHASES[key]
+            ex.append(dict(y=yy, s=key, k=i, t=P_(e["title"]), obj=P_(e["obj"]), trace=P_(e["trace"]), type=P_(("Proposition", "اقتراح")), tk="manip", auto="semi", auto_t=P_(AUTO["semi"]),
+                           new=[], deep=[], re=[], core=[], support=[], challenge=[], games=[], acq=[P_(a) for a in e["acq"]], extra=None, cum=len(NID),
+                           phases=[dict(t=P_(a), min=m, d=P_(d)) for a, m, d in ph]))
+        data["years"][yy]["extra"] = ex; data["years"][yy]["extraT"] = P_(TXT[yy][0]); data["years"][yy]["extraN"] = P_(TXT[yy][1])
     for k, g in GAMES.items(): P_((g[0], g[1]))
     for k, g in STORIES.items(): P_(g)
     for role in ("core", "support", "challenge"): pass

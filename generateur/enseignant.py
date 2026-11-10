@@ -61,17 +61,17 @@ def matrix_html(y):
             f'Chaque séance s\'appuie sur les précédentes ; l\'autonomie des élèves augmente peu à peu (guidé, semi-guidé, autonome).</p><table><tr><th>Notion</th><th>Acquis antérieurs</th>{head}</tr>{body}</table>')
 def extra_fiches(y):
     """9e : fiches des séances complémentaires proposées (objet programmable micro:bit, application mobile App Inventor), cahier_extra.py"""
-    if y != "9": return ""
     import cahier_extra as CE
-    out = '<section class="fiche" id="complement"><h1>Séances complémentaires proposées (aide pédagogique 2026)</h1><p>Objet programmable (micro:bit) et application mobile (App Inventor). Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet.</p></section>'
-    for key in ["M1", "M2", "M3", "A1", "A2", "A3"]:
-        e = CE.EXTRA[key]; kind = "Objet programmable (micro:bit)" if key[0] == "M" else "Application mobile (App Inventor)"
+    if y not in CE.YEAR_EXTRA: return ""
+    out = f'<section class="fiche" id="complement"><h1>{"Cours « Sécurité informatique » en 4 séances" if y == "8" else "Séances complémentaires proposées (aide pédagogique 2026)"}</h1><p>{"Menaces et protection (carte mentale du cours résumée). Proposition non officielle, hors répartition annuelle." if y == "8" else "Objet programmable (micro:bit) et application mobile (App Inventor). Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet."}</p></section>'
+    for key in CE.YEAR_EXTRA[y]:
+        e = CE.EXTRA[key]; kind = {"M": "Objet programmable (micro:bit)", "A": "Application mobile (App Inventor)", "S": "Sécurité informatique"}[key[0]]
         ph = "".join(f'<tr><td>{E(t[0])}</td><td class="n">{m} min</td><td>{E(d[0])}</td></tr>' for t, m, d in CE.PHASES[key])
         acq = "".join(f"<li>{E(a[0])}</li>" for a in e["acq"])
         out += f'''<section class="fiche" id="s{key}"><h1>Fiche pédagogique — séance complémentaire {key}</h1>
 <p><span class="tag">{E(YEARS[9][0])}</span> <span class="tag">{kind}</span> <span class="tag">60 min</span> <span class="tag">Proposition</span></p>
 <h2>Titre de la séance</h2><p><b>{E(e["title"][0])}</b></p><h2>Objectif (l'élève sera capable de…)</h2><p>{E(e["obj"][0])}</p>
-<h2>Matériel et ressources</h2><p>Ordinateurs avec accès à {"l'éditeur MakeCode micro:bit (simulateur, sans carte)" if key[0] == "M" else "App Inventor (émulateur ou application compagnon)"} ; fiche du cahier de l'élève : <b>cahier/cahier-9.html#s{key}</b>.</p>
+<h2>Matériel et ressources</h2><p>Ordinateurs avec accès à { {"M": "l'éditeur MakeCode micro:bit (simulateur, sans carte)", "A": "App Inventor (émulateur ou application compagnon)", "S": "un ordinateur, la vidéo de la séance (page « Sécurité informatique » du site) et des fichiers de test"}[key[0]] } ; fiche du cahier de l'élève : <b>cahier/cahier-{y}.html#s{key}</b>.</p>
 <h2>Démarche (60 minutes)</h2><table><tr><th>Phase</th><th>Durée</th><th>Déroulement</th></tr>{ph}</table>
 <h2>Trace écrite</h2><p>{E(e["trace"][0])}</p><h2>Je sais…</h2><ul>{acq}</ul>
 <h2>Évaluation et différenciation</h2><ul><li>Observer : l'élève atteint-il l'objectif sans aide ? (✓ / ~ / ✗)</li><li>Soutien : version allégée de la fiche (un seul événement ou composant).</li><li>Approfondissement : le défi proposé dans la démarche.</li></ul>

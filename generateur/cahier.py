@@ -253,7 +253,7 @@ JS = r'''
 
 def page(y):
     seances = sorted(PL.PLAN[y])
-    extra = ["M1", "M2", "M3", "A1", "A2", "A3"] if y == "9" else []
+    import cahier_extra as _CE; extra = _CE.YEAR_EXTRA.get(y, [])
     fiches = "".join(fiche(y, s) for s in seances + extra)
     lv = YEAR[y]
     sel = "".join(f'<option value="{s}">{s} · {escape(S.SEANCES[y][s - 1]["title"])}</option>' for s in seances) + "".join(f'<option value="{k}">{k} · {escape(__import__("cahier_extra").EXTRA[k]["title"][0])}</option>' for k in extra)
