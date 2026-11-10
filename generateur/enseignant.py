@@ -77,6 +77,13 @@ def extra_fiches(y):
 <h2>Évaluation et différenciation</h2><ul><li>Observer : l'élève atteint-il l'objectif sans aide ? (✓ / ~ / ✗)</li><li>Soutien : version allégée de la fiche (un seul événement ou composant).</li><li>Approfondissement : le défi proposé dans la démarche.</li></ul>
 <h2>Remarques du professeur après la séance</h2><p style="min-height:50px;border:1px dashed #aaa"></p></section>'''
     return out
+def extra_table(y):
+    """tableau de répartition des séances complémentaires proposées (8e : sécurité informatique ; 9e : micro:bit et App Inventor)"""
+    import cahier_extra as CE
+    if y not in CE.YEAR_EXTRA: return ""
+    t = {"8": "Séances complémentaires : cours « Sécurité informatique » (domaine Environnement informatique)", "9": "Séances complémentaires : objet programmable et application mobile"}[y]
+    rows = "".join(f'<tr><td class="n">{k}</td><td>…… / ……</td><td><a href="#s{k}">{E(CE.EXTRA[k]["title"][0])}</a></td><td>{E(CE.EXTRA[k]["trace"][0])}</td></tr>' for k in CE.YEAR_EXTRA[y])
+    return f'<h2>{t}</h2><p>Proposition non officielle, hors des 27 séances : à insérer à la place de séances de révision ou de projet. Chaque séance dure 60 minutes ; la fiche détaillée suit les 27 fiches.</p><table><tr><th>Séance</th><th>Date</th><th>Titre</th><th>Trace écrite</th></tr>{rows}</table>'
 def build_year(y):
     L = SEANCES[y]; Y = YEARS[int(y)]; rows = []; fiches = []
     plan = PL.french_year(y) if y in PL.PLAN else {}
@@ -120,6 +127,7 @@ def build_year(y):
 <h1>Répartition annuelle — {E(Y[0])}</h1>
 <div class="warn"><b>Proposition à adapter — document non officiel.</b> Cette répartition est construite à partir des domaines et des capacités du curriculum, à raison d'<b>une séance de 60 minutes par semaine</b> (27 séances, 9 par trimestre). Elle ne remplace ni le programme officiel ni les instructions de l'inspection : chaque professeur l'ajuste selon son calendrier (compléter la colonne « Date »).</div>
 <table><tr><th>Séance</th><th>Trim.</th><th>Date</th><th>Module</th><th>Titre</th><th>Type</th><th>Activités Scratch (n°) et jeux</th></tr>{"".join(rows)}</table>
+{extra_table(y)}
 {matrix_html(y)}
 {"".join(fiches)}{extra_fiches(y)}</div></body></html>'''
     open(os.path.join(OUT, f"niveau-{y}.html"), "w", encoding="utf-8").write(html)
