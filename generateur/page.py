@@ -1079,6 +1079,7 @@ function renderActivite(n){
     el("h3",{text:"قبل وبعد"}), el("div",{class:"figpair"}, fig("avant", "قبل التنفيذ"), fig("apres", "بعد التنفيذ")),
     el("h3",{text:"النتيجة المنتظرة"}), el("p",{text:a.res}),
     el("h3",{text:"تحدٍّ إضافي"}), el("p",{class:"defi",text:a.defi}),
+    el("h3",{text:"نسخة مخففة"}), el("div",{class:"tip lightv"}, el("p",{class:"pnote",text:"للتلاميذ المحتاجين إلى مساعدة: مهمة مخففة تُنجز قبل النشاط الكامل أو بدلا منه."}), el("p",{text:a.light})),
     el("p",{class:"pnote",text:"الصور رسوم توضيحية أُنجزت لهذا الموقع (كتل سكراتش ومشهد المشروع)."}),
     el("div",{class:"btns actnav"}, doneBtn2, prev ? el("a",{class:"btn",href:"#activite-" + prev.n,text:"النشاط السابق"}) : null, el("a",{class:"btn main",href:"#activites-" + a.lvl,text:"كل الأنشطة"}), next ? el("a",{class:"btn",href:"#activite-" + next.n,text:"النشاط التالي"}) : null)));
   syncImgs(); updateProgress();

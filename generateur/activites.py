@@ -5,6 +5,7 @@ Données : activites_data1.py (niveaux 1-2, blocs), activites_data2.py (niveaux 
 activites_specs.py + activites_img.py (images des scripts et des scènes, générées dans fiches-activite/activites/).
 Chaque texte est un couple (français, arabe).
 export() -> (données JSON pour la page en arabe, dictionnaire arabe -> français)"""
+import activites_light as _lt
 import activites_data1 as d1, activites_data2 as d2, activites_data3 as d3, activites_help as hp
 ACTS = sorted(d1.ACTS1 + d1.ACTS2 + d2.ACTS3 + d2.ACTS4 + d2.ACTS5 + d3.ACTS55 + d3.ACTS6, key=lambda a: a["n"])
 IMG = "fiches-activite/activites/a{n}-{k}{s}.svg"
@@ -20,7 +21,7 @@ def export():
     blocks = {}
     for k, v in d1.BLOCKS.items():
         blocks[k] = [v[0], v[2], hp.HELP[k][1]]; fr[v[2]] = v[1]; fr[hp.HELP[k][1]] = hp.HELP[k][0]
-    acts = [dict(n=a["n"], lvl=a["lvl"], t=P(a["title"]), obj=P(a["obj"]), blocks=a["blocks"], steps=[P(s) for s in a["steps"]], res=P(a["result"]), defi=P(a["defi"]),
+    acts = [dict(n=a["n"], lvl=a["lvl"], t=P(a["title"]), obj=P(a["obj"]), blocks=a["blocks"], steps=[P(s) for s in a["steps"]], res=P(a["result"]), defi=P(a["defi"]), light=P(_lt.LIGHT[a["n"]]),
                  img={k: [IMG.format(n=a["n"], k=k, s=""), IMG.format(n=a["n"], k=k, s="-ar")] for k in ("script", "avant", "apres")}) for a in ACTS]
     title = P((f"Collection : {total} astuces et activités Scratch", f"مجموعة: {total} فكرة ونشاطا في سكراتش"))
     intro = P((f"{total} idées et activités classées en six niveaux, avec des projets créatifs et des activités liées au programme. Chaque activité a sa page détaillée : image du script, scène avant et après, rôle de chaque bloc.",
@@ -36,7 +37,7 @@ def export():
         *[(f"Niveau {i}", f"المستوى {i}") for i in range(1, 7)],
         ("Ces activités permettent aux élèves de combiner plusieurs astuces.", "تتيح هذه الأنشطة للتلاميذ الجمع بين عدة أفكار."),
         # case « Fait » et progression
-        ("Fait", "تم"), ("Fait ✓", "تم ✓"), ("Marquer comme fait", "علّم النشاط كمنجز"), ("Ta progression :", "تقدّمك:"), ("Effacer ma progression", "مسح تقدّمي"),
+        ("Version allégée", "نسخة مخففة"), ("Pour les élèves qui ont besoin d'une aide : une tâche réduite, à faire avant ou à la place de l'activité complète.", "للتلاميذ المحتاجين إلى مساعدة: مهمة مخففة تُنجز قبل النشاط الكامل أو بدلا منه."), ("Fait", "تم"), ("Fait ✓", "تم ✓"), ("Marquer comme fait", "علّم النشاط كمنجز"), ("Ta progression :", "تقدّمك:"), ("Effacer ma progression", "مسح تقدّمي"),
         ("Ta progression est enregistrée dans ce navigateur seulement.", "يُحفظ تقدّمك في هذا المتصفح فقط.")]:
         P(ui)
     return dict(levels=levels, blocks=blocks, acts=acts, total=total, title=title, intro=intro), fr
