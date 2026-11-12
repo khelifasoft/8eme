@@ -54,6 +54,14 @@ man["securite"], _sefr = _SE.export()
 import objets as _OB
 man["objets"], _obfr = _OB.export()
 for _k, _v in _obfr.items(): FR["map"].setdefault(_k, _v)
+import solutions as _SOL
+man["solutions"], _solfr = _SOL.export()
+_solfr.update({"عرض الحل": "Voir la solution", "أدخل الرمز لعرض الحل": "Saisis le code pour voir la solution.", "الرمز": "Code", "تأكيد": "Valider", "إغلاق": "Fermer",
+    "الرمز غير صحيح، حاول مرة أخرى.": "Code incorrect, essaie encore.", "حل الخطوة": "Solution de l'étape", "الكتل المطلوبة في هذه الخطوة:": "Blocs à utiliser pour cette étape :",
+    "الحل محمي برمز يعطيه الأستاذ.": "La solution est protégée par un code donné par l'enseignant."})
+for _k, _v in _solfr.items():
+    if FR["map"].get(_k, _v) != _v: print("traduction différente (solutions) :", repr(_k), "|", repr(FR["map"][_k]), "|", repr(_v))
+    FR["map"].setdefault(_k, _v)
 for _k, _v in _sefr.items(): FR["map"].setdefault(_k, _v)
 for _k, _v in _thfr.items():
     if FR["map"].get(_k, _v) != _v: print("traduction différente (théorie) :", repr(_k), "|", repr(FR["map"][_k]), "|", repr(_v))
@@ -1129,7 +1137,7 @@ function renderFiche(fid, key){
   const body = el("div",{class:"fiche"}, el("h2",{}, el("span",{text:"بطاقة النشاط: "}), el("span",{text:isC && s ? s.title : F.title})), el("p",{class:"pnote",text:F.meta}),
     el("p",{class:"pdfrow"}, el("a",{class:"btn main pdf-ar",href:pdfn + "-ar.pdf",target:"_blank",rel:"noopener",text:"طباعة البطاقة (PDF)"}), el("a",{class:"btn main pdf-fr",href:pdfn + "-fr.pdf",target:"_blank",rel:"noopener",text:"Imprimer la fiche (PDF)","data-nofr":""})),
     sec("الوضعية المشكلة", el("p",{class:"sit",text:F.situation})),
-    steps.length ? sec("مراحل اللعبة بالصور", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img_ar || st.img,"data-fr-src":st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:st.t}), st.c ? el("span",{text:st.c}) : null))))) : [],
+    steps.length ? sec("مراحل اللعبة بالصور", el("div",{class:"figgrid"}, steps.map((st, i) => el("figure",{}, el("img",{src:st.img_ar || st.img,"data-fr-src":st.img,alt:st.t,loading:"lazy"}), el("figcaption",{}, el("b",{text:st.t}), st.c ? el("span",{text:st.c}) : null, isC ? null : solModal(fid, i, st)))))) : [],
     sec("سير الحصة", li(F.steps)), sec("أنشطة التلميذ", li(F.eleve)), sec("معايير النجاح", li(F.criteres)),
     sec("التمايز", el("ul",{}, el("li",{}, el("b",{text:"التخفيف: "}), el("span",{text:F.allegee})), el("li",{}, el("b",{text:"التوسيع: "}), el("span",{text:F.prolongement})))),
     dl ? el("p",{}, dl, (DATA.ressources || {})[fid] ? resBtn(fid) : null) : null);

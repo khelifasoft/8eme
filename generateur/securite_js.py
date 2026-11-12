@@ -118,6 +118,25 @@ function actPuzzle(a){
   box.append(el("div",{class:"pzcols"}, el("div",{}, el("h5",{text:"الكتل"}), pal), el("div",{}, el("h5",{text:"مساحة العمل"}), ws)), el("div",{class:"btns pzbtns"}, go, tip, again), msg, out);
   reset(); return box;
 }
+// bouton « عرض الحل » sous chaque étape : modal protégé par un code (DATA.solutions.code), puis blocs de l'étape
+function solModal(fid, i, st){
+  const S = (DATA.solutions || {steps:{}}).steps[fid]; if (!S || !S[i]) return null;
+  const btn = el("button",{type:"button",class:"btn solbtn",text:"عرض الحل"});
+  btn.addEventListener("click", () => {
+    const close = () => { ov.remove(); document.removeEventListener("keydown", esc); }, esc = e => { if (e.key === "Escape") close(); };
+    const inp = el("input",{type:"password",class:"solin",placeholder:"الرمز",inputmode:"numeric",autocomplete:"off"}), err = el("p",{class:"solerr"});
+    const ok = el("button",{type:"button",class:"btn main",text:"تأكيد"}), x = el("button",{type:"button",class:"btn",text:"إغلاق"});
+    const card = el("div",{class:"solcard",role:"dialog","aria-modal":"true"});
+    const ask = () => card.replaceChildren(el("h3",{text:"عرض الحل"}), el("p",{class:"pnote",text:"أدخل الرمز لعرض الحل"}), inp, err, el("div",{class:"btns"}, ok, x));
+    const show = () => card.replaceChildren(el("h3",{}, el("span",{text:"حل الخطوة"}), " " + (i + 1) + " · ", el("span",{text:st.t})),
+      el("p",{class:"pnote"}, el("b",{text:S[i].sprite})), el("p",{class:"pnote",text:"الكتل المطلوبة في هذه الخطوة:"}), el("div",{class:"solcode"}, nestTokens(S[i].tok)), el("div",{class:"btns"}, x));
+    const go = () => { if (inp.value.trim() === String(DATA.solutions.code)) show(); else { err.replaceChildren(el("span",{text:"الرمز غير صحيح، حاول مرة أخرى."})); inp.select(); } };
+    ok.addEventListener("click", go); inp.addEventListener("keydown", e => { if (e.key === "Enter") go(); }); x.addEventListener("click", close);
+    const ov = el("div",{class:"solov"}, card); ov.addEventListener("click", e => { if (e.target === ov) close(); });
+    document.addEventListener("keydown", esc); ask(); document.body.append(ov); inp.focus();
+  });
+  return btn;
+}
 '''
 CSS = r'''
 
@@ -138,4 +157,9 @@ CSS = r'''
 .objshot{margin:6px 0;max-width:720px}.objshot img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
 .secseance{border:1px solid var(--line);border-radius:14px;padding:6px 16px 12px;margin:16px 0;background:#fbfcff}.secseance h3{margin:4px 0}.secseance h4{margin:12px 0 4px;color:#1e3a6e}
 .secvid video{width:100%;max-width:720px;border-radius:10px;background:#000;display:block}html[lang=fr] .v-ar,html:not([lang=fr]) .v-fr{display:none}
+.solbtn{margin:8px 0 0;font-size:.85rem;padding:5px 12px}
+.solov{position:fixed;inset:0;background:rgba(15,25,45,.55);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.solcard{background:#fff;color:#1d2433;border-radius:14px;padding:20px 22px;max-width:640px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.solcard h3{margin:0 0 8px;color:#1e4fa8}.solin{font:inherit;font-size:1.2rem;letter-spacing:.3em;text-align:center;border:2px solid #1e4fa8;border-radius:8px;padding:8px 12px;width:100%;box-sizing:border-box;margin:8px 0}
+.solerr{color:#b3261e;font-weight:700;min-height:1.3em;margin:0 0 6px}.solcode{background:#f3f7ff;border:1px solid #cfdcf5;border-radius:10px;padding:8px 14px;margin:8px 0 14px;overflow-x:auto}
 '''
