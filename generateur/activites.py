@@ -12,22 +12,26 @@ IMG = "fiches-activite/activites/a{n}-{k}{s}.svg"
 
 import activites_specs as _SPX
 def tokens(n, fr):
-    """script solution d'une activité aplati en jetons (ordre de lecture, avec profondeur) pour le puzzle « Construis le script » : [{c, t, d}] ; fr[ar] = fr enregistré"""
+    """script solution d'une activité aplati en jetons (ordre de lecture, avec profondeur) pour le puzzle « Construis le script » : [{c, k, t, d, (pre, cond, post)}] ; fr[ar] = fr"""
     sc = _SPX.SPECS[n]["script"]
     if n in (57, 61): sc = [sc[-1]]                     # activités « avant / après » : la solution est le dernier script
     out = []
-    def add(c, f, a, d): fr[a] = f; out.append(dict(c=c, t=a, d=d))
+    def add(c, k, f, a, d, **kw): fr[a] = f; out.append(dict(c=c, k=k, t=a, d=d, **kw))
+    def cond(k, pre, post, c, d, cd):
+        fr[pre[1]] = pre[0]; fr[cd[1]] = cd[0]
+        if post: fr[post[1]] = post[0]
+        out.append(dict(c="ct", k=k, t=pre[1] + " " + cd[1] + (" " + post[1] if post else ""), d=d, pre=pre[1], cond=cd[1], post=post[1] if post else ""))
     def walk(items, d):
         for it in items:
             if isinstance(it, list): walk(it, d); continue
             k = it[0]
-            if k == "B": b = d1.BLOCKS[it[1]]; add(b[0], it[2] or b[1], it[3] or b[2], d)
-            elif k == "F": add("ct", "répéter indéfiniment", "كرّر باستمرار", d); walk(it[1], d + 1)
-            elif k == "R": add("ct", f"répéter {it[1]} fois", f"كرّر {it[1]} مرات", d); walk(it[2], d + 1)
-            elif k == "IF": add("ct", f"si {it[1][0]} alors", f"إذا {it[1][1]} فإن", d); walk(it[2], d + 1)
-            elif k == "IFE": add("ct", f"si {it[1][0]} alors", f"إذا {it[1][1]} فإن", d); walk(it[2], d + 1); add("ct", "sinon", "وإلا", d); walk(it[3], d + 1)
-            elif k == "U": add("ct", f"répéter jusqu'à ce que {it[1][0]}", f"كرّر حتى {it[1][1]}", d); walk(it[2], d + 1)
-            elif k == "WU": add("ct", f"attendre jusqu'à ce que {it[1][0]}", f"انتظر حتى {it[1][1]}", d)
+            if k == "B": b = d1.BLOCKS[it[1]]; add(b[0], it[1], it[2] or b[1], it[3] or b[2], d)
+            elif k == "F": add("ct", "forever", "répéter indéfiniment", "كرّر باستمرار", d); walk(it[1], d + 1)
+            elif k == "R": add("ct", "repeat", f"répéter {it[1]} fois", f"كرّر {it[1]} مرات", d); walk(it[2], d + 1)
+            elif k == "IF": cond("if", ("si", "إذا"), ("alors", "فإن"), "ct", d, it[1]); walk(it[2], d + 1)
+            elif k == "IFE": cond("ifelse", ("si", "إذا"), ("alors", "فإن"), "ct", d, it[1]); walk(it[2], d + 1); add("ct", "else", "sinon", "وإلا", d); walk(it[3], d + 1)
+            elif k == "U": cond("until", ("répéter jusqu'à ce que", "كرّر حتى"), None, "ct", d, it[1]); walk(it[2], d + 1)
+            elif k == "WU": cond("waituntil", ("attendre jusqu'à ce que", "انتظر حتى"), None, "ct", d, it[1])
     walk(sc, 0)
     return out
 
