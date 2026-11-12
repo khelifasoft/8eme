@@ -135,7 +135,7 @@ MAP = [  # carte du cours (résumé de la mind map) : risque, de quoi s'agit-il,
 UI = dict(title=COURSE_TITLE, intro=INTRO, map=("La carte du cours", "خريطة الدرس"), risk=("Risque", "الخطر"), what=("De quoi s'agit-il ?", "ما هو؟"), protect=("Comment se protéger ?", "كيف نحمي أنفسنا؟"),
           obj=("Objectif", "الهدف"), cas=("Cas d'introduction (fictif)", "حالة الانطلاق (خيالية)"), video=("Vidéo explicative", "فيديو توضيحي"), act=("Activité", "النشاط"), trace=("Trace écrite", "الأثر المكتوب"),
           fiche=("Fiche du cahier de l'élève", "مذكرة دفتر التلميذ"), plan=("Démarche de la séance (planning 8e)", "سير الحصة (تخطيط السنة الثامنة)"), sean=("Séance", "الحصة"), back=("Environnement informatique de travail", "بيئة العمل المعلوماتية"),
-          note=("Précautions : cas fictifs uniquement, aucun logiciel malveillant réel, aucun mot de passe personnel saisi en classe. Voix de synthèse ; proposition non officielle.", "احتياطات: حالات خيالية فقط، لا برنامج خبيث حقيقي، ولا إدخال كلمة سرّ شخصية في القسم. الصوت اصطناعي؛ اقتراح غير رسمي."),
+          note=("Précautions : cas fictifs uniquement, aucun logiciel malveillant réel, aucun mot de passe personnel saisi en classe. Vidéos silencieuses (légendes à l'écran) ; proposition non officielle.", "احتياطات: حالات خيالية فقط، لا برنامج خبيث حقيقي، ولا إدخال كلمة سرّ شخصية في القسم. الفيديوهات صامتة (شروح مكتوبة)؛ اقتراح غير رسمي."),
           box=("Cours « Sécurité informatique » en 4 séances", "درس «أمن المعلوميات» في 4 حصص"), boxn=("Menaces et protection : cas d'introduction, vidéos explicatives, activités et fiches du cahier.", "التهديدات والحماية: حالات انطلاق وفيديوهات توضيحية وأنشطة ومذكرات دفتر."), open=("Ouvrir le cours", "فتح درس الأمن"))
 def export():
     from theorie_core import P, FRM

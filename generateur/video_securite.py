@@ -1,4 +1,4 @@
-"""Vidéos explicatives du cours « Sécurité informatique » : videos/securite/securite-<n>-{ar,fr}.mp4 (1280 x 720, une image par scène avec légende et voix de synthèse eSpeak NG).
+"""Vidéos explicatives du cours « Sécurité informatique » : videos/securite/securite-<n>-{ar,fr}.mp4 (1280 x 720, une image par scène avec légende et sans voix, légendes à l'écran).
 Scènes et textes : securite.py (champ video). Usage : python3 generateur/video_securite.py   (requiert espeak-ng, ffmpeg, Node et Playwright)"""
 import os, sys, json, subprocess, tempfile, html
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); sys.path.insert(0, HERE)
@@ -28,7 +28,7 @@ def main():
             for i, (emoji, cap, narr) in enumerate(d["video"]):
                 base = os.path.join(tmp, f"{key}-{lang}-{i}")
                 open(base + ".html", "w", encoding="utf-8").write(slide(key, lang, i, n, emoji, cap[li], narr[li], f'{SE.COURSE_TITLE[li]} · {"الحصة" if lang == "ar" else "Séance"} {key[1]}'))
-                subprocess.run(["espeak-ng", *VOICE[lang], "-w", base + ".wav", narr[li]], check=True)
+                open(base + ".dur", "w").write(str(max(5.0, 0.42 * len(narr[li].split())) + 1.0))
                 jobs.append(dict(html=base + ".html", png=base + ".png"))
             plan.append((key, lang, n))
     js = os.path.join(tmp, "shots.js")
@@ -38,8 +38,8 @@ def main():
         parts = []
         for i in range(n):
             base = os.path.join(tmp, f"{key}-{lang}-{i}"); out = base + ".mp4"
-            dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", base + ".wav"]).decode()) + 1.2
-            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-loop", "1", "-framerate", "10", "-i", base + ".png", "-i", base + ".wav", "-af", "apad", "-t", f"{dur:.2f}", "-c:v", "libx264", "-tune", "stillimage", "-crf", "30", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "64k", "-ar", "44100", "-ac", "1", out], check=True)
+            dur = float(open(base + ".dur").read())
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-loop", "1", "-framerate", "10", "-i", base + ".png", "-t", f"{dur:.2f}", "-an", "-c:v", "libx264", "-tune", "stillimage", "-crf", "30", "-pix_fmt", "yuv420p", out], check=True)
             parts.append(out)
         lst = os.path.join(tmp, f"{key}-{lang}.txt"); open(lst, "w").write("".join(f"file '{p}'\n" for p in parts))
         final = os.path.join(OUT, f"securite-{key[1]}-{lang}.mp4")
