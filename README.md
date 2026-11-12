@@ -222,3 +222,5 @@ Page `#securite` (accessible depuis le menu de la 8e, la carte de la 8e sur l'ac
 - **Puzzle « Construis le script »** : les blocs gardent la forme de Scratch 3 (chapeau arrondi, encoche/ergot, blocs en C emboîtés pour répéter/si/sinon, condition hexagonale, couleurs par catégorie).
 
 - **Solutions des étapes** (fiches des jeux catch/course/saut/labyrinthe) : bouton « Solution » sous chaque étape, modal protégé par un code (`CODE` dans `generateur/solutions.py`, `123` par défaut) puis blocs de l’étape. Le code est vérifié côté navigateur : il écarte les élèves curieux, ce n’est pas une sécurité.
+
+- **Export vers la nouvelle application** (8e année seulement) : `python3 generateur/export_nextjs.py ../8eme-nextjs-postgres` écrit le contenu bilingue (`content/public`), les solutions (`content/private`) et les images dans le dépôt [8eme-nextjs-postgres](https://github.com/khelifasoft/8eme-nextjs-postgres).
