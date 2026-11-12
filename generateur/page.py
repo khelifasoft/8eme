@@ -51,6 +51,9 @@ FR["map"].update(_pfr2)
 import theorie as _TH, theorie_js as _TH_JS, securite as _SE, securite_js as _SE_JS
 man["theorie"], _thfr = _TH.export()
 man["securite"], _sefr = _SE.export()
+import objets as _OB
+man["objets"], _obfr = _OB.export()
+for _k, _v in _obfr.items(): FR["map"].setdefault(_k, _v)
 for _k, _v in _sefr.items(): FR["map"].setdefault(_k, _v)
 for _k, _v in _thfr.items():
     if FR["map"].get(_k, _v) != _v: print("traduction différente (théorie) :", repr(_k), "|", repr(FR["map"][_k]), "|", repr(_v))

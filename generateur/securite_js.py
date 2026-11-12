@@ -23,6 +23,12 @@ function renderSecurite(){
 '''
 JS += r'''
 // ---- page « Programmation » de la 9e : objet programmable (micro:bit) et application mobile (App Inventor), à la place de Scratch
+function objBlock(k){
+  const O = DATA.objets, u = O.ui, a = O.items[k]; if (!a) return null;
+  return el("div",{class:"objblock"}, el("h4",{text:u.act}), el("p",{}, el("b",{text:a.t})), el("ol",{class:"bigsteps"}, a.steps.map(t => el("li",{text:t}))), el("p",{class:"tip"}, el("b",{text:u.res}), " : ", a.res),
+    el("h4",{text:u.video}), el("div",{class:"secvid"}, el("video",{class:"v-ar",controls:"",preload:"none",src:a.video.ar}), el("video",{class:"v-fr",controls:"",preload:"none",src:a.video.fr})),
+    el("h4",{text:u.files}), el("p",{class:"pnote",text:k[0] === "M" ? u.inzip_m : u.inzip_a}), el("p",{}, el("a",{class:"btn main",href:a.zip,download:k + ".zip",text:u.zip})));
+}
 function renderNeuf(){
   const s = $("#neuf"), ex = DATA.planning.years["9"].extra || [];
   const group = (title, items) => [el("h2",{text:title}), items.map(x => el("section",{class:"secseance"}, el("div",{class:"acthead"}, el("span",{class:"badge pj",text:x.s}), el("h3",{text:x.t})),
@@ -30,9 +36,10 @@ function renderNeuf(){
     el("details",{class:"step seanc"}, el("summary",{text:"سير الحصة (تخطيط السنة التاسعة)"}), el("table",{class:"sctable phases"}, el("thead",{}, el("tr",{}, el("th",{text:"المرحلة"}), el("th",{text:"المدة"}), el("th",{text:"الوصف"}))),
       el("tbody",{}, x.phases.map(p => el("tr",{}, el("td",{text:p.t}), el("td",{class:"n"}, p.min + " ", el("span",{text:"د"})), el("td",{text:p.d})))))),
     el("p",{}, el("b",{text:"الأثر المكتوب"}), " : ", x.trace),
-    el("p",{class:"btns"}, el("a",{class:"btn main",href:`cahier/cahier-9.html#s${x.s}`,target:"_blank",rel:"noopener",text:"مذكرة الدفتر لهذه الحصة"}), el("a",{class:"btn",href:"#planning-9",text:"تخطيط الحصص"}))))];
+    objBlock(x.s),
+    el("p",{class:"btns"}, el("a",{class:"btn main",href:`cahier/cahier-9.html#s${x.s}`,target:"_blank",rel:"noopener",text:"مذكرة الدفتر لهذه الحصة"}))))];
   s.replaceChildren(...[el("p",{class:"lead",text:"في السنة التاسعة تُبرمج أشياء حقيقية أو محاكاة وتُطوَّر تطبيقات هاتف بسيطة (المساعدة البيداغوجية 2026). لكل موضوع أربع حصص: من الاكتشاف إلى المشروع الصغير."}),
-    group("الشيء القابل للبرمجة (micro:bit)", ex.filter(x => x.s[0] === "M")), group("تطبيقة الهاتف (App Inventor)", ex.filter(x => x.s[0] === "A"))].flat(Infinity));
+    group("الشيء القابل للبرمجة (micro:bit)", ex.filter(x => x.s[0] === "M")), group("تطبيقة الهاتف (App Inventor)", ex.filter(x => x.s[0] === "A")), el("p",{class:"pnote",text:DATA.objets.ui.note})].flat(Infinity));
 }
 '''
 CSS = r'''
