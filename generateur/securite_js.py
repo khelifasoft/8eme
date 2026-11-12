@@ -69,7 +69,42 @@ function renderObjet(k){
   syncImgs();
 }
 '''
+JS += r'''
+// ---- activités Scratch (8e) : « Construis le script » façon code.org — on place les blocs dans l'ordre, puis « Démarrer »
+const PZ = {};
+function actPuzzle(a){
+  const toks = a.tok, n = toks.length, T = a.tok.map((t, i) => Object.assign({id:i}, t));
+  const box = el("section",{class:"pz"}, el("h3",{text:"جرّب: ركّب السكربت"}), el("p",{class:"pnote",text:"اضغط على الكتل لوضعها في مساحة العمل بالترتيب الصحيح ثم على «ابدأ»."}));
+  const pal = el("div",{class:"pzpal"}), ws = el("div",{class:"pzws"}), msg = el("p",{class:"thfb"}), out = el("div",{class:"pzout"});
+  let mine = [], order = []; const reset = () => { mine = []; order = thShuffle(T.map(t => t.id)); out.replaceChildren(); msg.replaceChildren(); msg.className = "thfb"; draw(); };
+  const chip = (t, extra) => el("button",{type:"button",class:"blk " + t.c + " pzb" + (extra || ""),text:t.t});
+  function draw(hint){
+    pal.replaceChildren(...order.filter(i => !mine.includes(i)).map(i => { const b = chip(T[i]); if (hint === i) b.classList.add("hint"); b.addEventListener("click", () => { mine.push(i); msg.replaceChildren(); draw(); }); return b; }));
+    ws.replaceChildren(...mine.map((i, k) => { const b = chip(T[i]); b.addEventListener("click", () => { mine.splice(k, 1); msg.replaceChildren(); draw(); }); return b; }));
+    if (!mine.length) ws.append(el("span",{class:"pnote",text:"مساحة العمل"}));
+  }
+  const go = el("button",{type:"button",class:"btn main",text:"ابدأ"}), again = el("button",{type:"button",class:"btn",text:"أعد البداية"}), tip = el("button",{type:"button",class:"btn",text:"تلميح"});
+  tip.addEventListener("click", () => { let k = 0; while (k < mine.length && T[mine[k]].t === T[k].t) k++; draw(k < n ? order.find(i => !mine.includes(i) && T[i].t === T[k].t) : undefined); });
+  again.addEventListener("click", reset);
+  go.addEventListener("click", () => {
+    let ok = 0; while (ok < mine.length && T[mine[ok]].t === T[ok].t) ok++;
+    if (mine.length === n && ok === n) {
+      msg.className = "thfb ok"; msg.replaceChildren(el("b",{text:"أحسنت! السكربت يعمل: شاهد النتيجة."}));
+      const sc = el("div",{class:"pznest"}, T.map(t => el("div",{class:"pznb",style:"margin-inline-start:" + (t.d * 22) + "px"}, chip(t))));
+      out.replaceChildren(sc, el("div",{class:"pzanim"}, thImg(a.img.avant, a.t), thImg(a.img.apres, a.t)));
+      syncImgs(); if (!Done.has(a.n)) Done.toggle(a.n); updateProgress();
+    } else {
+      msg.className = "thfb ko"; out.replaceChildren();
+      const why = mine.length === 0 ? "" : mine.length < n && ok === mine.length ? "تنقصك كتل." : mine.length > n ? "توجد كتلة زائدة." : "";
+      msg.replaceChildren(el("b",{text:"ليس بعد: "}), ok + " ", el("span",{text:"كتل في مكانها الصحيح في البداية"}), why ? [" · ", el("span",{text:why})] : null, mine.length === 0 || T[mine[0]].t !== T[0].t ? [" · ", el("span",{text:"ضع أولا كتلة الحدث (القبعة)."})] : null);
+    }
+  });
+  box.append(el("div",{class:"pzcols"}, el("div",{}, el("h5",{text:"الكتل"}), pal), el("div",{}, el("h5",{text:"مساحة العمل"}), ws)), el("div",{class:"btns pzbtns"}, go, tip, again), msg, out);
+  reset(); return box;
+}
+'''
 CSS = r'''
+.pz{border:2px solid #1e4fa8;border-radius:14px;padding:6px 16px 12px;margin:14px 0;background:#f7faff}.pzcols{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.pzcols{grid-template-columns:1fr}}.pzpal,.pzws{min-height:120px;border:1.5px dashed #9aa5b8;border-radius:10px;padding:8px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;background:#fff}.pzws{border-style:solid;border-color:#3f7ee0}.pzb{border:0;cursor:pointer;font:inherit;font-size:14px;text-align:start}.pzb.hint{outline:3px solid #ffd43b}.pznb{display:block}.pzout{margin-top:8px}.pzanim{position:relative;max-width:420px;margin-top:8px}.pzanim img{width:100%;display:block;border:1px solid var(--line);border-radius:8px}.pzanim img:last-child{position:absolute;inset:0;animation:pzfade 3s ease-in-out infinite alternate}@keyframes pzfade{0%,30%{opacity:0}70%,100%{opacity:1}}
 .objshot{margin:6px 0;max-width:720px}.objshot img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
 .secseance{border:1px solid var(--line);border-radius:14px;padding:6px 16px 12px;margin:16px 0;background:#fbfcff}.secseance h3{margin:4px 0}.secseance h4{margin:12px 0 4px;color:#1e3a6e}
 .secvid video{width:100%;max-width:720px;border-radius:10px;background:#000;display:block}html[lang=fr] .v-ar,html:not([lang=fr]) .v-fr{display:none}
