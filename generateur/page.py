@@ -57,7 +57,9 @@ for _k, _v in _thfr.items():
     FR["map"].setdefault(_k, _v)
 FR["rules"] += [["^ح(\\d+)$", "S$1"], ["^(.+) · ح(\\d+)$", "$1 · S$2"]]   # numéros de séance : ح22 -> S22
 FR["map"].update({"⬇ تثبيت سكراتش على الحاسوب": "⬇ Installer Scratch sur l'ordinateur", "⬇ تثبيت سكراتش على Windows": "⬇ Installer Scratch pour Windows", "⬇ تثبيت سكراتش على macOS": "⬇ Installer Scratch pour macOS", "مقترح لنظامك": "Conseillé pour ton système", "⬇ اختصار هذا الموقع على سطح المكتب": "⬇ Raccourci de ce site sur le bureau", "تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance",
- "حصص مقترحة إضافية: الشيء القابل للبرمجة وتطبيقة الهاتف": "Séances complémentaires proposées : objet programmable et application mobile", "اقتراح غير رسمي (المساعدة البيداغوجية 2026): أربع حصص حول بطاقة micro:bit (اكتشاف، مدخلات ومخرجات، قياس وقرار وفعل، مشروع النرد) ثم أربع حصص حول تطبيقة هاتف بـ App Inventor (الواجهة، الأحداث، الاختبار والتوليد، التحكم في البطاقة). لكل حصة مذكرة في آخر مذكرات 9.": "Proposition non officielle (aide pédagogique 2026) : quatre séances sur la carte micro:bit (découvrir, entrées et sorties, mesurer-décider-agir, mini-projet dé électronique) puis quatre sur une application mobile App Inventor (interface, événements, test et génération, commander la carte). Chaque séance a sa fiche à la fin du cahier 9e.", "حصص إضافية مقترحة (المساعدة البيداغوجية 2026)": "Séances complémentaires proposées (aide pédagogique 2026)", "الشيء القابل للبرمجة (micro:bit) وتطبيقة الهاتف (App Inventor). اقتراح غير رسمي خارج التوزيع السنوي: يُدرج مكان حصص مراجعة أو في مشروع.": "Objet programmable (micro:bit) et application mobile (App Inventor). Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet.", "مذكرات الدفتر": "Fiches du cahier", "طباعة البطاقة (PDF)": "Imprimer la fiche (PDF)", "مذكرات الدفتر (للطباعة)": "Fiches du cahier (à imprimer)", "مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)": "Fiches du cahier (à imprimer et à coller dans le cahier de l'élève)",
+ "حصص مقترحة إضافية: الشيء القابل للبرمجة وتطبيقة الهاتف": "Séances complémentaires proposées : objet programmable et application mobile", "اقتراح غير رسمي (المساعدة البيداغوجية 2026): أربع حصص حول بطاقة micro:bit (اكتشاف، مدخلات ومخرجات، قياس وقرار وفعل، مشروع النرد) ثم أربع حصص حول تطبيقة هاتف بـ App Inventor (الواجهة، الأحداث، الاختبار والتوليد، التحكم في البطاقة). لكل حصة مذكرة في آخر مذكرات 9.": "Proposition non officielle (aide pédagogique 2026) : quatre séances sur la carte micro:bit (découvrir, entrées et sorties, mesurer-décider-agir, mini-projet dé électronique) puis quatre sur une application mobile App Inventor (interface, événements, test et génération, commander la carte). Chaque séance a sa fiche à la fin du cahier 9e.", "حصص إضافية مقترحة (المساعدة البيداغوجية 2026)": "Séances complémentaires proposées (aide pédagogique 2026)", "الشيء القابل للبرمجة (micro:bit) وتطبيقة الهاتف (App Inventor). اقتراح غير رسمي خارج التوزيع السنوي: يُدرج مكان حصص مراجعة أو في مشروع.": "Objet programmable (micro:bit) et application mobile (App Inventor). Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet.", "الشيء القابل للبرمجة (micro:bit)": "Objet programmable (micro:bit)", "تطبيقة الهاتف (App Inventor)": "Application mobile (App Inventor)",
+ "في السنة التاسعة تُبرمج أشياء حقيقية أو محاكاة وتُطوَّر تطبيقات هاتف بسيطة (المساعدة البيداغوجية 2026). لكل موضوع أربع حصص: من الاكتشاف إلى المشروع الصغير.": "En 9e, on programme des objets réels ou simulés et on développe des applications mobiles simples (aide pédagogique 2026). Chaque thème a quatre séances : de la découverte au mini-projet.",
+ "سير الحصة (تخطيط السنة التاسعة)": "Démarche de la séance (planning 9e)", "مذكرات الدفتر": "Fiches du cahier", "طباعة البطاقة (PDF)": "Imprimer la fiche (PDF)", "مذكرات الدفتر (للطباعة)": "Fiches du cahier (à imprimer)", "مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)": "Fiches du cahier (à imprimer et à coller dans le cahier de l'élève)",
  "فتح المذكرات للطباعة": "Ouvrir les fiches (impression)", "PDF بالعربية": "PDF en arabe", "PDF en français": "PDF en français", "PDF بالعربية مع الإجابات": "PDF en arabe avec corrigé", "PDF avec corrigé": "PDF en français avec corrigé", "مذكرة الدفتر لهذه الحصة": "Fiche du cahier pour cette séance",
  "ورقة A4 لكل حصة: جمل ناقصة، أثر مكتوب للإتمام، وسكربت نصف منجز يُنهى في القسم.": "Une feuille A4 par séance : phrases à trous, trace écrite à compléter et script à moitié terminé à finir en classe.",
  "لكل حصة برمجة ورقة واحدة بحجم A4: جمل ناقصة للإتمام، والأثر المكتوب (جدول أو مخطط أو بطاقة)، وسكربت نصف منجز يُنهيه التلاميذ في القسم، وما يجب حفظه. تُطبع الأجزاء الفارغة، ويمكن عرض الإجابات للأستاذ. اقتراح غير رسمي قابل للتعديل.": "Une feuille A4 par séance de programmation : phrases à trous à compléter, trace écrite (tableau, schéma ou carte), script à moitié terminé que les élèves finissent en classe, et ce qu'il faut retenir. Les parties vides s'impriment ; l'enseignant peut afficher le corrigé. Proposition non officielle, à adapter."})
@@ -392,6 +394,7 @@ a.chip{text-decoration:none;color:inherit}a.chip[aria-pressed=true]{color:#fff}
 </div>
 <div id="pool" hidden>
 <section id="theory"></section>
+<section id="neuf"></section>
 <section id="stories">
   <h2>اختر قصتك</h2>
   <p class="lead">لكل قصة ورقة مشروع، ومشروع سكراتش جاهز، وحزمة واحدة تجمع كل ما تحتاجه.</p>
@@ -845,7 +848,7 @@ function renderHome(){
 }
 renderHome();
 // ressources proposées dans chaque axe
-const RES = {"7-prog":["theory","stories"], "8-prog":["games"], "9-prog":["games"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
+const RES = {"7-prog":["theory","stories"], "8-prog":["games"], "9-prog":["neuf"], "7-create":["library","sources"], "8-create":["library","videos","sources"], "7-net":["sources"]};
 const RESCAT = {"7-create":"personnages", "8-create":"sons"};
 function park(){ ["#resArea","#storyRes"].forEach(sl => [...$(sl).children].forEach(n => { if (n.classList && n.classList.contains("tmp")) n.remove(); else if (n.classList && n.classList.contains("libwrap")) { [...n.children].filter(c => c.id).forEach(c => $("#pool").append(c)); n.remove(); } else $("#pool").append(n); })); }
 function quiz(list){
@@ -942,6 +945,7 @@ function renderAxis(y, k){
   if (lw) res.append(lw);
   list.forEach(id => (lw || res).append($("#" + id)));
   if (list.includes("theory")) renderTheorySection();
+  if (list.includes("neuf")) renderNeuf();
   if (k === "prog" && ["7","8","9"].includes(y)) res.append(cahierBox(y));
   if (k === "env" && y === "8") res.append(secBox());
   if (list.includes("library")) {
