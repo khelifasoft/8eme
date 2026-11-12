@@ -201,7 +201,7 @@ La voix de synthèse est robotique. Pour une vraie voix, ouvrir un lutin dans Sc
 
 Ouvrir un fichier dans le navigateur, puis imprimer en A4 portrait.
 
-**Planning 9e : séances complémentaires** — les six séances micro:bit / App Inventor (`generateur/cahier_extra.py`) apparaissent à la suite des 14 séances de `#planning-9`, sous « Séances complémentaires proposées », avec démarche de 60 minutes et lien vers leur fiche du cahier. Proposition non officielle, hors carte des notions.
+**Planning 9e : séances complémentaires** — les huit séances micro:bit (4) puis App Inventor (4) (`generateur/cahier_extra.py`) apparaissent à la suite des 14 séances de `#planning-9`, sous « Séances complémentaires proposées », avec démarche de 60 minutes et lien vers leur fiche du cahier. Proposition non officielle, hors carte des notions.
 
 ## Cours « Sécurité informatique » (8e année, 4 séances)
 

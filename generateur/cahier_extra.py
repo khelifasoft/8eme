@@ -1,5 +1,5 @@
 """Séances complémentaires proposées pour la 9e (aide pédagogique 2026) : objet programmable (type BBC micro:bit) et application mobile (App Inventor).
-Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet. 3 + 3 séances de 60 minutes, une fiche du cahier chacune.
+Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet. 4 + 4 séances de 60 minutes, une fiche du cahier chacune.
 EXTRA[clé] : title, obj, trace, acq, fill, form, retain (couples (français, arabe), {{mot}} = trou)."""
 from cahier_data import *
 def ROWS(*r): return [list(x) for x in r]
@@ -74,6 +74,28 @@ EXTRA = {
   acq=[("Je sais tester puis générer une application mobile simple.", "أستطيع اختبار تطبيقة هاتف بسيطة ثم توليدها.")]),
 }
 
+
+EXTRA["M4"] = dict(title=("Mini-projet micro:bit : le dé électronique", "مشروع صغير بـ micro:bit: النرد الإلكتروني"),
+  obj=("Concevoir, programmer et tester un petit objet : secouer la carte pour afficher un nombre au hasard.", "تصميم شيء صغير وبرمجته واختباره: هزّ البطاقة لعرض عدد عشوائي."),
+  trace=("Cahier des charges et tests du mini-projet", "كراس شروط المشروع الصغير واختباراته"),
+  fill=[("Un projet se réalise en étapes : {{concevoir}}, {{programmer}}, {{tester}}, {{présenter}}.", "ينجز المشروع على مراحل: {{التصميم}}، {{البرمجة}}، {{الاختبار}}، {{العرض}}."),
+        ("Secouer la carte est un {{événement}} ; le nombre affiché est la {{sortie}}.", "هزّ البطاقة {{حدث}}؛ والعدد المعروض هو {{المخرج}}.")],
+  form=[CARD([(("Mon objet", "شيئي"), ("{{un dé électronique}}", "{{نرد إلكتروني}}"), 1), (("Entrée (capteur)", "المدخل (الملتقط)"), ("{{l'accéléromètre : la secousse}}", "{{مقياس التسارع: الاهتزاز}}"), 1),
+             (("Traitement", "المعالجة"), ("{{choisir un nombre au hasard entre 1 et 6}}", "{{اختيار عدد عشوائي بين 1 و6}}"), 1), (("Sortie (actionneur)", "المخرج (المحرّك)"), ("{{afficher le nombre sur les LED}}", "{{عرض العدد على الصمّامات}}"), 1)], w=(1, 2.4)),
+   T([("Test", "الاختبار"), ("Résultat attendu", "النتيجة المنتظرة"), ("Résultat obtenu", "النتيجة المحصَّلة"), ("Correction", "التصحيح")], ROWS([("Je secoue 1 fois", "أهزّ مرة واحدة"), ("{{un nombre de 1 à 6}}", "{{عدد من 1 إلى 6}}"), None, None], [None] * 4, [None] * 4), w=(4, 5, 4, 4))],
+  retain=[("Je teste plusieurs fois : le hasard ne donne pas toujours la même valeur.", "أختبر عدة مرات: العشوائية لا تعطي القيمة نفسها دائما.")],
+  acq=[("Je sais réaliser et tester un petit objet programmable.", "أستطيع إنجاز شيء صغير قابل للبرمجة واختباره.")])
+EXTRA["A4"] = dict(title=("Mini-projet : commander la carte depuis une application mobile", "مشروع صغير: التحكم في البطاقة من تطبيقة هاتف"),
+  obj=("Connecter une application mobile à un objet (réel ou simulé) et le commander avec des boutons.", "ربط تطبيقة هاتف بشيء (حقيقي أو محاكى) والتحكم فيه بأزرار."),
+  trace=("Schéma de communication et plan de test", "مخطط الاتصال وخطة الاختبار"),
+  fill=[("L'application et la carte communiquent par {{Bluetooth}} ; l'application envoie une {{commande}}.", "تتواصل التطبيقة والبطاقة عبر {{البلوتوث}}؛ وترسل التطبيقة {{أمرا}}."),
+        ("Je distingue l'{{interface}} de communication (matériel) de la {{technologie}} utilisée (Bluetooth, Wi-Fi, radio).", "أميّز {{واجهة}} الاتصال (عتاد) عن {{التقنية}} المستعملة (بلوتوث، Wi-Fi، راديو).")],
+  form=[T([("Élément", "العنصر"), ("Rôle", "الدور")], ROWS([("Application mobile", "تطبيقة الهاتف"), ("{{envoie la commande (bouton Allumer / Éteindre)}}", "{{ترسل الأمر (زر تشغيل / إطفاء)}}")], [("Liaison Bluetooth", "رابط البلوتوث"), ("{{transmet le message entre le téléphone et la carte}}", "{{ينقل الرسالة بين الهاتف والبطاقة}}")],
+        [("Carte micro:bit", "بطاقة micro:bit"), ("{{reçoit la commande et allume ou éteint les LED}}", "{{تستلم الأمر وتشغّل الصمّامات أو تطفئها}}")]), w=(4, 9), first=True),
+   T([("Test", "الاختبار"), ("Résultat attendu", "النتيجة المنتظرة"), ("Résultat obtenu", "النتيجة المحصَّلة")], ROWS([("Je touche « Allumer »", "ألمس «تشغيل»"), ("{{les LED s'allument}}", "{{تُضاء الصمّامات}}"), None], [None] * 3, [None] * 3), w=(4, 5, 5))],
+  retain=[("Sans matériel, je teste la commande sur le simulateur ou avec une application existante.", "عند غياب العتاد أختبر الأمر على المحاكي أو بتطبيقة جاهزة.")],
+  acq=[("Je sais commander un objet à partir d'une application mobile.", "أستطيع التحكم في شيء انطلاقا من تطبيقة هاتف.")])
+
 # ----------------------------------------------------------------------------- démarche détaillée de chaque séance (60 minutes) : (titre, minutes, description), couples (français, arabe)
 R_, S_, D_, E_, M_ = (("Rappel", "تذكير"), ("Situation déclenchante", "وضعية الانطلاق"), ("Découverte guidée", "اكتشاف موجَّه"), ("Entraînement différencié", "تدريب متمايز"), ("Mise en commun et trace écrite", "المقاسمة والأثر المكتوب"))
 PHASES = {
@@ -108,6 +130,17 @@ PHASES = {
         (E_, 20, ("Les élèves remplissent le journal de test (trois essais), corrigent une erreur trouvée, puis cochent les étapes de génération. Allégée : tests donnés ; défi : proposer une amélioration de l'interface.", "يملأ التلاميذ سجل الاختبار (ثلاث تجارب) ويصحّحون خطأ وجدوه ثم يؤشّرون على مراحل التوليد. مخففة: اختبارات معطاة؛ تحدٍّ: اقتراح تحسين للواجهة.")),
         (M_, 10, ("Chaque groupe présente son application en une minute et dit une chose réussie et une à améliorer. Compléter la trace écrite.", "يعرض كل فوج تطبيقته في دقيقة ويذكر نقطة نجاح وأخرى للتحسين. إتمام الأثر المكتوب."))],
 }
+
+PHASES["M4"] = [(R_, 5, ("Rappeler la chaîne mesurer, décider, agir et les blocs « quand ».", "التذكير بسلسلة القياس والقرار والفعل وكتل «عند».")),
+  (S_, 10, ("Besoin : remplacer le dé d'un jeu de société perdu. Faire écrire le cahier des charges : entrée, traitement, sortie.", "حاجة: تعويض نرد لعبة جماعية ضائع. كتابة كراس الشروط: المدخل والمعالجة والمخرج.")),
+  (D_, 15, ("Construire avec l'enseignant « quand la carte est secouée → choisir un nombre au hasard entre 1 et 6 → l'afficher » sur le simulateur.", "البناء مع الأستاذ «عند هزّ البطاقة ← اختر عددا عشوائيا بين 1 و6 ← اعرضه» على المحاكي.")),
+  (E_, 20, ("Les élèves complètent la fiche, programment et testent plusieurs fois. Allégée : afficher toujours le même nombre puis ajouter le hasard ; défi : deux dés, ou un son à chaque lancer.", "يُكمل التلاميذ المذكرة ويبرمجون ويختبرون عدة مرات. مخففة: عرض العدد نفسه ثم إضافة العشوائية؛ تحدٍّ: نردان أو صوت عند كل رمية.")),
+  (M_, 10, ("Chaque binôme présente son dé en 1 minute et dit ce qu'il a testé. Compléter la trace écrite.", "يعرض كل ثنائي نرده في دقيقة ويذكر ما اختبره. إتمام الأثر المكتوب."))]
+PHASES["A4"] = [(R_, 5, ("Rappeler les composants, les événements et la différence entre objet communicant et objet connecté.", "التذكير بالمكوّنات والأحداث والفرق بين الشيء المتواصل والشيء المتصل.")),
+  (S_, 10, ("Besoin : allumer la carte à distance avec un téléphone. Faire dessiner qui envoie quoi à qui (application, Bluetooth, carte).", "حاجة: تشغيل البطاقة عن بعد بهاتف. رسم من يرسل ماذا إلى من (التطبيقة، البلوتوث، البطاقة).")),
+  (D_, 15, ("Montrer la liaison Bluetooth dans App Inventor (ou sur une application existante) et le bouton qui envoie la commande ; distinguer l'interface de communication de la technologie. Sans matériel : simulation.", "عرض رابط البلوتوث في App Inventor (أو في تطبيقة جاهزة) والزر الذي يرسل الأمر؛ التمييز بين واجهة الاتصال والتقنية. دون عتاد: محاكاة.")),
+  (E_, 20, ("Les élèves complètent le schéma de communication, conçoivent deux boutons (Allumer, Éteindre) et testent. Allégée : un seul bouton ; défi : un bouton qui change l'icône affichée.", "يُكمل التلاميذ مخطط الاتصال ويصمّمون زرّين (تشغيل، إطفاء) ويختبرون. مخففة: زر واحد؛ تحدٍّ: زر يغيّر الأيقونة المعروضة.")),
+  (M_, 10, ("Présenter le résultat en groupe et rappeler de ne saisir aucune donnée personnelle. Compléter la trace écrite.", "عرض النتيجة في الأفواج والتذكير بعدم إدخال معطيات شخصية. إتمام الأثر المكتوب."))]
 for _k, _p in PHASES.items(): assert sum(x[1] for x in _p) == 60, _k
 
 # ----------------------------------------------------------------------------- cours « Sécurité informatique » (8e) : securite.py
@@ -115,4 +148,4 @@ import securite as SE
 for _k, _d in SE.SEC.items():
     EXTRA[_k] = dict(title=_d["title"], obj=_d["obj"], trace=_d["trace"], fill=_d["fill"], form=_d["form"], retain=_d["retain"], acq=_d["acq"], phases=_d["phases"], kind=("Sécurité informatique", "أمن المعلوميات"))
     PHASES[_k] = _d["phases"]
-YEAR_EXTRA = {"9": ["M1", "M2", "M3", "A1", "A2", "A3"], "8": ["S1", "S2", "S3", "S4"]}
+YEAR_EXTRA = {"9": ["M1", "M2", "M3", "M4", "A1", "A2", "A3", "A4"], "8": ["S1", "S2", "S3", "S4"]}
