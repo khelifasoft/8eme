@@ -62,7 +62,7 @@ FR["rules"] += [["^ح(\\d+)$", "S$1"], ["^(.+) · ح(\\d+)$", "$1 · S$2"]]   # 
 FR["map"].update({"تخطيط الحصص": "Planning des séances", "⬇ تثبيت سكراتش على الحاسوب": "⬇ Installer Scratch sur l'ordinateur", "⬇ تثبيت سكراتش على Windows": "⬇ Installer Scratch pour Windows", "⬇ تثبيت سكراتش على macOS": "⬇ Installer Scratch pour macOS", "مقترح لنظامك": "Conseillé pour ton système", "⬇ اختصار هذا الموقع على سطح المكتب": "⬇ Raccourci de ce site sur le bureau", "تخطيط حصص سكراتش": "Planning des séances Scratch", "فتح الكل": "Tout déplier", "طي الكل": "Tout replier", "الاطلاع على تخطيط الحصص": "Voir le planning des séances", "التخطيط حسب الحصص": "Planning par séances", "بطاقة الحصة": "Fiche de séance",
  "حصص مقترحة إضافية: الشيء القابل للبرمجة وتطبيقة الهاتف": "Séances complémentaires proposées : objet programmable et application mobile", "اقتراح غير رسمي (المساعدة البيداغوجية 2026): أربع حصص حول بطاقة micro:bit (اكتشاف، مدخلات ومخرجات، قياس وقرار وفعل، مشروع النرد) ثم أربع حصص حول تطبيقة هاتف بـ App Inventor (الواجهة، الأحداث، الاختبار والتوليد، التحكم في البطاقة). لكل حصة مذكرة في آخر مذكرات 9.": "Proposition non officielle (aide pédagogique 2026) : quatre séances sur la carte micro:bit (découvrir, entrées et sorties, mesurer-décider-agir, mini-projet dé électronique) puis quatre sur une application mobile App Inventor (interface, événements, test et génération, commander la carte). Chaque séance a sa fiche à la fin du cahier 9e.", "حصص إضافية مقترحة (المساعدة البيداغوجية 2026)": "Séances complémentaires proposées (aide pédagogique 2026)", "الشيء القابل للبرمجة (micro:bit) وتطبيقة الهاتف (App Inventor). اقتراح غير رسمي خارج التوزيع السنوي: يُدرج مكان حصص مراجعة أو في مشروع.": "Objet programmable (micro:bit) et application mobile (App Inventor). Proposition non officielle, hors répartition annuelle : à insérer à la place de séances de révision ou en projet.", "الشيء القابل للبرمجة (micro:bit)": "Objet programmable (micro:bit)", "تطبيقة الهاتف (App Inventor)": "Application mobile (App Inventor)",
  "في السنة التاسعة تُبرمج أشياء حقيقية أو محاكاة وتُطوَّر تطبيقات هاتف بسيطة (المساعدة البيداغوجية 2026). لكل موضوع أربع حصص: من الاكتشاف إلى المشروع الصغير.": "En 9e, on programme des objets réels ou simulés et on développe des applications mobiles simples (aide pédagogique 2026). Chaque thème a quatre séances : de la découverte au mini-projet.",
- "سير الحصة (تخطيط السنة التاسعة)": "Démarche de la séance (planning 9e)", "مذكرات الدفتر": "Fiches du cahier", "طباعة البطاقة (PDF)": "Imprimer la fiche (PDF)", "مذكرات الدفتر (للطباعة)": "Fiches du cahier (à imprimer)", "مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)": "Fiches du cahier (à imprimer et à coller dans le cahier de l'élève)",
+ "سير الحصة (تخطيط السنة التاسعة)": "Démarche de la séance (planning 9e)", "شاهد الفيديو": "Regarder la vidéo", "الموارد": "Ressources", "مذكرات الدفتر": "Fiches du cahier", "طباعة البطاقة (PDF)": "Imprimer la fiche (PDF)", "مذكرات الدفتر (للطباعة)": "Fiches du cahier (à imprimer)", "مذكرات الدفتر (للطباعة واللصق في دفتر التلميذ)": "Fiches du cahier (à imprimer et à coller dans le cahier de l'élève)",
  "فتح المذكرات للطباعة": "Ouvrir les fiches (impression)", "PDF بالعربية": "PDF en arabe", "PDF en français": "PDF en français", "PDF بالعربية مع الإجابات": "PDF en arabe avec corrigé", "PDF avec corrigé": "PDF en français avec corrigé", "مذكرة الدفتر لهذه الحصة": "Fiche du cahier pour cette séance",
  "ورقة A4 لكل حصة: جمل ناقصة، أثر مكتوب للإتمام، وسكربت نصف منجز يُنهى في القسم.": "Une feuille A4 par séance : phrases à trous, trace écrite à compléter et script à moitié terminé à finir en classe.",
  "لكل حصة برمجة ورقة واحدة بحجم A4: جمل ناقصة للإتمام، والأثر المكتوب (جدول أو مخطط أو بطاقة)، وسكربت نصف منجز يُنهيه التلاميذ في القسم، وما يجب حفظه. تُطبع الأجزاء الفارغة، ويمكن عرض الإجابات للأستاذ. اقتراح غير رسمي قابل للتعديل.": "Une feuille A4 par séance de programmation : phrases à trous à compléter, trace écrite (tableau, schéma ou carte), script à moitié terminé que les élèves finissent en classe, et ce qu'il faut retenir. Les parties vides s'impriment ; l'enseignant peut afficher le corrigé. Proposition non officielle, à adapter."})
@@ -1146,14 +1146,15 @@ function route(){
   let pm = h.match(/^planning-(7|8|9)$/); if (pm) { view = "plan"; y = pm[1]; }
   let rm = h.match(/^ressources-([a-z]+)$/); if (rm) { view = "res"; y = "8"; }
   if (h === "theorie") { view = "th"; y = "7"; }
-  if (h === "securite") { view = "sec"; y = "8"; }
+  let sm = h.match(/^securite(?:-(S[1-4]))?$/); if (sm) { view = "sec"; y = "8"; if (sm[1]) window.__scrollTo = "sec-" + sm[1]; }
+  let om = h.match(/^objet-([MA][1-4])$/); if (om) { view = "obj"; y = "9"; }
   let tl = h.match(/^cours-([1-9])$/); if (tl && TH.lessons.some(l => l.n === +tl[1])) { view = "thl"; y = "7"; }
   let fm = h.match(/^fiche-([a-z]+)(?:-([a-z]+))?$/); if (fm) { view = "fiche"; y = fm[1] === "contes" ? "7" : "8"; }
   if ((m = h.match(/^y(7|8|9|s[1-4])$/))) { view = "year"; y = m[1]; }
   else if ((m = h.match(/^y(7|8|9|s[1-4])-(env|net|create|prog|prod|sa|si|sr|refs|ens)$/))) { view = "axis"; y = m[1]; k = m[2]; }
   else if (h.startsWith("story-")) { key = h.slice(6) === "general" ? "__general" : h.slice(6); if (key === "__general" || DATA.stories.some(s => s.key === key)) { view = "story"; y = "7"; } }
   $("#viewHome").hidden = view !== "home"; $("#hero").hidden = view !== "home";
-  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd" || view === "plan" || view === "th" || view === "thl" || view === "sec"); $("#viewStory").hidden = view !== "story";
+  $("#viewAxis").hidden = !(view === "year" || view === "axis" || view === "dl" || view === "fiche" || view === "res" || view === "act" || view === "actd" || view === "plan" || view === "th" || view === "thl" || view === "sec" || view === "obj"); $("#viewStory").hidden = view !== "story";
   park();
   if (view === "story") { [sel, vsel, tsel].forEach(x => x.hidden = true); const r = $("#storyRes"); ["library","videos","sources"].forEach(id => r.append($("#" + id))); $("#library .lead").textContent = "كل ما يخص هذه القصة. اضغط «تحميل» ثم أضف الملف في سكراتش."; showStory(key); }
   if (view === "dl") renderDownloads();
@@ -1162,6 +1163,7 @@ function route(){
   if (view === "plan") renderPlanning(pm[1]);
   if (view === "th") renderTheoryHub();
   if (view === "sec") renderSecurite();
+  if (view === "obj") renderObjet(om[1]);
   if (view === "thl") renderLesson(+tl[1]);
   if (view === "fiche") renderFiche(fm[1], fm[2]);
   if (view === "res") renderRessources(rm[1]);

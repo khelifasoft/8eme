@@ -5,10 +5,14 @@ const SEC = DATA.securite, SU = SEC.ui;
 function secBox(){
   return el("section",{class:"cahierbox tmp"}, el("h3",{text:SU.box}), el("p",{class:"pnote",text:SU.boxn}), el("div",{class:"btns cahierbtns"}, el("a",{class:"btn main",href:"#securite",text:SU.open})));
 }
+function secCards(){
+  return el("div",{class:"gamegrid"}, SEC.seances.map(s => el("article",{class:"gcard"}, el("img",{class:"gcover",src:s.img[0],"data-fr-src":s.img[1],alt:s.t,loading:"lazy"}),
+    el("div",{class:"gbody"}, el("h3",{text:s.t}), el("p",{text:s.obj}), el("div",{class:"btns"}, videoBtn(s.video, s.t), el("a",{class:"btn",href:"#securite-" + s.k,text:"بطاقة النشاط"}), el("a",{class:"btn",href:s.fiche,target:"_blank",rel:"noopener",text:"الموارد"}))))));
+}
 function renderSecurite(){
   $("#axisBack").href = "#y8-env"; $("#axisBack").textContent = "← " + SU.back; park(); $("#resArea").replaceChildren();
   const mapT = el("div",{class:"mxwrap"}, el("table",{class:"thvocab"}, el("thead",{}, el("tr",{}, [SU.risk, SU.what, SU.protect].map(t => el("th",{text:t})))), el("tbody",{}, SEC.map.map(r => el("tr",{}, el("th",{text:r.r}), el("td",{text:r.w}), el("td",{text:r.p}))))));
-  const sean = s => el("section",{class:"secseance"}, el("div",{class:"acthead"}, el("span",{class:"badge pj",text:s.n}), el("h3",{text:s.t})),
+  const sean = s => el("section",{class:"secseance",id:"sec-" + s.k}, el("div",{class:"acthead"}, el("span",{class:"badge pj",text:s.n}), el("h3",{text:s.t})),
     el("p",{class:"pnote"}, el("b",{text:SU.obj}), " : ", s.obj),
     el("div",{class:"thcall thhook"}, el("b",{text:SU.cas}), " ", el("span",{text:s.cas})),
     el("h4",{text:SU.video}), el("div",{class:"secvid"}, el("video",{class:"v-ar",controls:"",preload:"none",src:s.video.ar}), el("video",{class:"v-fr",controls:"",preload:"none",src:s.video.fr})),
@@ -18,7 +22,8 @@ function renderSecurite(){
       el("tbody",{}, s.phases.map(p => el("tr",{}, el("td",{text:p.t}), el("td",{class:"n"}, p.min + " ", el("span",{text:"د"})), el("td",{text:p.d})))))),
     el("p",{class:"btns"}, el("a",{class:"btn main",href:s.fiche,target:"_blank",rel:"noopener",text:SU.fiche}), el("a",{class:"btn",href:"#planning-8",text:"تخطيط حصص سكراتش"})));
   $("#axisHead").replaceChildren(el("div",{class:"axhead secpage"}, el("span",{class:"lvl",text:CUR.years["8"].ar}), el("h2",{text:SU.title}), el("p",{class:"pnote",text:SU.intro}),
-    el("h3",{text:SU.map}), mapT, SEC.seances.map(sean), el("p",{class:"pnote",text:SU.note})));
+    secCards(), el("h3",{text:SU.map}), mapT, SEC.seances.map(sean), el("p",{class:"pnote",text:SU.note})));
+  syncImgs();
 }
 '''
 JS += r'''
@@ -32,17 +37,36 @@ function objBlock(k){
     el("p",{}, playBtn),
     el("h4",{text:u.files}), el("p",{class:"pnote",text:k[0] === "M" ? u.inzip_m : u.inzip_a}), el("p",{}, el("a",{class:"btn main",href:a.zip,download:k + ".zip",text:u.zip})));
 }
+function videoBtn(src, title){
+  const b = el("button",{type:"button",class:"btn main",text:"شاهد الفيديو"});
+  b.addEventListener("click", () => { const v = document.documentElement.lang === "fr" ? src.fr : src.ar; openPlayer({url:v}, {kind:"video", host:"", src:v}, title); $("#vpOpen").href = v; $("#vpOpen").textContent = "فتح الفيديو في نافذة جديدة"; });
+  return b;
+}
+function objCard(k){
+  const a = DATA.objets.items[k], x = DATA.planning.years["9"].extra.find(q => q.s === k);
+  return el("article",{class:"gcard"}, el("img",{class:"gcover",src:a.img[0],"data-fr-src":a.img[1],alt:a.t,loading:"lazy"}),
+    el("div",{class:"gbody"}, el("h3",{text:x.t}), el("p",{text:x.obj}), el("div",{class:"btns"}, videoBtn(a.video, x.t), el("a",{class:"btn",href:"#objet-" + k,text:"بطاقة النشاط"}), el("a",{class:"btn",href:a.zip,download:k + ".zip",text:"الموارد"}))));
+}
 function renderNeuf(){
   const s = $("#neuf"), ex = DATA.planning.years["9"].extra || [];
-  const group = (title, items) => [el("h2",{text:title}), items.map(x => el("section",{class:"secseance"}, el("div",{class:"acthead"}, el("span",{class:"badge pj",text:x.s}), el("h3",{text:x.t})),
-    el("p",{class:"pnote"}, el("b",{text:"الهدف"}), " : ", x.obj),
-    el("details",{class:"step seanc"}, el("summary",{text:"سير الحصة (تخطيط السنة التاسعة)"}), el("table",{class:"sctable phases"}, el("thead",{}, el("tr",{}, el("th",{text:"المرحلة"}), el("th",{text:"المدة"}), el("th",{text:"الوصف"}))),
-      el("tbody",{}, x.phases.map(p => el("tr",{}, el("td",{text:p.t}), el("td",{class:"n"}, p.min + " ", el("span",{text:"د"})), el("td",{text:p.d})))))),
-    el("p",{}, el("b",{text:"الأثر المكتوب"}), " : ", x.trace),
-    objBlock(x.s),
-    el("p",{class:"btns"}, el("a",{class:"btn main",href:`cahier/cahier-9.html#s${x.s}`,target:"_blank",rel:"noopener",text:"مذكرة الدفتر لهذه الحصة"}))))];
+  const group = (title, items) => [el("h2",{text:title}), el("div",{class:"gamegrid"}, items.map(x => objCard(x.s)))];
   s.replaceChildren(...[el("p",{class:"lead",text:"في السنة التاسعة تُبرمج أشياء حقيقية أو محاكاة وتُطوَّر تطبيقات هاتف بسيطة (المساعدة البيداغوجية 2026). لكل موضوع أربع حصص: من الاكتشاف إلى المشروع الصغير."}),
     group("الشيء القابل للبرمجة (micro:bit)", ex.filter(x => x.s[0] === "M")), group("تطبيقة الهاتف (App Inventor)", ex.filter(x => x.s[0] === "A")), el("p",{class:"pnote",text:DATA.objets.ui.note})].flat(Infinity));
+  syncImgs();
+}
+// fiche d'activité détaillée d'une séance micro:bit / App Inventor : #objet-M1 ... #objet-A4
+function renderObjet(k){
+  const a = DATA.objets.items[k], x = DATA.planning.years["9"].extra.find(q => q.s === k), u = DATA.objets.ui; if (!a || !x) return;
+  $("#axisBack").href = "#y9-prog"; $("#axisBack").textContent = "← " + CUR.years["9"].ar; park(); $("#resArea").replaceChildren();
+  $("#axisHead").replaceChildren(el("div",{class:"axhead secpage"}, el("span",{class:"lvl",text:CUR.years["9"].ar}), el("h2",{text:x.t}), el("p",{class:"pnote"}, el("b",{text:"الهدف"}), " : ", x.obj),
+    el("figure",{class:"objshot"}, el("img",{src:a.img[0],"data-fr-src":a.img[1],alt:a.t})),
+    el("h3",{text:a.t}), el("ol",{class:"bigsteps"}, a.steps.map(t => el("li",{text:t}))), el("p",{class:"tip"}, el("b",{text:u.res}), " : ", a.res),
+    el("p",{class:"btns"}, videoBtn(a.video, x.t), el("a",{class:"btn",href:a.zip,download:k + ".zip",text:u.zip}), el("a",{class:"btn",href:`cahier/cahier-9.html#s${k}`,target:"_blank",rel:"noopener",text:"مذكرة الدفتر لهذه الحصة"})),
+    el("p",{class:"pnote",text:k[0] === "M" ? u.inzip_m : u.inzip_a}),
+    el("h3",{text:"سير الحصة (تخطيط السنة التاسعة)"}), el("table",{class:"sctable phases"}, el("thead",{}, el("tr",{}, el("th",{text:"المرحلة"}), el("th",{text:"المدة"}), el("th",{text:"الوصف"}))),
+      el("tbody",{}, x.phases.map(p => el("tr",{}, el("td",{text:p.t}), el("td",{class:"n"}, p.min + " ", el("span",{text:"د"})), el("td",{text:p.d}))))),
+    el("p",{}, el("b",{text:"الأثر المكتوب"}), " : ", x.trace), el("p",{class:"pnote",text:u.note})));
+  syncImgs();
 }
 '''
 CSS = r'''

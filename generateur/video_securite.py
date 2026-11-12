@@ -34,6 +34,10 @@ def main():
     js = os.path.join(tmp, "shots.js")
     open(js, "w").write("const {chromium}=require('playwright');(async()=>{const jobs=JSON.parse(process.argv[2]);const b=await chromium.launch();const p=await b.newPage({viewport:{width:1280,height:720}});for(const j of jobs){await p.goto('file://'+j.html);await p.waitForTimeout(150);await p.screenshot({path:j.png});}await b.close();})();")
     subprocess.run(["node", js, json.dumps(jobs)], check=True)
+    cap = os.path.join(ROOT, "objets", "captures"); os.makedirs(cap, exist_ok=True)
+    for key, d in SE.SEC.items():      # capture de présentation de chaque séance (scène 2), sans son
+        for lang in ("ar", "fr"):
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", os.path.join(tmp, f"{key}-{lang}-1.png"), "-q:v", "4", os.path.join(cap, f"{key}-{lang}.jpg")], check=True)
     for key, lang, n in plan:
         parts = []
         for i in range(n):

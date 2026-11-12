@@ -143,7 +143,7 @@ def export():
     se = []
     for key, d in SEC.items():
         se.append(dict(k=key, n=int(key[1]), t=P(*d["title"]), obj=P(*d["obj"]), cas=P(*d["cas"]), act=P(*d["act"]), trace=P(*d["trace"]),
-                       video=dict(ar=f"videos/securite/securite-{key[1]}-ar.mp4", fr=f"videos/securite/securite-{key[1]}-fr.mp4"), fiche=f"cahier/cahier-8.html#s{key}",
+                       video=dict(ar=f"videos/securite/securite-{key[1]}-ar.mp4", fr=f"videos/securite/securite-{key[1]}-fr.mp4"), fiche=f"cahier/cahier-8.html#s{key}", img=[f"objets/captures/{key}-ar.jpg", f"objets/captures/{key}-fr.jpg"],
                        phases=[dict(t=P(*a), min=m, d=P(*c)) for a, m, c in d["phases"]]))
     mp = [dict(r=P(*r), w=P(*w), p=P(*p)) for r, w, p in MAP]
     return dict(ui=ui, seances=se, map=mp), dict(FRM)
