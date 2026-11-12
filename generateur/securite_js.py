@@ -30,7 +30,7 @@ function renderNeuf(){
     el("details",{class:"step seanc"}, el("summary",{text:"سير الحصة (تخطيط السنة التاسعة)"}), el("table",{class:"sctable phases"}, el("thead",{}, el("tr",{}, el("th",{text:"المرحلة"}), el("th",{text:"المدة"}), el("th",{text:"الوصف"}))),
       el("tbody",{}, x.phases.map(p => el("tr",{}, el("td",{text:p.t}), el("td",{class:"n"}, p.min + " ", el("span",{text:"د"})), el("td",{text:p.d})))))),
     el("p",{}, el("b",{text:"الأثر المكتوب"}), " : ", x.trace),
-    el("p",{class:"btns"}, el("a",{class:"btn main",href:`cahier/cahier-9.html#s${x.s}`,target:"_blank",rel:"noopener",text:"مذكرة الدفتر لهذه الحصة"}), el("a",{class:"btn",href:"#planning-9",text:"تخطيط حصص سكراتش"}))))];
+    el("p",{class:"btns"}, el("a",{class:"btn main",href:`cahier/cahier-9.html#s${x.s}`,target:"_blank",rel:"noopener",text:"مذكرة الدفتر لهذه الحصة"}), el("a",{class:"btn",href:"#planning-9",text:"تخطيط الحصص"}))))];
   s.replaceChildren(...[el("p",{class:"lead",text:"في السنة التاسعة تُبرمج أشياء حقيقية أو محاكاة وتُطوَّر تطبيقات هاتف بسيطة (المساعدة البيداغوجية 2026). لكل موضوع أربع حصص: من الاكتشاف إلى المشروع الصغير."}),
     group("الشيء القابل للبرمجة (micro:bit)", ex.filter(x => x.s[0] === "M")), group("تطبيقة الهاتف (App Inventor)", ex.filter(x => x.s[0] === "A"))].flat(Infinity));
 }

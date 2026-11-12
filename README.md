@@ -210,3 +210,5 @@ Page `#securite` (accessible depuis le menu de la 8e, la carte de la 8e sur l'ac
 - La voix arabe de synthèse est robotique : pour une voix naturelle, enregistrer les commentaires et remplacer les fichiers `.mp4`. Textes arabes à relire.
 
 **Version allégée des activités** : chacune des 65 activités a, sous « Défi supplémentaire », une rubrique **« نسخة مخففة / Version allégée »** (tâche réduite pour les élèves en difficulté : script presque construit, un seul lutin, une seule règle à écrire…). Textes : `generateur/activites_light.py`, puis `python3 generateur/page.py`.
+
+**9e sans Scratch** : conformément à l'aide pédagogique 2026 (objets programmables et applications mobiles), la page « Programmation » de la 9e, son planning, son cahier et ses fiches enseignant ne contiennent plus ni jeux, ni activités, ni scripts Scratch (les séances S1 à S14 de la répartition gardent leurs titres et leurs traces écrites ; les huit séances micro:bit et App Inventor sont la pratique). Scratch reste en 7e et en 8e.

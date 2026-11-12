@@ -150,6 +150,9 @@ PLAN = {
      acq=[Q("Je sais partager un projet en citant son auteur et choisir un espace adapté.", "أستطيع مشاركة مشروع مع ذكر صاحبه واختيار فضاء مناسب.")]),
  },
 }
+# 9e : pas de Scratch (aide pédagogique 2026 : objets programmables et applications mobiles) -> plus d'activités ni de jeux Scratch dans le planning de la 9e
+for _s, _p in PLAN["9"].items(): _p["core"] = []; _p["support"] = []; _p["challenge"] = []; _p["games"] = []
+PLAN["9"][1]["extra"] = Q("Comparer MakeCode (micro:bit), mBlock et App Inventor pour un même problème (tableau : facilité, possibilités, matériel).", "مقارنة MakeCode (micro:bit) وmBlock وApp Inventor لمشكل واحد (جدول: السهولة والإمكانات والعتاد).")
 # ----------------------------------------------------------------------------- traductions arabes des séances de la répartition annuelle
 AR_TXT = {
  ("7", 22): ("حلّ مشكل دون حاسوب", "تحديد المشكل والمعطيات المفيدة والنتيجة المنتظرة واستخراج المراحل", "مراحل الحل (المشكل، المعطيات، النتيجة، المراحل)."),

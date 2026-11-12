@@ -284,3 +284,26 @@ SPEC[("9", 14)] = dict(
          [[("J'ai cité l'auteur des éléments que j'ai réutilisés", "ذكرت صاحب العناصر التي أعدت استعمالها"), ("☐", "☐"), ("☐", "☐")], [("Je n'ai écrit aucune information personnelle", "لم أكتب أي معلومة شخصية"), ("☐", "☐"), ("☐", "☐")],
           [("Mon projet a un titre et des instructions claires", "لمشروعي عنوان وتعليمات واضحة"), ("☐", "☐"), ("☐", "☐")], [("J'ai testé mon projet avant de le partager", "اختبرت مشروعي قبل مشاركته"), ("☐", "☐"), ("☐", "☐")]], w=(9, 2, 2))],
  script=None)
+
+# ============================================================================= 9e sans Scratch (aide pédagogique 2026 : objets programmables et applications mobiles)
+for _s in range(1, 15): SPEC[("9", _s)]["script"] = None
+SPEC[("9", 1)]["form"] = [T([("Critère", "المعيار"), ("MakeCode (micro:bit)", "MakeCode (micro:bit)"), ("mBlock", "mBlock"), ("App Inventor", "App Inventor")],
+         [[("Type de projet", "نوع المشروع"), ("{{programmer une carte micro:bit}}", "{{برمجة بطاقة micro:bit}}"), ("{{programmer un robot ou une carte}}", "{{برمجة روبوت أو بطاقة}}"), ("{{applications pour téléphone}}", "{{تطبيقات للهاتف}}")],
+          [("Matériel nécessaire", "العتاد اللازم"), ("{{ordinateur (simulateur) ou carte}}", "{{حاسوب (محاكي) أو بطاقة}}"), ("{{ordinateur + robot ou carte}}", "{{حاسوب + روبوت أو بطاقة}}"), ("{{ordinateur + téléphone}}", "{{حاسوب + هاتف}}")],
+          [("Facilité d'utilisation", "سهولة الاستعمال"), ("{{très facile}}", "{{سهل جدا}}"), ("{{facile}}", "{{سهل}}"), ("{{moyenne}}", "{{متوسطة}}")],
+          [("Mon choix et pourquoi", "اختياري ولماذا"), None, None, None]], w=(3, 4, 4, 4), first=True, rh=[0, 0, 0, 2])]
+SPEC[("9", 1)]["fill"] = [("Je choisis l'environnement selon le {{projet}} à réaliser et le {{matériel}} disponible.", "اختيار بيئة العمل يتوقف على {{المشروع}} وعلى {{العتاد}} المتوفر."),
+       ("MakeCode sert à programmer une {{carte}} ; mBlock pilote un {{robot}} ; App Inventor crée des applications pour {{téléphone}}.", "يناسب MakeCode برمجة {{بطاقة}}، ويتيح mBlock التحكم في {{روبوت}}، وينشئ App Inventor تطبيقات {{الهاتف}}.")]
+SPEC[("9", 3)]["form"] = [T([("Notion", "المفهوم"), ("Définition", "التعريف"), ("Exemple", "مثال")],
+         [[("Séquence", "التسلسل"), ("{{instructions exécutées l'une après l'autre}}", "{{تعليمات تُنفَّذ الواحدة بعد الأخرى}}"), ("afficher une icône puis attendre", "عرض أيقونة ثم الانتظار")],
+          [("Événement", "الحدث"), ("{{ce qui déclenche un programme}}", "{{ما يُطلق برنامجا}}"), ("bouton A pressé", "ضغط الزر A")],
+          [("Condition", "الشرط"), ("{{question vrai ou faux qui choisit une action}}", "{{سؤال صحيح أو خطأ يختار فعلا}}"), ("si température > 30", "إذا الحرارة > 30")],
+          [("Boucle", "الحلقة"), ("{{répétition d'instructions}}", "{{تكرار تعليمات}}"), ("répéter toujours", "كرّر دائما")]], w=(3, 7, 5), first=True)]
+SPEC[("9", 6)]["form"] = [T([("Actionneur", "المنفّذ"), ("Effet", "الأثر"), ("Simulation", "المحاكاة")],
+         [[("Diode (LED)", "الصمّام الضوئي (LED)"), ("{{elle s'allume}}", "{{يُضيء}}"), ("{{afficher une icône sur le simulateur}}", "{{عرض أيقونة على المحاكي}}")], [("Moteur", "المحرّك"), ("{{il tourne}}", "{{يدور}}"), ("{{un moteur virtuel qui tourne}}", "{{محرّك افتراضي يدور}}")],
+          [("Buzzer", "الجرس الإلكتروني"), ("{{il émet un son}}", "{{يُصدر صوتا}}"), ("{{jouer une note}}", "{{تشغيل نغمة}}")], [("Servomoteur (porte)", "المحرّك المؤازر (باب)"), ("{{la porte s'ouvre ou se ferme}}", "{{ينفتح الباب أو ينغلق}}"), ("{{changer l'angle affiché}}", "{{تغيير الزاوية المعروضة}}")]], w=(4, 5, 5), first=True)]
+SPEC[("9", 6)]["fill"] = [("Un {{actionneur}} agit : il allume, fait tourner ou {{émet un son}}.", "{{المنفّذ}} يفعل: يُضيء أو يُدير أو {{يُصدر صوتا}}."),
+       ("Sans matériel, un actionneur se simule dans le {{simulateur}} par une {{image}} ou un {{son}}.", "عند غياب العتاد نحاكي المنفّذ في {{المحاكي}} بـ{{صورة}} أو {{صوت}}.")]
+SPEC[("9", 7)]["form"] = [T([("Ligne du programme", "سطر البرنامج"), ("Commentaire", "التعليق")],
+         [[("mettre humidité à 60", "اجعل الرطوبة = 60"), ("{{valeur de départ du capteur simulé}}", "{{القيمة الأولى للمستشعر المُحاكى}}")], [("ajouter -1 à humidité", "غيّر الرطوبة بمقدار -1"), ("{{le sol sèche peu à peu}}", "{{تجفّ التربة شيئا فشيئا}}")],
+          [("si humidité < 30", "إذا الرطوبة < 30"), ("{{le capteur indique que le sol est sec}}", "{{المستشعر يدل على أن التربة جافة}}")], [("arrosage en marche", "السقي مشتغل"), ("{{l'actionneur s'active}}", "{{يشتغل المنفّذ}}")]], w=(6, 7))]

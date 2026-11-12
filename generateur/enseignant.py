@@ -37,7 +37,7 @@ MAT = {"env": "Poste de travail par élève ; cartes-images ; vidéoprojecteur."
        "create": "Poste avec logiciel de traitement de texte ou de présentation ; banque d'images libres (voir bibliothèque du site).",
        "prog": "Poste avec Scratch 3 ; projets du site (contes, jeux) ; cartes-instructions pour l'activité débranchée.", "prod": "Poste avec tableur ; fichiers de données fournis."}
 RES = {("7", "prog"): "Contes Scratch du site (page « Pensée logique et programmation »).", ("8", "prog"): "Jeux Scratch du site (quiz, mémoire, attrape-objets…).",
-       ("9", "prog"): "Jeux Scratch du site et références du niveau.", ("7", "create"): "Bibliothèque d'images, de sons et de lieux du site.", ("8", "create"): "Bibliothèque de sons du site et vidéos."}
+       ("9", "prog"): "Séances micro:bit et App Inventor du site (page « Programmation ») et références du niveau.", ("7", "create"): "Bibliothèque d'images, de sons et de lieux du site.", ("8", "create"): "Bibliothèque de sons du site et vidéos."}
 CSS = """*{box-sizing:border-box}body{font:14px/1.5 'Segoe UI',Tahoma,Arial,sans-serif;color:#222;background:#fff;margin:0;padding:16px}
 .wrap{max-width:820px;margin:0 auto}h1{font-size:22px;color:#1e3a6e;margin:0 0 4px}h2{font-size:17px;color:#1e3a6e;margin:18px 0 6px;border-bottom:2px solid #1e6fd6;padding-bottom:2px}
 table{width:100%;border-collapse:collapse;margin:8px 0}th,td{border:1px solid #bbb;padding:4px 7px;vertical-align:top;text-align:left}th{background:#eaf1fb}
@@ -130,6 +130,13 @@ def build_year(y):
 {extra_table(y)}
 {matrix_html(y)}
 {"".join(fiches)}{extra_fiches(y)}</div></body></html>'''
+    if y == "9":    # 9e : micro:bit et App Inventor, plus de Scratch
+        for a, b in (("Poste avec Scratch 3 ; projets du site (contes, jeux) ; cartes-instructions pour l'activité débranchée.", "Poste avec le simulateur MakeCode micro:bit et App Inventor (émulateur) ; séances du site ; matériel réel facultatif."),
+                     ("Progression cumulative des notions Scratch", "Progression cumulative des notions de programmation"), ("planning Scratch de l'année", "planning de l'année"),
+                     ("Activités Scratch (n°) et jeux", "Séances complémentaires"), ("Théorie Scratch à lire (rubrique « Théorie Scratch » du site)", "Théorie")):
+            html = html.replace(a, b)
+        import re as _re
+        html = _re.sub(r"Poste avec Scratch 3 ; projets du site \(contes, jeux\) ; cartes-instructions pour l(?:'|&#x27;)activité débranchée\.", "Poste avec le simulateur MakeCode micro:bit et App Inventor (émulateur) ; séances du site ; matériel réel facultatif.", html)
     open(os.path.join(OUT, f"niveau-{y}.html"), "w", encoding="utf-8").write(html)
 data = {}
 for y in SEANCES:

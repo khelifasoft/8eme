@@ -123,7 +123,7 @@ CARDS = {
  "sensact": dict(
   fill=[("Un {{capteur}} mesure ; un {{actionneur}} agit.", "{{المستشعر}} يقيس، أما {{المنفّذ}} فيفعل."),
         ("Le principe : {{mesurer}}, {{décider}}, {{agir}}.", "المبدأ: {{القياس}}، {{القرار}}، {{الفعل}}.")],
-  retain=[("Dans Scratch, on simule les capteurs et les actionneurs avec des variables et des costumes.", "في سكراتش نحاكي المستشعرات والمنفّذات بالمتغيرات والأزياء.")]),
+  retain=[("Sans matériel, on simule les capteurs et les actionneurs avec des variables et des images dans le simulateur.", "عند غياب العتاد نحاكي المستشعرات والمنفّذات بالمتغيرات والصور في المحاكي.")]),
  "share": dict(
   fill=[("Quand je remixe un projet, je {{cite}} son {{auteur}}.", "عندما أعيد صياغة مشروع {{أذكر}} {{صاحبه}}."),
         ("Avant de partager, je vérifie les {{droits}} des images et des sons.", "قبل المشاركة أتحقق من {{حقوق}} الصور والأصوات."),
