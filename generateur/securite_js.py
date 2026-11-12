@@ -25,8 +25,11 @@ JS += r'''
 // ---- page « Programmation » de la 9e : objet programmable (micro:bit) et application mobile (App Inventor), à la place de Scratch
 function objBlock(k){
   const O = DATA.objets, u = O.ui, a = O.items[k]; if (!a) return null;
+  const playBtn = el("button",{type:"button",class:"btn main",text:u.play});
+  playBtn.addEventListener("click", () => { const v = document.documentElement.lang === "fr" ? a.video.fr : a.video.ar; openPlayer({url:v}, {kind:"video", host:"", src:v}, a.t); $("#vpOpen").href = v; $("#vpOpen").textContent = "فتح الفيديو في نافذة جديدة"; });
   return el("div",{class:"objblock"}, el("h4",{text:u.act}), el("p",{}, el("b",{text:a.t})), el("ol",{class:"bigsteps"}, a.steps.map(t => el("li",{text:t}))), el("p",{class:"tip"}, el("b",{text:u.res}), " : ", a.res),
-    el("h4",{text:u.video}), el("div",{class:"secvid"}, el("video",{class:"v-ar",controls:"",preload:"none",src:a.video.ar}), el("video",{class:"v-fr",controls:"",preload:"none",src:a.video.fr})),
+    el("h4",{text:u.shot}), el("figure",{class:"objshot"}, el("img",{src:a.img[0],"data-fr-src":a.img[1],alt:a.t,loading:"lazy"})),
+    el("p",{}, playBtn),
     el("h4",{text:u.files}), el("p",{class:"pnote",text:k[0] === "M" ? u.inzip_m : u.inzip_a}), el("p",{}, el("a",{class:"btn main",href:a.zip,download:k + ".zip",text:u.zip})));
 }
 function renderNeuf(){
@@ -43,6 +46,7 @@ function renderNeuf(){
 }
 '''
 CSS = r'''
+.objshot{margin:6px 0;max-width:720px}.objshot img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
 .secseance{border:1px solid var(--line);border-radius:14px;padding:6px 16px 12px;margin:16px 0;background:#fbfcff}.secseance h3{margin:4px 0}.secseance h4{margin:12px 0 4px;color:#1e3a6e}
 .secvid video{width:100%;max-width:720px;border-radius:10px;background:#000;display:block}html[lang=fr] .v-ar,html:not([lang=fr]) .v-fr{display:none}
 '''

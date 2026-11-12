@@ -118,13 +118,13 @@ def visual(spec, lang):
 def pp(p): return p
 
 UI = dict(act=("Activité", "النشاط"), res=("Résultat attendu", "النتيجة المنتظرة"), video=("Vidéo explicative", "فيديو توضيحي"), files=("Ressources à télécharger", "موارد للتحميل"),
-          zip=("⬇ Télécharger les ressources (.zip)", "⬇ تحميل الموارد (.zip)"), note=("Tout est simulé : aucun matériel ni compte n'est nécessaire. Voix de synthèse ; proposition non officielle.", "كل شيء محاكى: لا عتاد ولا حساب مطلوب. الصوت اصطناعي؛ اقتراح غير رسمي."),
+          zip=("⬇ Télécharger les ressources (.zip)", "⬇ تحميل الموارد (.zip)"), note=("Tout est simulé : aucun matériel ni compte n'est nécessaire. Les vidéos sont des animations silencieuses ; proposition non officielle.", "كل شيء محاكى: لا عتاد ولا حساب مطلوب. الفيديوهات رسوم متحركة صامتة؛ اقتراح غير رسمي."), play=("▶ Regarder la vidéo explicative", "▶ شاهد الفيديو التوضيحي"), shot=("Capture d'écran : ce que l'on va réaliser", "لقطة شاشة: ما سننجزه"),
           inzip_m=("Dans le fichier : le programme MakeCode (à coller en mode JavaScript, quand il existe), les images de la carte à chaque étape (français et arabe) et une notice.", "في الملف: برنامج MakeCode (يُلصق في وضع JavaScript عند وجوده) وصور البطاقة في كل مرحلة (بالفرنسية والعربية) ومذكرة."),
           inzip_a=("Dans le fichier : le plan des blocs (quand il existe), les images des écrans (PNG, importables dans App Inventor) et une notice.", "في الملف: مخطط الكتل (عند وجوده) وصور الشاشات (PNG قابلة للاستيراد في App Inventor) ومذكرة."))
 def export():
     from theorie_core import P, FRM
     ui = {k: P(*v) for k, v in UI.items()}
-    d = {k: dict(t=P(*v["t"]), steps=[P(*s) for s in v["steps"]], res=P(*v["res"]), video=dict(ar=f"videos/objets/{k}-ar.mp4", fr=f"videos/objets/{k}-fr.mp4"), zip=f"objets/ressources/{k}.zip",
+    d = {k: dict(t=P(*v["t"]), steps=[P(*s) for s in v["steps"]], res=P(*v["res"]), video=dict(ar=f"videos/objets/{k}-ar.mp4", fr=f"videos/objets/{k}-fr.mp4"), img=[f"objets/captures/{k}-ar.jpg", f"objets/captures/{k}-fr.jpg"], zip=f"objets/ressources/{k}.zip",
                  code=(O_CODE[k][0] if k in O_CODE else None)) for k, v in OBJ.items()}
     return dict(ui=ui, items=d), dict(FRM)
 O_CODE = CODE

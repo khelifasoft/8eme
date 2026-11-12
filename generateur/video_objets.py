@@ -1,5 +1,5 @@
 """Vidéos et ressources des séances micro:bit (M1-M4) et App Inventor (A1-A4) de la 9e : videos/objets/<séance>-{ar,fr}.mp4 et objets/ressources/<séance>.zip
-(programme MakeCode en JavaScript ou plan des blocs, images de la carte ou des écrans, notice). Scènes et textes : objets.py. Voix de synthèse eSpeak NG.
+(programme MakeCode en JavaScript ou plan des blocs, images de la carte ou des écrans, notice). Scènes et textes : objets.py. Vidéos silencieuses (animation avec légendes, sans voix) et capture d'écran de présentation : objets/captures/<séance>-{ar,fr}.jpg.
 Usage : python3 generateur/video_objets.py   (espeak-ng, ffmpeg, Node et Playwright requis)"""
 import os, sys, json, subprocess, tempfile, html, zipfile
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); sys.path.insert(0, HERE)
@@ -25,7 +25,7 @@ def main():
             for i, (spec, cap, narr) in enumerate(d["scenes"]):
                 base = os.path.join(tmp, f"{key}-{lang}-{i}")
                 open(base + ".html", "w", encoding="utf-8").write(slide(key, lang, i, n, O.visual(spec, lang), cap[li], narr[li]))
-                subprocess.run(["espeak-ng", *VOICE[lang], "-w", base + ".wav", narr[li]], check=True)
+                words = len(narr[li].split()); open(base + ".dur", "w").write(str(max(5.0, 0.42 * words) + 1.0))
                 jobs.append(dict(html=base + ".html", png=base + ".png"))
             plan.append((key, lang, n))
         # images à télécharger : une image par scène (français et arabe)
@@ -41,11 +41,15 @@ def main():
         parts = []
         for i in range(n):
             base = os.path.join(tmp, f"{key}-{lang}-{i}"); out = base + ".mp4"
-            dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", base + ".wav"]).decode()) + 1.2
-            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-loop", "1", "-framerate", "10", "-i", base + ".png", "-i", base + ".wav", "-af", "apad", "-t", f"{dur:.2f}", "-c:v", "libx264", "-tune", "stillimage", "-crf", "30", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "64k", "-ar", "44100", "-ac", "1", out], check=True)
+            dur = float(open(base + ".dur").read())
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-loop", "1", "-framerate", "10", "-i", base + ".png", "-t", f"{dur:.2f}", "-an", "-c:v", "libx264", "-tune", "stillimage", "-crf", "30", "-pix_fmt", "yuv420p", out], check=True)
             parts.append(out)
         lst = os.path.join(tmp, f"{key}-{lang}.txt"); open(lst, "w").write("".join(f"file '{p}'\n" for p in parts))
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", lst, "-c", "copy", "-movflags", "+faststart", os.path.join(VID, f"{key}-{lang}.mp4")], check=True)
+    POST = os.path.join(ROOT, "objets", "captures"); os.makedirs(POST, exist_ok=True)
+    for key, d in O.OBJ.items():       # capture d'écran de présentation (une scène représentative), sans son
+        for lang in ("ar", "fr"):
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", os.path.join(tmp, f"{key}-{lang}-{min(1, len(d['scenes']) - 1)}.png"), "-q:v", "4", os.path.join(POST, f"{key}-{lang}.jpg")], check=True)
     for key, d in O.OBJ.items():
         z = os.path.join(ZIP, f"{key}.zip")
         with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
