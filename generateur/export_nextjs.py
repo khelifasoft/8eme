@@ -82,6 +82,13 @@ pensee = dict(
     quiz=[dict(q=dict(ar=x["q"], fr=eme(x["q_fr"])), o=two(x["o"], x["o_fr"]), a=x["a"]) for x in DATA["exo"]["8-prog"]],
     todo=[dict(t=dict(ar=a["t"], fr=eme(a["t_fr"])), d=dict(ar=a["d"], fr=eme(a["d_fr"])), ex=dict(ar=a.get("ex", ""), fr=eme(a.get("ex_fr", "")))) for a in DATA["act"]["8-prog"]])
 put("content/public/pensee.json", pensee)
+# chapitres de la 8eme (menu) : un par domaine du programme, dans l'ordre officiel ; « prog » garde sa page riche (pensee.json)
+chapters = []
+for k in C["by_year"]["8"]:
+    pg = C["pages"]["8-" + k]; ai = pg.get("aide")
+    chapters.append(dict(key=k, title=dict(ar=pg["title_ar"], fr=eme(pg["title_fr"])), comps=two(pg["comps_ar"], pg["comps_fr"]), life=dict(ar=pg["life_ar"], fr=eme(pg["life_fr"])),
+        aide=dict(comp=dict(ar=ai["comp_ar"], fr=eme(ai["comp_fr"])), parts=[dict(t=dict(ar=x["t_ar"], fr=eme(x["t_fr"])), items=two(x["i_ar"], x["i_fr"])) for x in ai["parts"]], know=two(ai["know_ar"], ai["know_fr"]), cad=two(ai["cad_ar"], ai["cad_fr"])) if ai else None))
+put("content/public/chapitres.json", dict(year=dict(ar=C["years"]["8"]["ar"], fr="8eme année"), src=pensee["src"], note=pensee["aide"]["note"], chapters=chapters))
 # cahier de l'élève (fiches à imprimer et à coller) : fichiers autonomes
 for f in ["cahier-8.html"] + [f"cahier-8-{l}{c}.pdf" for l in ("ar", "fr") for c in ("", "-corrige")]:
     src = os.path.join(ROOT, "cahier", f); dst = os.path.join(DEST, "public", "cahier", f); os.makedirs(os.path.dirname(dst), exist_ok=True)
