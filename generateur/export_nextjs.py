@@ -55,6 +55,11 @@ for g in DATA["games"]:
     for rel in (g["cover"], g["file"]) + ((g["video"],) if g.get("video") else ()): cp(rel, rel)
     CATS.setdefault(g["cat"], dict(key=g["cat"], t=dict(ar=g["cat_ar"], fr=eme(g["cat_fr"]))))
     o = dict(key=g["key"], cat=g["cat"], title=dict(ar=g["title_ar"], fr=eme(g["title_fr"])), how=dict(ar=g["how_ar"], fr=eme(g["how_fr"])), cover="/" + g["cover"], sb3="/" + g["file"], video="/" + g["video"] if g.get("video") else None, fiche=fid)
+    rs = (DATA.get("ressources") or {}).get(g.get("res") or "")
+    if rs:   # images et sons du jeu à télécharger (page « Ressources »)
+        cp(rs["zip"], rs["zip"])
+        for it in rs["items"]: cp(it["file"], it["file"])
+        o["ressources"] = dict(zip="/" + rs["zip"], items=[dict(file="/" + it["file"], type=it["type"], t=dict(ar=it["ar"], fr=eme(it["fr"]))) for it in rs["items"]])
     if fid:
         F = DATA["fiches"][fid]
         o["fi"] = dict(title=bi(F["title"]), meta=bi(F["meta"]), situation=bi(F["situation"]), steps=lst(F["steps"]), eleve=lst(F["eleve"]), criteres=lst(F["criteres"]), allegee=bi(F["allegee"]), prolongement=bi(F["prolongement"]))
