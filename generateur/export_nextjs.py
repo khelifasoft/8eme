@@ -43,7 +43,7 @@ for a in A["acts"]:
     n = int(a["n"])
     acts.append(dict(n=n, lvl=int(a["lvl"]), t=bi(a["t"]), obj=bi(a["obj"]), blocks=a["blocks"], steps=lst(a["steps"]), res=bi(a["res"]), defi=bi(a["defi"]), light=bi(a["light"]),
                      img=dict(avant=img(a["img"]["avant"]), apres=img(a["img"]["apres"]))))
-    sol[str(n)] = dict(script=img(a["img"]["script"]), tok=[tok(t) for t in a["tok"]])
+    sol[str(n)] = dict(tok=[tok(t) for t in a["tok"]])   # PAS d'image « script » : elle serait un fichier public à l'adresse devinable
 put("content/public/activites.json", dict(title=bi(A["title"]), intro=bi(A["intro"]), levels=levels, blocks=blocks, acts=acts))
 put("content/private/activites-solutions.json", sol)
 
@@ -52,9 +52,11 @@ CATS = {}
 games = []
 for g in DATA["games"]:
     fid = g.get("fiche")
-    for rel in (g["cover"], g["file"]) + ((g["video"],) if g.get("video") else ()): cp(rel, rel)
+    for rel in (g["cover"],) + (() if fid else (g["file"],)) + ((g["video"],) if g.get("video") else ()): cp(rel, rel)
+    if fid:   # projet complet = code final du jeu : privé (content/private/jeux), jamais dans public/
+        os.makedirs(os.path.join(DEST, "content", "private", "jeux"), exist_ok=True); shutil.copy(os.path.join(ROOT, g["file"]), os.path.join(DEST, "content", "private", "jeux", os.path.basename(g["file"])))
     CATS.setdefault(g["cat"], dict(key=g["cat"], t=dict(ar=g["cat_ar"], fr=eme(g["cat_fr"]))))
-    o = dict(key=g["key"], cat=g["cat"], title=dict(ar=g["title_ar"], fr=eme(g["title_fr"])), how=dict(ar=g["how_ar"], fr=eme(g["how_fr"])), cover="/" + g["cover"], sb3="/" + g["file"], video="/" + g["video"] if g.get("video") else None, fiche=fid)
+    o = dict(key=g["key"], cat=g["cat"], title=dict(ar=g["title_ar"], fr=eme(g["title_fr"])), how=dict(ar=g["how_ar"], fr=eme(g["how_fr"])), cover="/" + g["cover"], sb3=(f"/api/jeu/{g['key']}" if fid else "/" + g["file"]), video="/" + g["video"] if g.get("video") else None, fiche=fid)
     rs = (DATA.get("ressources") or {}).get(g.get("res") or "")
     if rs:   # images et sons du jeu à télécharger (page « Ressources »)
         cp(rs["zip"], rs["zip"])
@@ -142,5 +144,8 @@ for f in [f"cahier-8-{l}-corrige.pdf" for l in ("ar", "fr")]:   # ne laisser auc
     p = os.path.join(DEST, "public", "cahier", f)
     if os.path.exists(p): os.remove(p)
 
+import glob
+for p in glob.glob(os.path.join(DEST, "public", "img", "activites", "*-script*.svg")) + [os.path.join(DEST, "public", g["file"]) for g in DATA["games"] if g.get("fiche")]:
+    if os.path.exists(p): os.remove(p)
 print("activités", len(acts), "jeux", len(games), "étapes pensée", len(pensee["steps"]), "fichiers copiés", len(copied), "| sans traduction FR :", len(miss))
 for m in sorted(miss)[:10]: print("   ", m[:80])
