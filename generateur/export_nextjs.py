@@ -94,10 +94,53 @@ for k in C["by_year"]["8"]:
     chapters.append(dict(key=k, title=dict(ar=pg["title_ar"], fr=eme(pg["title_fr"])), comps=two(pg["comps_ar"], pg["comps_fr"]), life=dict(ar=pg["life_ar"], fr=eme(pg["life_fr"])),
         aide=dict(comp=dict(ar=ai["comp_ar"], fr=eme(ai["comp_fr"])), parts=[dict(t=dict(ar=x["t_ar"], fr=eme(x["t_fr"])), items=two(x["i_ar"], x["i_fr"])) for x in ai["parts"]], know=two(ai["know_ar"], ai["know_fr"]), cad=two(ai["cad_ar"], ai["cad_fr"])) if ai else None))
 put("content/public/chapitres.json", dict(year=dict(ar=C["years"]["8"]["ar"], fr="8eme année"), src=pensee["src"], note=pensee["aide"]["note"], chapters=chapters))
-# cahier de l'élève (fiches à imprimer et à coller) : fichiers autonomes
-for f in ["cahier-8.html"] + [f"cahier-8-{l}{c}.pdf" for l in ("ar", "fr") for c in ("", "-corrige")]:
-    src = os.path.join(ROOT, "cahier", f); dst = os.path.join(DEST, "public", "cahier", f); os.makedirs(os.path.dirname(dst), exist_ok=True)
-    if f.endswith(".html"): open(dst, "w", encoding="utf-8").write(open(src, encoding="utf-8").read().replace("../index.html#planning-8", "/"))
-    else: shutil.copy(src, dst)
+# ---- Sécurité informatique (chapitre « Environnement informatique de travail ») : 4 séances. Le public ne reçoit que les énoncés (blancs vides) ; les corrigés vont dans content/private.
+_argv = sys.argv; sys.argv = [_argv[0], ROOT]
+import securite as SECMOD
+sys.argv = _argv
+BL = re.compile(r"\{\{(.*?)\}\}")
+def pr(p): return dict(ar="", fr="") if p is None else dict(ar=p[1], fr=eme(p[0]))                       # [fr, ar] -> {ar, fr}
+def blank(p): return dict(ar="", fr="") if p is None else dict(ar=BL.sub("{{}}", p[1]), fr=eme(BL.sub("{{}}", p[0])))   # blancs sans réponse
+SU = DATA["securite"]; sdat = {x["k"]: x for x in SU["seances"]}
+seances, ssol = [], {}
+for k, x in SECMOD.SEC.items():
+    d = sdat[k]
+    for lang in ("ar", "fr"): cp(d["video"][lang], d["video"][lang]); 
+    shots = {lang: d["img"][0 if lang == "ar" else 1] for lang in ("ar", "fr")}
+    for lang in ("ar", "fr"): cp(shots[lang], "img/securite/" + os.path.basename(shots[lang]))
+    forms, solforms = [], []
+    for f in x["form"]:
+        if f["k"] == "table":
+            forms.append(dict(kind="table", cols=[pr(c) for c in f["cols"]], rows=[[blank(c) for c in r] for r in f["rows"]]))
+            solforms.append(dict(cols=[pr(c) for c in f["cols"]], rows=[[pr(c) for c in r] for r in f["rows"]]))
+        else:   # carte à remplir librement (réflexes personnels) : pas de corrigé
+            forms.append(dict(kind="card", fields=[dict(label=pr(fl[0]), lines=fl[2]) for fl in f["fields"]])); solforms.append(None)
+    seances.append(dict(k=k, n=d["n"], title=pr(x["title"]), obj=pr(x["obj"]), cas=pr(x["cas"]), act=pr(x["act"]), trace=pr(x["trace"]),
+        phases=[dict(t=pr(p[0]), min=p[1], d=pr(p[2])) for p in x["phases"]], video=dict(ar="/" + d["video"]["ar"], fr="/" + d["video"]["fr"]),
+        shot=dict(ar="/img/securite/" + os.path.basename(shots["ar"]), fr="/img/securite/" + os.path.basename(shots["fr"])),
+        fill=[blank(p) for p in x["fill"]], forms=forms, retain=[pr(p) for p in x["retain"]], acq=[pr(p) for p in x["acq"]]))
+    ssol[k] = dict(fill=[pr(p) for p in x["fill"]], forms=solforms)
+put("content/public/securite.json", dict(title=bi(SU["ui"]["title"]), intro=bi(SU["ui"]["intro"]), note=bi(SU["ui"]["note"]),
+    map=[dict(r=bi(m["r"]), w=bi(m["w"]), p=bi(m["p"])) for m in SU["map"]], seances=seances))
+put("content/private/securite-solutions.json", ssol)
+
+# ---- cahier de l'élève (8eme) : la version publique ne contient AUCUNE réponse ; corrigés (HTML complet, PDF) réservés aux enseignants validés
+from bs4 import BeautifulSoup
+src_html = open(os.path.join(ROOT, "cahier", "cahier-8.html"), encoding="utf-8").read()
+soup = BeautifulSoup(src_html, "html.parser")
+for a in soup.select("span.ans"): a.string = " " * max(8, int(len(a.get_text()) * 1.3))        # la largeur du blanc est conservée, la réponse disparaît
+for c in soup.select(".cor"): c.decompose()                                                              # blocs de corrigé
+for lab in soup.find_all("label"):
+    if lab.find(id="corr"): lab.decompose()                                                              # case « corrigé »
+pub = str(soup).replace('var c = document.getElementById("corr");', 'var c = { checked: false, addEventListener: function(){} };').replace('if (q.get("corrige") === "1") { c.checked = true; }', "").replace("../index.html#planning-8", "/")
+assert 'id="corr"' not in pub and 'class="cor"' not in pub
+os.makedirs(os.path.join(DEST, "public", "cahier"), exist_ok=True); open(os.path.join(DEST, "public", "cahier", "cahier-8.html"), "w", encoding="utf-8").write(pub)
+os.makedirs(os.path.join(DEST, "content", "private", "cahier"), exist_ok=True); open(os.path.join(DEST, "content", "private", "cahier", "cahier-8-corrige.html"), "w", encoding="utf-8").write(src_html.replace("../index.html#planning-8", "/"))
+for f in [f"cahier-8-{l}.pdf" for l in ("ar", "fr")]: shutil.copy(os.path.join(ROOT, "cahier", f), os.path.join(DEST, "public", "cahier", f))
+for f in [f"cahier-8-{l}-corrige.pdf" for l in ("ar", "fr")]: shutil.copy(os.path.join(ROOT, "cahier", f), os.path.join(DEST, "content", "private", "cahier", f))
+for f in [f"cahier-8-{l}-corrige.pdf" for l in ("ar", "fr")]:   # ne laisser aucun corrigé dans public/ (ancien export)
+    p = os.path.join(DEST, "public", "cahier", f)
+    if os.path.exists(p): os.remove(p)
+
 print("activités", len(acts), "jeux", len(games), "étapes pensée", len(pensee["steps"]), "fichiers copiés", len(copied), "| sans traduction FR :", len(miss))
 for m in sorted(miss)[:10]: print("   ", m[:80])
