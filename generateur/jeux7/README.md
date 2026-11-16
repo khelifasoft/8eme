@@ -8,4 +8,4 @@ Régénérer (depuis ce dossier) : `python3 assets.py && python3 build_sb3.py` (
 vidéos : `node rec.cjs singe 25` puis `python3 mux.py` (Playwright, ffmpeg) ; `content_*.py` écrivent fiches et solutions dans l'application Next.js (variable `NEXTJS_REPO`).
 Dépendances : Python 3, Playwright, ffmpeg ; validation optionnelle des `.sb3` avec `scratch-parser`.
 
-Les deux jeux ne sont pas encore affichés dans la page statique `index.html` (seulement dans l'application Next.js).
+Ils apparaissent aussi dans la page statique (`index.html#games`, fiche `#fiche-singe` / `#fiche-requin`, ressources, vidéo, solutions avec le code habituel) grâce à `generateur/jeux7_data.py` (relié à `page.py`, `fiches_ar.py`, `fiches_programme.py` et `solutions.py`) ; fiches imprimables : `fiches-activite/singe.html` et `requin.html`. Reconstruire : `python3 generateur/page.py && python3 generateur/fiches_programme.py`.

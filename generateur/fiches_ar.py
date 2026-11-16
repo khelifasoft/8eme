@@ -113,3 +113,6 @@ LABY_STEPS = [
 SCENE = ("المشهد", "Scène")
 HEAD = {"الوضعية المشكلة": "Situation-problème", "مراحل اللعبة بالصور": "Les étapes en images", "سير الحصة": "Déroulement", "أنشطة التلميذ": "Activités de l'élève", "معايير النجاح": "Critères de réussite", "التمايز": "Différenciation",
         "التخفيف: ": "Allègement : ", "التوسيع: ": "Prolongement : ", "بطاقة النشاط: ": "Fiche d'activité : ", "تحميل مشروع سكراتش (.sb3)": "Télécharger le projet Scratch (.sb3)"}
+
+import jeux7_data as _J7   # « singe » et « requin »
+AR.update(_J7.AR7)

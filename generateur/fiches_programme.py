@@ -188,6 +188,8 @@ FAMILIES = {
   prolongement="Ajouter un quatrième mur avec son ouverture, puis regrouper la vérification d'un mur dans un module.",
   criteres=["L'effet du changement est constaté au test.", "L'élève explique les conditions imbriquées d'un mur.", "Une amélioration est testée."]),
 }
+import jeux7_data as _J7   # « singe » et « requin »
+FAMILIES.update(_J7.FAM7)
 
 CSS = """body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;max-width:820px;margin:0 auto;padding:18px 22px 50px;color:#1d2433;line-height:1.55;background:#fff}
 h1{font-size:26px;color:#1f4aa8;margin:6px 0 2px}h2{font-size:20px;color:#1f4aa8;border-bottom:2px solid #e8861c;padding-bottom:3px;margin:26px 0 8px}h3{font-size:16px;margin:14px 0 4px}

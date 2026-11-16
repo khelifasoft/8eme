@@ -13,6 +13,11 @@ for _g in json.load(open(os.path.join(HERE, "jeux4_manifest.json"), encoding="ut
 _EXTRA = {"labyrinthe": dict(video="jeux/videos/labyrinthe.mp4", fiche="labyrinthe", res="labyrinthe"), "saut": dict(video="jeux/videos/saut.mp4", fiche="saut", res="saut"), "sindbad": dict(video="jeux/videos/attrape-poissons.mp4", fiche="catch", res="catch"), "course": dict(video="jeux/videos/course.mp4", fiche="course", res="course")}
 for _g in games:
     if _g["cat"] == "catch": _g.update(_EXTRA.get(_g["key"], {}))
+import jeux7_data as _J7
+for _g in _J7.GAMES: games.append(dict(_g, **_J7.cat))
+_EXTRA.update(_J7.EXTRA)
+for _g in games:
+    if _g["cat"] == "catch": _g.update(_EXTRA.get(_g["key"], {}))
 man["games"] = games
 man["programme"] = json.load(open(os.path.join(HERE, "programme.json"), encoding="utf-8"))
 man["curriculum"] = json.load(open(os.path.join(HERE, "axes.json"), encoding="utf-8"))
@@ -23,8 +28,8 @@ man["seances"] = json.load(open(os.path.join(HERE, "seances.json"), encoding="ut
 import parcours, fiches_programme as _FP, activites as _ACT
 man["activites"], _afr = _ACT.export()
 man["fiches"] = {fid: dict(title=F["title"], meta=f'{_FP.PRG["levels"][str(F["level"])]["year_fr"]} · {F["duree"]}', situation=F["situation"], steps=[t for t, _ in F["demarche"]], eleve=F["eleve"], criteres=F["criteres"], allegee=F["allegee"], prolongement=F["prolongement"]) for fid, F in _FP.FAMILIES.items()}
-man["ressources"] = json.load(open(os.path.join(HERE, "ressources.json"), encoding="utf-8"))
-man["etapes"] = json.load(open(os.path.join(HERE, "etapes.json"), encoding="utf-8"))
+man["ressources"] = json.load(open(os.path.join(HERE, "ressources.json"), encoding="utf-8")); man["ressources"].update(_J7.RES7)
+man["etapes"] = json.load(open(os.path.join(HERE, "etapes.json"), encoding="utf-8")); man["etapes"].update(_J7.ETAPES7)
 import fiches_ar as _AR
 _far = {}
 for _fid, _d in _AR.AR.items():
@@ -34,7 +39,7 @@ for _fid, _d in _AR.AR.items():
     for _k in ("situation", "allegee", "prolongement"): _far[_d[_k]] = _f[_k]
     for _k in ("steps", "eleve", "criteres"):
         for _a, _b in zip(_d[_k], _f[_k]): _far[_a] = _b
-for _key, _steps in (("catch", _AR.CATCH_STEPS), ("course", _AR.COURSE_STEPS), ("saut", _AR.SAUT_STEPS), ("labyrinthe", _AR.LABY_STEPS)):
+for _key, _steps in (("catch", _AR.CATCH_STEPS), ("course", _AR.COURSE_STEPS), ("saut", _AR.SAUT_STEPS), ("labyrinthe", _AR.LABY_STEPS)) + tuple(_J7.STEPS7.items()):
     for _i, (_t, _c) in enumerate(_steps):
         _e = man["etapes"][_key][_i]; _far[_t] = _e["t"]; _far[_c] = _e["c"]; _e["t"], _e["c"] = _t, _c
 for _lst in man["etapes"]["contes"].values():

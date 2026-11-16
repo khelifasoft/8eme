@@ -183,6 +183,8 @@ def export():
             fr[lab] = base + {"": "", "boucle": " — dans la boucle « répéter indéfiniment »", "suite": " — suite du script"}[ctx]
             tok, f = parse(code); fr.update(f); steps[key].append(dict(sprite=lab, tok=tok))
         assert len(steps[key]) == 6
+    import jeux7_data as _J7   # « singe » et « requin »
+    _s7, _f7 = _J7.solutions(); steps.update(_s7); fr.update(_f7)
     return dict(code=CODE, steps=steps), fr
 if __name__ == "__main__":
     e, f = export(); print({k: [len(s["tok"]) for s in v] for k, v in e["steps"].items()}, len(f))
