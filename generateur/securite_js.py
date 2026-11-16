@@ -16,6 +16,7 @@ function renderSecurite(){
     el("p",{class:"pnote"}, el("b",{text:SU.obj}), " : ", s.obj),
     el("div",{class:"thcall thhook"}, el("b",{text:SU.cas}), " ", el("span",{text:s.cas})),
     el("h4",{text:SU.video}), el("div",{class:"secvid"}, el("video",{class:"v-ar",controls:"",preload:"none",src:s.video.ar}), el("video",{class:"v-fr",controls:"",preload:"none",src:s.video.fr})),
+    el("h4",{text:SU.course}), (s.cours || []).map(c => el("div",{class:"courseblk"}, el("h5",{text:c.t}), c.p ? el("p",{text:c.p}) : "", c.items.length ? el(c.ol ? "ol" : "ul",{}, c.items.map(i => el("li",{text:i}))) : "", c.ex ? el("p",{class:"thcall",text:c.ex}) : "", c.warn ? el("p",{class:"warnbox",text:"⚠ " + c.warn}) : "")),
     el("h4",{text:SU.act}), el("p",{text:s.act}),
     el("p",{}, el("b",{text:SU.trace}), " : ", s.trace),
     el("details",{class:"step seanc"}, el("summary",{text:SU.plan}), el("table",{class:"sctable phases"}, el("thead",{}, el("tr",{}, el("th",{text:"المرحلة"}), el("th",{text:"المدة"}), el("th",{text:"الوصف"}))),
@@ -156,7 +157,7 @@ CSS = r'''
 .pz{border:2px solid #1e4fa8;border-radius:14px;padding:6px 16px 12px;margin:14px 0;background:#f7faff}.pzcols{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.pzcols{grid-template-columns:1fr}}.pzpal,.pzws{min-height:120px;border:1.5px dashed #9aa5b8;border-radius:10px;padding:8px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;background:#fff}.pzws{border-style:solid;border-color:#3f7ee0}.pzb{border:0;cursor:pointer;font:inherit;font-size:14px;text-align:start}.pzb.hint{outline:3px solid #ffd43b}.pznb{display:block}.pzout{margin-top:8px}.pzanim{position:relative;max-width:420px;margin-top:8px}.pzanim img{width:100%;display:block;border:1px solid var(--line);border-radius:8px}.pzanim img:last-child{position:absolute;inset:0;animation:pzfade 3s ease-in-out infinite alternate}@keyframes pzfade{0%,30%{opacity:0}70%,100%{opacity:1}}
 .objshot{margin:6px 0;max-width:720px}.objshot img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
 .secseance{border:1px solid var(--line);border-radius:14px;padding:6px 16px 12px;margin:16px 0;background:#fbfcff}.secseance h3{margin:4px 0}.secseance h4{margin:12px 0 4px;color:#1e3a6e}
-.secvid video{width:100%;max-width:720px;border-radius:10px;background:#000;display:block}html[lang=fr] .v-ar,html:not([lang=fr]) .v-fr{display:none}
+.secvid video{width:100%;max-width:720px;border-radius:10px;background:#000;display:block}.courseblk{background:#fff;border:1px solid #d8e0f0;border-radius:12px;padding:4px 16px 10px;margin:10px 0}.courseblk h5{color:#1e4fa8;margin:.8em 0 .3em;font-size:1.02rem}.courseblk ul,.courseblk ol{margin:.3em 0 .6em;padding-inline-start:1.4em}.warnbox{background:#fff4f2;border-inline-start:4px solid #b3261e;padding:8px 14px;border-radius:6px;margin:.6em 0;font-weight:600}html[lang=fr] .v-ar,html:not([lang=fr]) .v-fr{display:none}
 .solbtn{margin:8px 0 0;font-size:.85rem;padding:5px 12px}
 .solov{position:fixed;inset:0;background:rgba(15,25,45,.55);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
 .solcard{background:#fff;color:#1d2433;border-radius:14px;padding:20px 22px;max-width:640px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.35)}

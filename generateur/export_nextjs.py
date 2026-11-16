@@ -67,10 +67,21 @@ for g in DATA["games"]:
         o["fi"] = dict(title=bi(F["title"]), meta=bi(F["meta"]), situation=bi(F["situation"]), steps=lst(F["steps"]), eleve=lst(F["eleve"]), criteres=lst(F["criteres"]), allegee=bi(F["allegee"]), prolongement=bi(F["prolongement"]))
         o["etapes"] = [dict(img=img([e["img"], e["img_ar"]]), t=bi(e["t"]), c=bi(e["c"])) for e in DATA["etapes"][fid]]
     games.append(o)
+# jeux guidés ajoutés après coup (singe, requin) : contenu dans generateur/jeux7_content.json, fichiers dans jeux/, fiches-activite/etapes/
+J7 = json.load(open(os.path.join(HERE, "jeux7_content.json"), encoding="utf-8")) if os.path.exists(os.path.join(HERE, "jeux7_content.json")) else dict(games=[], solutions={})
+def pub7(path):   # chemin public de l'application -> fichier de ce dépôt
+    return os.path.join(ROOT, "fiches-activite", path[len("/img/"):]) if path.startswith("/img/etapes/") else os.path.join(ROOT, path.lstrip("/"))
+for g in J7["games"]:
+    files = [g["cover"], g["ressources"]["zip"]] + [i["file"] for i in g["ressources"]["items"]] + ([g["video"]] if g.get("video") else []) + [x for e in g["etapes"] for x in e["img"].values()]
+    for f in files:
+        dst = os.path.join(DEST, "public", f.lstrip("/")); os.makedirs(os.path.dirname(dst), exist_ok=True); shutil.copy(pub7(f), dst)
+    os.makedirs(os.path.join(DEST, "content", "private", "jeux"), exist_ok=True); shutil.copy(os.path.join(ROOT, "jeux", f"jeu_{g['key']}.sb3"), os.path.join(DEST, "content", "private", "jeux", f"jeu_{g['key']}.sb3"))
+    games.append(g)
 put("content/public/jeux.json", dict(cats=list(CATS.values()), games=games))
 gs = {}
 for fid, lst_ in DATA["solutions"]["steps"].items():
     gs[fid] = [dict(sprite=bi(s["sprite"]), tok=[tok(t) for t in s["tok"]]) for s in lst_]
+gs.update(J7["solutions"])
 put("content/private/jeux-solutions.json", gs)
 
 # « Pensée logique et programmation » (8eme) : compétences, détails de l'Aide pédagogique 2026, parcours, projets, exercices
@@ -111,7 +122,7 @@ for k, x in SECMOD.SEC.items():
     shots = {lang: d["img"][0 if lang == "ar" else 1] for lang in ("ar", "fr")}
     for lang in ("ar", "fr"): cp(shots[lang], "img/securite/" + os.path.basename(shots[lang]))
     forms, solforms = [], []
-    for f in x["form"]:
+    for f in x["form_web"]:
         if f["k"] == "table":
             forms.append(dict(kind="table", cols=[pr(c) for c in f["cols"]], rows=[[blank(c) for c in r] for r in f["rows"]]))
             solforms.append(dict(cols=[pr(c) for c in f["cols"]], rows=[[pr(c) for c in r] for r in f["rows"]]))
@@ -120,8 +131,9 @@ for k, x in SECMOD.SEC.items():
     seances.append(dict(k=k, n=d["n"], title=pr(x["title"]), obj=pr(x["obj"]), cas=pr(x["cas"]), act=pr(x["act"]), trace=pr(x["trace"]),
         phases=[dict(t=pr(p[0]), min=p[1], d=pr(p[2])) for p in x["phases"]], video=dict(ar="/" + d["video"]["ar"], fr="/" + d["video"]["fr"]),
         shot=dict(ar="/img/securite/" + os.path.basename(shots["ar"]), fr="/img/securite/" + os.path.basename(shots["fr"])),
-        fill=[blank(p) for p in x["fill"]], forms=forms, retain=[pr(p) for p in x["retain"]], acq=[pr(p) for p in x["acq"]]))
-    ssol[k] = dict(fill=[pr(p) for p in x["fill"]], forms=solforms)
+        cours=[dict(t=pr(c["t"]), **({"p": pr(c["p"])} if c.get("p") else {}), **({"items": [pr(i) for i in c["items"]]} if c.get("items") else {}), **({"ol": True} if c.get("ol") else {}), **({"ex": pr(c["ex"])} if c.get("ex") else {}), **({"warn": pr(c["warn"])} if c.get("warn") else {})) for c in x["cours"]],
+        fill=[blank(p) for p in x["fill_web"]], forms=forms, retain=[pr(p) for p in x["retain"]], acq=[pr(p) for p in x["acq"]]))
+    ssol[k] = dict(fill=[pr(p) for p in x["fill_web"]], forms=solforms)
 put("content/public/securite.json", dict(title=bi(SU["ui"]["title"]), intro=bi(SU["ui"]["intro"]), note=bi(SU["ui"]["note"]),
     map=[dict(r=bi(m["r"]), w=bi(m["w"]), p=bi(m["p"])) for m in SU["map"]], seances=seances))
 put("content/private/securite-solutions.json", ssol)

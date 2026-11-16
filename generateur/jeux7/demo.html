@@ -1,0 +1,60 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#000;overflow:hidden">
+<div id="st" style="position:relative;width:480px;height:360px;overflow:hidden;font-family:Arial,sans-serif"></div>
+<script>
+const G = new URLSearchParams(location.search).get('g'), st = document.getElementById('st'), ev = []; window.__ev = ev;
+let seed = 12345; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296, rr = (a, b) => a + rnd() * (b - a);
+const mkimg = (src, w, h) => { const i = document.createElement('img'); i.src = src; i.style.cssText = `position:absolute;width:${w}px;height:${h}px;pointer-events:none`; st.appendChild(i); return i; };
+const put = (el, x, y, w, h, flip, scale = 1) => { el.style.left = (240 + x - w / 2) + 'px'; el.style.top = (180 - y - h / 2) + 'px'; el.style.transform = `scale(${flip ? -scale : scale},${scale})`; };
+const bg = mkimg('', 480, 360); bg.style.left = bg.style.top = '0';
+const mon = document.createElement('div'); mon.style.cssText = 'position:absolute;left:5px;top:5px;background:#e6f0ff;border:1px solid #c4d3f0;border-radius:4px;padding:2px 6px;font:bold 13px Arial;color:#575e75;display:flex;gap:8px;align-items:center'; mon.innerHTML = '<span>النقاط</span><b id="sc" style="background:#ff8c1a;color:#fff;border-radius:3px;min-width:30px;text-align:center;padding:1px 4px">0</b>'; st.appendChild(mon);
+let score = 0; const setScore = v => { score = v; document.getElementById('sc').textContent = v; };
+const R = G === 'singe' ? 'res/' : 'res_r/';
+let tick = 0; const T = () => tick / 30;
+if (G === 'singe') {
+  bg.src = R + 'decor-jeu.svg';
+  const mk = mkimg(R + 'singe.svg', 64, 104), ba = mkimg(R + 'banane.svg', 52, 46), or = mkimg(R + 'orange.svg', 36, 40);
+  const m = { x: 0, y: -106 }, b = { x: 0, y: 170, v: 1 }, o = { x: 0, y: 170, v: 1 }; let over = false;
+  const respawn = s => { s.x = rr(-200, 200); s.y = 170; s.v = 1; };
+  respawn(b); respawn(o); o.y = 330; o.x = rr(-200, 200);
+  const touch = (s, w, h) => Math.abs(s.x - m.x) < 20 + w / 2 && Math.abs(s.y - m.y) < 45 + h / 2;
+  const frame = () => {
+    if (over) return;
+    const chaseOrange = T() > 21;
+    let tx = b.x; if (chaseOrange) tx = o.x; else if (o.v && o.y > -150 && o.y < 200 && Math.abs(o.x - m.x) < 80) tx = m.x + (m.x >= o.x ? 300 : -300);
+    if (m.x < tx - 10) m.x += 10; else if (m.x > tx + 10) m.x -= 10; m.x = Math.max(-215, Math.min(215, m.x)); if (T() < 21 && Math.abs(m.x) >= 215) m.x += (m.x > 0 ? -1 : 1) * 0;
+    for (const [s, w, h, kind] of [[b, 52, 46, 'b'], [o, 36, 40, 'o']]) {
+      if (s.v) { s.y -= 5; if (touch(s, w, h)) { s.v = 0; if (kind === 'b') { setScore(score + 1); ev.push([T(), 'banane']); } else { over = true; ev.push([T(), 'perdu']); } } else if (s.y <= -150) s.v = 0; }
+      else { s.w = (s.w || 0) + 1; if (s.w > (kind === 'o' ? 60 : 12)) { s.w = 0; respawn(s); } }
+    }
+    ba.style.display = b.v ? '' : 'none'; or.style.display = o.v && !over ? '' : 'none';
+    put(mk, m.x, m.y, 64, 104); put(ba, b.x, b.y, 52, 46); put(or, o.x, o.y, 36, 40);
+    if (over) { bg.src = R + 'decor-perdu.svg'; mk.style.display = ba.style.display = 'none'; ev.push([T(), 'fin']); }
+  };
+  window.run = () => setInterval(() => { tick++; frame(); }, 1000 / 30);
+} else {
+  bg.src = R + 'decor-menu.svg'; mon.style.display = 'none';
+  const sh = mkimg(R + 'requin-1.svg', 160, 90), bt = mkimg(R + 'bouton-commencer.svg', 170, 54), cur = document.createElement('div');
+  cur.style.cssText = 'position:absolute;width:0;height:0;border-left:10px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent;filter:drop-shadow(0 0 2px #000);transform:rotate(-30deg);z-index:9'; st.appendChild(cur);
+  const say = document.createElement('div'); say.style.cssText = 'position:absolute;display:none;background:#fff;border:3px solid #333;border-radius:14px;padding:8px 14px;font:bold 16px Arial;z-index:8'; st.appendChild(say);
+  sh.style.display = 'none'; put(bt, -16, -118, 170, 54);
+  let phase = 'menu', S = { x: -173, y: 119, d: 90 }, fish = [], cs = 0, cx = 200, cy = -40, win = 0;
+  const frame = () => {
+    if (phase === 'menu') { cx += (-16 - cx) * .12; cy += (-118 - cy) * .12; cur.style.left = (240 + cx) + 'px'; cur.style.top = (180 - cy) + 'px';
+      if (T() > 3) { phase = 'play'; cur.style.display = bt.style.display = 'none'; bg.src = R + 'decor-mer.svg'; mon.style.display = ''; sh.style.display = ''; ev.push([T(), 'start']); setScore(0);
+        for (let i = 0; i < 10; i++) { const f = { x: rr(-220, 220) * .9 + (rnd() < .5 ? 0 : 0), y: rr(-170, 170), d: 90, el: mkimg(R + (i % 2 ? 'poisson-1.svg' : 'poisson-2.svg'), 64, 44) }; f.el.style.transformOrigin = 'center'; fish.push(f); } }
+      return; }
+    if (phase === 'end') { if (T() > win + 3.2) say.style.display = 'none'; return; }
+    if (tick % 9 === 0) { cs ^= 1; sh.src = R + (cs ? 'requin-2.svg' : 'requin-1.svg'); }
+    // IA : le joueur appuie sur les flèches (d'abord horizontalement, puis verticalement)
+    const tg = fish.reduce((a, f) => (!a || Math.hypot(f.x - S.x, f.y - S.y) < Math.hypot(a.x - S.x, a.y - S.y)) ? f : a, null);
+    if (tg && tick % 2 === 0) { if (Math.abs(tg.x - S.x) > 8) { S.d = tg.x > S.x ? 90 : -90; S.x += tg.x > S.x ? 5 : -5; } else if (Math.abs(tg.y - S.y) > 6) { S.d = tg.y > S.y ? 0 : 180; S.y += tg.y > S.y ? 5 : -5; } }
+    put(sh, S.x, S.y, 160, 90, S.d < 0, .7);
+    for (const f of fish) { f.d -= 3; const r = f.d * Math.PI / 180; f.x += Math.sin(r) * 3; f.y += Math.cos(r) * 3; f.d += 2;
+      if (f.x > 230 || f.x < -230) { f.d = -f.d; f.x = Math.max(-230, Math.min(230, f.x)); } if (f.y > 170 || f.y < -170) { f.d = 180 - f.d; f.y = Math.max(-170, Math.min(170, f.y)); } f.d = ((f.d + 540) % 360) - 180;
+      put(f.el, f.x, f.y, 64, 44, f.d < 0, .6); }
+    for (const f of fish.slice()) if (Math.abs(f.x - S.x) < 56 && Math.abs(f.y - S.y) < 34) { f.el.remove(); fish.splice(fish.indexOf(f), 1); setScore(score + 1); ev.push([T(), 'glou']); }
+    if (score >= 10) { phase = 'end'; win = T(); ev.push([T(), 'victoire']); say.textContent = 'أحسنت! أكلتَ 10 أسماك'; say.style.display = 'block'; say.style.left = (240 + S.x - 60) + 'px'; say.style.top = (180 - S.y - 90) + 'px'; ev.push([T() + 3.4, 'fin']); }
+  };
+  window.run = () => setInterval(() => { tick++; frame(); }, 1000 / 30);
+}
+</script>
