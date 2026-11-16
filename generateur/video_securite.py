@@ -18,7 +18,7 @@ body{{background:linear-gradient(160deg,{bg},#fff);display:flex;flex-direction:c
 h1{{margin:0;font-size:60px;color:#1d2433;text-align:center;line-height:1.2}}
 p{{margin:0;font-size:34px;color:#333;text-align:center;line-height:1.45;max-width:1100px}}
 .d{{display:flex;gap:10px}}.d i{{display:block;width:16px;height:16px;border-radius:50%}}</style>
-<div class="top"><span>{html.escape(title)}</span><b>{i + 1} / {n}</b></div><div class="em">{emoji}</div><h1>{html.escape(cap)}</h1><p>{html.escape(narr)}</p><div class="d">{dots}</div></html>'''
+<div class="top"><span>{html.escape(title)}</span><b dir="ltr">{i + 1} / {n}</b></div><div class="em">{emoji}</div><h1>{html.escape(cap)}</h1><p>{html.escape(narr)}</p><div class="d">{dots}</div></html>'''
 def main():
     tmp = tempfile.mkdtemp(prefix="sec_"); jobs = []; plan = []
     for key, d in SE.SEC.items():
