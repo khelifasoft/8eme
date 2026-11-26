@@ -71,6 +71,7 @@ for g in DATA["games"]:
 J7 = json.load(open(os.path.join(HERE, "jeux7_content.json"), encoding="utf-8")) if os.path.exists(os.path.join(HERE, "jeux7_content.json")) else dict(games=[], solutions={})
 def pub7(path):   # chemin public de l'application -> fichier de ce dépôt
     return os.path.join(ROOT, "fiches-activite", path[len("/img/"):]) if path.startswith("/img/etapes/") else os.path.join(ROOT, path.lstrip("/"))
+games[:] = [g for g in games if g["key"] not in {x["key"] for x in J7["games"]}]   # déjà présents dans DATA (page statique) : on garde la version de jeux7_content.json
 for g in J7["games"]:
     files = [g["cover"], g["ressources"]["zip"]] + [i["file"] for i in g["ressources"]["items"]] + ([g["video"]] if g.get("video") else []) + [x for e in g["etapes"] for x in e["img"].values()]
     for f in files:
