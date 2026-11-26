@@ -12,6 +12,7 @@ const VM = require('scratch-vm'); const _S = require('scratch-storage'); const S
   const T = n => rt.targets.find(t => t.sprite && t.sprite.name === n);
   const said = {}; rt.on('SAY', (t, type, msg) => { said[t.sprite.name] = msg || ''; });
   const FPS = 30, frames = []; let ended = -1;
+  if (mode === 'maze') { let q = 424242; Math.random = () => (q = (q * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff; }   // fantôme 2 : positions aléatoires reproductibles
   // les durées (« dire pendant n secondes », « attendre ») utilisent l'horloge : on la fait avancer de 1/30 s par image
   let clock = Date.now(); const realNow = Date.now; Date.now = () => clock;
   const rng = (() => { let s = 12345; return () => (s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff; })();
@@ -33,8 +34,11 @@ const VM = require('scratch-vm'); const _S = require('scratch-storage'); const S
     } else if (mode === 'maze') {                // labyrinthe : pilote automatique (et un essai contre le premier mur)
       const SEG = [['x', -100], ['hold', 'up', 40], ['y', -130], ['x', 195], ['y', -15], ['x', -195], ['y', 75], ['x', 195], ['y', 150]];
       const s = SEG[Math.min(seg, SEG.length - 1)]; let want = null;
-      if (s[0] === 'x') { const d = s[1] - player.x; if (Math.abs(d) <= 3) { seg++; segF = 0; } else want = d > 0 ? 'ArrowRight' : 'ArrowLeft'; }
-      else if (s[0] === 'y') { const d = s[1] - player.y; if (Math.abs(d) <= 3) { seg++; segF = 0; } else want = d > 0 ? 'ArrowUp' : 'ArrowDown'; }
+      const g1 = T('الشبح 1');   // le fantôme 1 monte et descend dans la colonne des ouvertures de droite (pas de 3, demi-tours en y = 105 et -140) : on prédit le croisement et on attend au bord de la colonne
+      const danger = (py, target) => { let gy = g1.y, gd = g1.direction === 0 ? 1 : -1, my = py; const up = target > py ? 1 : -1, n = Math.ceil(Math.abs(target - py) / 4) + 8;
+        for (let k = 0; k < n; k++) { gy += 3 * gd; if (gy > 105) gd = -1; if (gy < -140) gd = 1; my += Math.abs(target - my) > 4 ? 4 * up : target - my; if (Math.abs(gy - my) < 42) return true; } return false; };
+      if (s[0] === 'x') { const d = s[1] - player.x; if (Math.abs(d) <= 3) { seg++; segF = 0; } else if (d > 0 && s[1] > 150 && player.x > 120 && player.x < 150 && SEG[seg + 1] && danger(player.y, SEG[seg + 1][1])) want = null; else want = d > 0 ? 'ArrowRight' : 'ArrowLeft'; }
+      else if (s[0] === 'y') { const d = s[1] - player.y; if (Math.abs(d) <= 3) { seg++; segF = 0; } else if (player.x > 150 && danger(player.y, s[1])) want = null; else want = d > 0 ? 'ArrowUp' : 'ArrowDown'; }
       else { if (segF++ < s[2]) want = 'ArrowUp'; else { seg++; segF = 0; } }
       for (const k of ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']) { const on = k === want; if (on !== !!held[k]) { key(k, on); held[k] = on; } }
     } else {                                      // course : on évite des voitures pendant 24 s, puis on fonce dessus
@@ -49,7 +53,7 @@ const VM = require('scratch-vm'); const _S = require('scratch-storage'); const S
     clock += 1000 / FPS; rt._step();
     const sp = rt.targets.filter(x => x.sprite).map(x => ({ name: x.sprite.name, x: x.x, y: x.y, size: x.size, direction: x.direction, visible: x.visible, costume: x.currentCostume, say: said[x.sprite.name] || '' }));
     frames.push({ t, sp, score: val('النقاط'), lives: val('الأرواح'), speed: val('السرعة'), vars: Object.fromEntries(Object.values(stage.variables).map(v => [v.name, v.value])) });
-    const over = mode === 'maze' ? /^(فزت|انتهى الوقت)/.test(said['الفأرة'] || '') : frames[frames.length - 1].lives < 1;
+    const over = mode === 'maze' ? /^(فزت|انتهى الوقت|لمسك شبح)/.test(said['الفأرة'] || '') : frames[frames.length - 1].lives < 1;
     if (over && n > FPS && ended < 0) ended = n;      // fin : on garde encore 3,5 s (message « انتهت اللعبة! »)
     if (ended >= 0 && n - ended > 3.5 * FPS) break;
   }

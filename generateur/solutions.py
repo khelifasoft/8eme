@@ -171,6 +171,32 @@ ct:if|y > 140|ص > 140
 ct:if|temps < 1|الوقت < 1
   lk:say|dire « Temps écoulé ! » pendant 3 secondes|قل «انتهى الوقت!» لمدة 3 ثوان
   ct:stop|stop tout|أوقف الكل"""),
+ ("الشبح 1", "Lutin « fantôme 1 »", f"""{FLAG}
+mv:goto|aller à x : 185 y : -140|اذهب إلى س: 185 ص: -140
+mv:dir|s'orienter à 0|اتجه نحو 0
+lk:size|mettre la taille à 30 %|اجعل الحجم 30 %
+lk:show|montrer|أظهر
+ct:forever|répéter indéfiniment|كرّر باستمرار
+  mv:move|avancer de 3 pas|تقدم 3 خطوات
+  ct:if|y > 105|ص > 105
+    mv:dir|s'orienter à 180|اتجه نحو 180
+  ct:if|y < -140|ص < -140
+    mv:dir|s'orienter à 0|اتجه نحو 0"""),
+ ("الشبح 2", "Lutin « fantôme 2 »", f"""{FLAG}
+lk:hide|cacher|أخفِ
+ct:forever|répéter indéfiniment|كرّر باستمرار
+  lk:hide|cacher|أخفِ
+  ct:wait|attendre 2 secondes|انتظر 2 ثانية
+  mv:goto|aller à x : (nombre aléatoire entre -200 et 200) y : (nombre aléatoire entre -110 et 120)|اذهب إلى س: (عدد عشوائي بين -200 و200) ص: (عدد عشوائي بين -110 و120)
+  lk:show|montrer|أظهر
+  ct:wait|attendre 0,5 seconde|انتظر 0٫5 ثانية"""),
+ ("الشبح 1", "Lutin « fantôme 1 » (dans la boucle « répéter indéfiniment », contact avec la souris)", """ct:if|valeur absolue de (x − x de la souris) < 30|القيمة المطلقة لـ (س − س الفأرة) < 30
+  ct:if|valeur absolue de (y − y de la souris) < 30|القيمة المطلقة لـ (ص − ص الفأرة) < 30
+    ev:send|envoyer à tous « perdu » et attendre|أرسل إلى الجميع «خسرت» وانتظر
+    ct:stop|stop tout|أوقف الكل
+ev:recv|quand je reçois « perdu » (lutin « souris »)|عند استقبال «خسرت» (الكائن «الفأرة»)
+ct:stop|stop les autres scripts du lutin|أوقف السكربتات الأخرى للكائن
+lk:say|dire « Un fantôme t'a touché ! Perdu » pendant 3 secondes|قل «لمسك شبح! خسرت» لمدة 3 ثوان"""),
 ]
 SPR_FR = {}
 def export():
@@ -182,7 +208,7 @@ def export():
             base = re.sub(r" \(.*\)$", "", spr_fr); lab = "الكائن «" + spr + "»" + {"": "", "boucle": " — داخل حلقة «كرّر باستمرار»", "suite": " — تتمة السكربت"}[ctx]
             fr[lab] = base + {"": "", "boucle": " — dans la boucle « répéter indéfiniment »", "suite": " — suite du script"}[ctx]
             tok, f = parse(code); fr.update(f); steps[key].append(dict(sprite=lab, tok=tok))
-        assert len(steps[key]) == 6
+        assert len(steps[key]) == (9 if key == "labyrinthe" else 6)
     import jeux7_data as _J7   # « singe » et « requin »
     _s7, _f7 = _J7.solutions(); steps.update(_s7); fr.update(_f7)
     return dict(code=CODE, steps=steps), fr

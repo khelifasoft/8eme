@@ -51,18 +51,18 @@ AR = {
    prolongement="Créer un module « buisson touché » (−1 vie, son, retour à droite) et l'appeler à la place des blocs.")),
  "labyrinthe": dict(
   title="متاهة الفأرة", duree="حصتان من 45 دقيقة", year="السنة الثامنة",
-  situation="كيف نحرّك فأرة بالأسهم في متاهة، ونمنعها من اختراق الجدران، ونحسب النقاط والوقت؟",
+  situation="كيف نحرّك فأرة بالأسهم في متاهة، ونمنعها من اختراق الجدران، ونحسب النقاط والوقت، ونتفادى شبحين؟",
   steps=["حاجة تُستخلص دون حاسوب (10 د)", "نلعب ونصف (10 د)", "نقرأ السكربتات (15 د)", "نعدّل ونحسّن (20 د)", "نختبر ونصحّح (10 د)"],
-  eleve=["العب حتى النهاية ودوّن نتيجتك والوقت المتبقي.", "ابحث عن المتغيرين اللذين يحفظان الموضع السابق. ما فائدتهما؟", "غيّر سرعة الفأرة (القيمة 4) أو المدة الكلية (القيمة 60)، واختبر وفسّر الأثر.", "حدّد الشروط الثلاثة المتداخلة الخاصة بجدار، وفسّر كلا منها.", "تحدٍّ: انقل فتحة جدار إلى الجهة الأخرى وكيّف الشرط."],
-  criteres=["يُلاحَظ أثر التغيير عند الاختبار.", "يفسّر التلميذ الشروط المتداخلة الخاصة بجدار.", "يُختبَر تحسين واحد."],
+  eleve=["العب حتى النهاية ودوّن نتيجتك والوقت المتبقي.", "ابحث عن المتغيرين اللذين يحفظان الموضع السابق. ما فائدتهما؟", "غيّر سرعة الفأرة (القيمة 4) أو المدة الكلية (القيمة 60)، واختبر وفسّر الأثر.", "حدّد الشروط الثلاثة المتداخلة الخاصة بجدار، وفسّر كلا منها.", "لاحظ الشبحين: ما الذي يجعلهما خطرين؟ كيف نتفاداهما؟", "تحدٍّ: انقل فتحة جدار إلى الجهة الأخرى وكيّف الشرط."],
+  criteres=["يُلاحَظ أثر التغيير عند الاختبار.", "يفسّر التلميذ الشروط المتداخلة الخاصة بجدار.", "يشرح التلميذ كيف تكتشف اللعبة أن شبحا لمس الفأرة (فرق صغير في س وفي ص).", "يُختبَر تحسين واحد."],
   allegee="تغيير المدة الكلية فقط.",
   prolongement="إضافة جدار رابع بفتحته، ثم تجميع مراقبة الجدار في وحدة.",
   fr=dict(
    title="Le labyrinthe de la souris", duree="2 séances de 45 minutes", year="8e année",
-   situation="Comment déplacer une souris avec les flèches dans un labyrinthe, l'empêcher de traverser les murs et compter les points et le temps ?",
+   situation="Comment déplacer une souris avec les flèches dans un labyrinthe, l'empêcher de traverser les murs, compter les points et le temps, et éviter deux fantômes ?",
    steps=['Besoin à faire émerger sans ordinateur (10 min)', 'Jouer et décrire (10 min)', 'Lire les scripts (15 min)', 'Modifier et optimiser (20 min)', 'Tester et corriger (10 min)'],
-   eleve=["Joue jusqu'au bout et note ton score et le temps restant.", "Trouve les variables qui mémorisent la position précédente. À quoi servent-elles ?", "Change la vitesse de la souris (la valeur 4) ou la durée totale (la valeur 60), teste et explique l'effet.", "Repère les trois conditions imbriquées d'un mur. Explique chacune.", "Défi : déplace l'ouverture d'un mur de l'autre côté et adapte la condition."],
-   criteres=["L'effet du changement est constaté au test.", "L'élève explique les conditions imbriquées d'un mur.", "Une amélioration est testée."],
+   eleve=["Joue jusqu'au bout et note ton score et le temps restant.", "Trouve les variables qui mémorisent la position précédente. À quoi servent-elles ?", "Change la vitesse de la souris (la valeur 4) ou la durée totale (la valeur 60), teste et explique l'effet.", "Repère les trois conditions imbriquées d'un mur. Explique chacune.", "Observe les deux fantômes : qu'est-ce qui les rend dangereux ? Comment les éviter ?", "Défi : déplace l'ouverture d'un mur de l'autre côté et adapte la condition."],
+   criteres=["L'effet du changement est constaté au test.", "L'élève explique les conditions imbriquées d'un mur.", "L'élève explique comment le jeu détecte qu'un fantôme touche la souris (petites différences en x et en y).", "Une amélioration est testée."],
    allegee="Changer uniquement la durée totale.",
    prolongement="Ajouter un quatrième mur avec son ouverture, puis regrouper la vérification d'un mur dans un module.")),
  "contes": dict(
@@ -109,7 +109,10 @@ LABY_STEPS = [
  ("جدار يمنعني", "إذا دخلت منطقة جدار خارج الفتحة: أعود إلى الموضع السابق فلا أخترق الجدار."),
  ("أمرّ من الفتحة", "عند الفتحة يكون س خارج منطقة الجدار، فأواصل الصعود إلى الممر التالي."),
  ("نجمة ملتقطة", "إذا اقتربت الفأرة من نجمة (فرق صغير في س وفي ص): تزيد النقاط بواحد وتختفي النجمة."),
- ("الوصول إلى الجبن", "عندما يتجاوز ص القيمة 140: تظهر عبارة «فزت!» وتتوقف اللعبة. وإذا انتهى الوقت قبل ذلك تتوقف أيضا.")]
+ ("الوصول إلى الجبن", "عندما يتجاوز ص القيمة 140: تظهر عبارة «فزت!» وتتوقف اللعبة. وإذا انتهى الوقت قبل ذلك تتوقف أيضا."),
+ ("الشبح 1 يصعد وينزل", "يتقدم الشبح 3 خطوات ويرجع عند الأعلى (ص > 105) وعند الأسفل (ص < -140): فيجتاز عمود الفتحات على اليمين. علينا اختيار اللحظة المناسبة للمرور."),
+ ("الشبح 2 يظهر في مكان آخر", "يختفي الشبح ثانيتين ثم يظهر في مكان عشوائي. يبقى نصف ثانية ظاهرا دون خطر: لدينا الوقت لنبتعد."),
+ ("شبح يلمسني: خسرت", "إذا كان الفرق في س وفي ص مع الفأرة صغيرا (أقل من 30) يرسل الشبح رسالة «خسرت»: تقول الفأرة «لمسك شبح!» وتتوقف اللعبة.")]
 SCENE = ("المشهد", "Scène")
 HEAD = {"الوضعية المشكلة": "Situation-problème", "مراحل اللعبة بالصور": "Les étapes en images", "سير الحصة": "Déroulement", "أنشطة التلميذ": "Activités de l'élève", "معايير النجاح": "Critères de réussite", "التمايز": "Différenciation",
         "التخفيف: ": "Allègement : ", "التوسيع: ": "Prolongement : ", "بطاقة النشاط: ": "Fiche d'activité : ", "تحميل مشروع سكراتش (.sb3)": "Télécharger le projet Scratch (.sb3)"}

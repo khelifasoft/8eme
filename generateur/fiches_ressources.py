@@ -36,6 +36,8 @@ GAMES = {
    ("نجمة 1", "نجمة"): ("etoile.svg", "L'étoile à ramasser", "النجمة المطلوب التقاطها", "image"),
    ("Stage", "موسيقى غامضة"): ("musique-mystere.wav", "Musique de fond : mystère", "موسيقى الخلفية: غموض", "son"),
    ("نجمة 1", "جرس صغير"): ("son-clochette.wav", "Son quand on ramasse une étoile", "صوت التقاط النجمة", "son"),
+   ("الشبح 1", "شبح"): ("fantome-1.svg", "Le fantôme 1 (va-et-vient)", "الشبح 1 (ذهاب وإياب)", "image"),
+   ("الشبح 2", "شبح"): ("fantome-2.svg", "Le fantôme 2 (apparaît ailleurs)", "الشبح 2 (يظهر في مكان آخر)", "image"),
    ("نجمة 2", "نجمة"): None, ("نجمة 3", "نجمة"): None, ("نجمة 2", "جرس صغير"): None, ("نجمة 3", "جرس صغير"): None})}
 allres = {}
 for gid, G in GAMES.items():

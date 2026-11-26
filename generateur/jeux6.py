@@ -21,6 +21,14 @@ def maze_svg():
     s += '<rect x="2" y="2" width="476" height="356" fill="none" stroke="#1b441b" stroke-width="4"/></svg>'
     return s
 
+def ghost_svg(body, edge):
+    """Fantôme (70 x 80) : drap ondulé, yeux et joues."""
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="70" height="80" viewBox="0 0 70 80"><path d="M6 40 Q6 6 35 6 Q64 6 64 40 L64 72 Q57 64 50 72 Q43 80 35 72 Q27 64 20 72 Q13 80 6 72Z" fill="{body}" stroke="{edge}" stroke-width="3" stroke-linejoin="round"/>'
+            '<ellipse cx="25" cy="36" rx="6" ry="8" fill="#243044"/><ellipse cx="45" cy="36" rx="6" ry="8" fill="#243044"/><circle cx="27" cy="33" r="2.2" fill="#fff"/><circle cx="47" cy="33" r="2.2" fill="#fff"/>'
+            '<ellipse cx="35" cy="54" rx="6" ry="4.5" fill="#243044"/><circle cx="16" cy="48" r="4" fill="#ff9db3" fill-opacity=".7"/><circle cx="54" cy="48" r="4" fill="#ff9db3" fill-opacity=".7"/></svg>')
+GX, TOP_END, BOTTOM_END = 185, 105, 140   # fantôme 1 : colonne x = 185 ; demi-tour en y = 105 et y = -140 (conditions sur la position, comme les murs)
+GHOST_NEAR = 30      # contact avec un fantôme : différence |x| et |y| inférieures à 28 (comme pour les étoiles : conditions imbriquées, sans capteur) ; 30 couvre toute la largeur de la colonne d'ouverture (x de 156 à 214)
+
 def build():
     P = Proj("labyrinthe"); P.stage_costumes.append(P.costume("fond", maze_svg(), 240, 180))
     sco, si = P.V("النقاط"); tm, tmi = P.V("الوقت"); fr, fri = P.V("الإطارات"); px, pxi = P.V("س السابق"); py, pyi = P.V("ص السابق"); ding = P.sfx("ding")
@@ -56,13 +64,29 @@ def build():
         near_x = sb.if_(sb.lt(sb.R(sb.absv(sb.R(sb.sub_(sb.R(sb.xpos()), sb.R(mx))))), sb.N(30)), near_y)
         sb.script(sb.hat_flag(), sb.gotoxy_(sb.N(sx), sb.N(sy)), sb.size(25), sb.show(), sb.forever_(near_x), y=0)
         P.sprite(f"نجمة {k}", sb, [P.costume("نجمة", art.art_svg("d", "etoile"))], [ding], x=sx, y=sy, size=25, visible=True)
+    # deux fantômes : le premier fait des va-et-vient dans le couloir du milieu, le second se cache puis réapparaît à une position aléatoire ; le toucher = perdu
+    def near_mouse(sb, *body):
+        m1 = sb.add("sensing_of_object_menu", fields={"OBJECT": ["الفأرة", None]}, shadow=True); mx = sb.add("sensing_of", fields={"PROPERTY": ["x position", None]}, inputs={"OBJECT": [1, m1]})
+        m2 = sb.add("sensing_of_object_menu", fields={"OBJECT": ["الفأرة", None]}, shadow=True); my = sb.add("sensing_of", fields={"PROPERTY": ["y position", None]}, inputs={"OBJECT": [1, m2]})
+        near_y = sb.if_(sb.lt(sb.R(sb.absv(sb.R(sb.sub_(sb.R(sb.ypos()), sb.R(my))))), sb.N(GHOST_NEAR)), *body)
+        return sb.if_(sb.lt(sb.R(sb.absv(sb.R(sb.sub_(sb.R(sb.xpos()), sb.R(mx))))), sb.N(GHOST_NEAR)), near_y)
+    g1 = B()   # fantôme 1 : va-et-vient vertical dans la colonne des ouvertures de droite : il faut choisir le bon moment pour passer
+    g1.script(g1.hat_flag(), g1.gotoxy_(g1.N(GX), g1.N(-140)), g1.direction(0), g1.size(30), g1.show(),
+              g1.forever_(g1.add("motion_movesteps", inputs={"STEPS": g1.N(3)}), g1.if_(g1.gt(g1.R(g1.ypos()), g1.N(TOP_END)), g1.direction(180)), g1.if_(g1.lt(g1.R(g1.ypos()), g1.N(-BOTTOM_END)), g1.direction(0)),
+                          near_mouse(g1, P.bc(g1, "خسرت", True), g1.stop_all())), y=0)
+    P.sprite("الشبح 1", g1, [P.costume("شبح", ghost_svg("#ffffff", "#5b6b8c"), 35, 40)], x=GX, y=-140, size=30, visible=True)
+    g2 = B()
+    g2.script(g2.hat_flag(), g2.hide(), g2.size(30), g2.forever_(g2.hide(), g2.wait(2), g2.gotoxy_(g2.R(g2.rand(g2.N(-200), g2.N(200))), g2.R(g2.rand(g2.N(-110), g2.N(120)))), g2.show(), g2.wait(0.5),
+              g2.repeat(40, near_mouse(g2, P.bc(g2, "خسرت", True), g2.stop_all()))), y=0)
+    P.sprite("الشبح 2", g2, [P.costume("شبح", ghost_svg("#e6dcff", "#6b4fb3"), 35, 40)], x=0, y=0, size=30, visible=False)
+    hb.script(P.hat(hb, "خسرت"), hb.stop_other(), hb.sayfor(hb.S("لمسك شبح! خسرت"), 3), y=1000)
     P.monitor("النقاط", 5); P.monitor("الوقت", 32); P.monitor("الإطارات", 59, False); P.monitor("س السابق", 86, False); P.monitor("ص السابق", 113, False)
     P.finish("mystere")
     cover = ('<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">' + nest(maze_svg(), 0, 0, 480, 360) +
-             nest(art.art_svg("a", "souris"), 20, 240, 90, 75) + nest(art.art_svg("d", "fromage"), 350, 20, 80, 69) + nest(art.art_svg("d", "etoile"), 200, 150, 40, 40) + '</svg>')
+             nest(art.art_svg("a", "souris"), 20, 240, 90, 75) + nest(art.art_svg("d", "fromage"), 350, 20, 80, 69) + nest(art.art_svg("d", "etoile"), 200, 150, 40, 40) + nest(ghost_svg("#ffffff", "#5b6b8c"), 250, 190, 60, 69) + nest(ghost_svg("#e6dcff", "#6b4fb3"), 110, 60, 50, 57) + '</svg>')
     os.makedirs(os.path.join(OUT, "couvertures"), exist_ok=True); open(os.path.join(OUT, "couvertures", "labyrinthe.svg"), "w", encoding="utf-8").write(cover)
     meta = [dict(key="labyrinthe", file="jeux/jeu_labyrinthe.sb3", title_ar="متاهة الفأرة", title_fr="Le labyrinthe de la souris",
-                 how_ar="حرّك الفأرة بالأسهم عبر المتاهة للوصول إلى الجبن قبل انتهاء الوقت، والتقط النجوم الثلاث.", how_fr="Déplace la souris avec les flèches dans le labyrinthe pour atteindre le fromage avant la fin du temps, et ramasse les trois étoiles.",
+                 how_ar="حرّك الفأرة بالأسهم عبر المتاهة للوصول إلى الجبن قبل انتهاء الوقت، والتقط النجوم الثلاث وتجنّب الشبحين: إن لمسك أحدهما خسرت.", how_fr="Déplace la souris avec les flèches dans le labyrinthe pour atteindre le fromage avant la fin du temps, ramasse les trois étoiles et évite les deux fantômes : si l'un d'eux te touche, tu perds.",
                  cover="jeux/couvertures/labyrinthe.svg")]
     json.dump(meta, open(os.path.join(HERE, "jeux6_manifest.json"), "w", encoding="utf-8"), ensure_ascii=False)
     print("jeu labyrinthe :", os.path.getsize(os.path.join(OUT, "jeu_labyrinthe.sb3")) // 1024, "Ko")
