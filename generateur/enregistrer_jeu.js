@@ -32,6 +32,8 @@ const VM = require('scratch-vm'); const _S = require('scratch-storage'); const S
       const want = t < 20 && dx > 0 && dx <= 19 * val('السرعة') && onGround;
       if (want !== keyL) { key(' ', want); keyL = want; }
     } else if (mode === 'maze') {                // labyrinthe : pilote automatique (et un essai contre le premier mur)
+      const LV = process.env.LEVEL || '2'; if (n === 12) key(LV, true); if (n === 14) key(LV, false);      // choix du niveau 2 (normal)
+      if (n === 150) key('h', true); if (n === 152) key('h', false);    // astuce (touche H)
       const SEG = [['x', -100], ['hold', 'up', 40], ['y', -130], ['x', 195], ['y', -15], ['x', -195], ['y', 75], ['x', 195], ['y', 150]];
       const s = SEG[Math.min(seg, SEG.length - 1)]; let want = null;
       const g1 = T('الشبح 1');   // le fantôme 1 monte et descend dans la colonne des ouvertures de droite (pas de 3, demi-tours en y = 105 et -140) : on prédit le croisement et on attend au bord de la colonne
@@ -55,7 +57,7 @@ const VM = require('scratch-vm'); const _S = require('scratch-storage'); const S
     frames.push({ t, sp, score: val('النقاط'), lives: val('الأرواح'), speed: val('السرعة'), vars: Object.fromEntries(Object.values(stage.variables).map(v => [v.name, v.value])) });
     const over = mode === 'maze' ? /^(فزت|انتهى الوقت|لمسك شبح)/.test(said['الفأرة'] || '') : frames[frames.length - 1].lives < 1;
     if (over && n > FPS && ended < 0) ended = n;      // fin : on garde encore 3,5 s (message « انتهت اللعبة! »)
-    if (ended >= 0 && n - ended > 3.5 * FPS) break;
+    if (ended >= 0 && n - ended > (mode === 'maze' ? 7 : 3.5) * FPS) break;
   }
   fs.writeFileSync(out, JSON.stringify(frames)); Date.now = realNow;
   const l = frames[frames.length - 1]; console.log('images', frames.length, 'durée', (frames.length / FPS).toFixed(1), 's score', l.score, 'vies', l.lives, 'vitesse', l.speed);

@@ -27,9 +27,10 @@ def place(c, x, y, size, flip=False):
     return f'<g transform="translate({240 + x:.1f},{180 - y:.1f}) scale({-s if flip else s},{s}) translate({-c["rcx"]},{-c["rcy"]})">{c["svg"]}</g>'
 FONT = "Tajawal,Arial,sans-serif"
 def bubble(text, x, y):
-    w = 11 * len(text) + 30; x = max(w / 2 + 4, min(480 - w / 2 - 4, x))
-    return (f'<g><rect x="{x - w/2}" y="{y}" width="{w}" height="34" rx="14" fill="#fff" stroke="#9aa3b2" stroke-width="2"/>'
-            f'<text x="{x}" y="{y + 23}" text-anchor="middle" font-family="{FONT}" font-size="17" font-weight="bold" fill="#333">{escape(text)}</text></g>')
+    import textwrap
+    lines = textwrap.wrap(text, 34) or [""]; n = len(lines); w = 11 * max(len(l) for l in lines) + 30; x = max(w / 2 + 4, min(480 - w / 2 - 4, x)); top = y - (n - 1) * 22; h = 34 + (n - 1) * 22
+    txt = "".join(f'<text x="{x}" y="{top + 23 + k * 22}" text-anchor="middle" font-family="{FONT}" font-size="17" font-weight="bold" fill="#333">{escape(l)}</text>' for k, l in enumerate(lines))
+    return f'<g><rect x="{x - w/2}" y="{top}" width="{w}" height="{h}" rx="14" fill="#fff" stroke="#9aa3b2" stroke-width="2"/>{txt}</g>'
 def monitor(label, value, x, y):
     return (f'<g><rect x="{x}" y="{y}" width="108" height="22" rx="4" fill="#e6f0ff" stroke="#c4d3f0"/><text x="{x + 6}" y="{y + 16}" font-family="{FONT}" font-size="13" fill="#575e75" font-weight="bold">{label}</text>'
             f'<rect x="{x + 70}" y="{y + 3}" width="34" height="16" rx="3" fill="#ff8c1a"/><text x="{x + 87}" y="{y + 16}" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#fff">{int(value) if float(value).is_integer() else round(value, 2)}</text></g>')

@@ -32,6 +32,8 @@ GHOST_NEAR = 30      # contact avec un fantôme : différence |x| et |y| inféri
 def build():
     P = Proj("labyrinthe"); P.stage_costumes.append(P.costume("fond", maze_svg(), 240, 180))
     sco, si = P.V("النقاط"); tm, tmi = P.V("الوقت"); fr, fri = P.V("الإطارات"); px, pxi = P.V("س السابق"); py, pyi = P.V("ص السابق"); ding = P.sfx("ding")
+    lvl, lvli = P.V("المستوى"); gsp, gspi = P.V("سرعة الشبح"); ghd, ghdi = P.V("اختفاء الشبح"); tot, toti = P.V("المدة"); tip, tipi = P.V("النصيحة")
+    def wait_level(b): return b.add("control_wait_until", inputs={"CONDITION": b.C(b.gt(b.R(b.var(lvl, lvli)), b.N(0)))})   # tous les lutins attendent le choix du niveau
     # souris
     hb = B(); left, right, up, down = hb.key("left arrow"), hb.key("right arrow"), hb.key("up arrow"), hb.key("down arrow")
     face = lambda d: hb.add("motion_pointindirection", inputs={"DIRECTION": [1, [8, str(d)]]})
@@ -43,13 +45,22 @@ def build():
         inner = hb.if_(hb.lt(hb.R(hb.xpos()), hb.N(GAP)), back()) if side == "right" else hb.if_(hb.gt(hb.R(hb.xpos()), hb.N(-GAP)), back())
         walls.append(hb.if_(hb.gt(hb.R(hb.ypos()), hb.N(wy - BAND)), hb.if_(hb.lt(hb.R(hb.ypos()), hb.N(wy + BAND)), inner)))
     edges = [hb.if_(hb.gt(hb.R(hb.xpos()), hb.N(214)), hb.setx(hb.N(214))), hb.if_(hb.lt(hb.R(hb.xpos()), hb.N(-214)), hb.setx(hb.N(-214))), hb.if_(hb.lt(hb.R(hb.ypos()), hb.N(-156)), hb.add("motion_sety", inputs={"Y": hb.N(-156)}))]
-    secs = hb.sub_(hb.N(60), hb.R(hb.add("operator_round", inputs={"NUM": hb.R(hb.add("operator_divide", inputs={"NUM1": hb.R(hb.var(fr, fri)), "NUM2": hb.N(30)}))})))
+    secs = hb.sub_(hb.R(hb.var(tot, toti)), hb.R(hb.add("operator_round", inputs={"NUM": hb.R(hb.add("operator_divide", inputs={"NUM1": hb.R(hb.var(fr, fri)), "NUM2": hb.N(30)}))})))
     clock = [hb.chg(fr, fri, 1), hb.setv(tm, tmi, hb.R(secs))]
-    win = hb.if_(hb.gt(hb.R(hb.ypos()), hb.N(140)), hb.sayfor(hb.join(hb.S("فزت! نقاطك: "), hb.RS(hb.var(sco, si))), 3), hb.stop_all())
-    lose = hb.if_(hb.lt(hb.R(hb.var(tm, tmi)), hb.N(1)), hb.sayfor(hb.S("انتهى الوقت!"), 3), hb.stop_all())
-    hb.script(hb.hat_flag(), hb.setv(sco, si, 0), hb.setv(fr, fri, 0), hb.setv(tm, tmi, 60), hb.size(22), hb.gotoxy_(hb.N(-200), hb.N(-130)), hb.show(),
+    win = hb.if_(hb.gt(hb.R(hb.ypos()), hb.N(140)), hb.sayfor(hb.join(hb.S("فزت! نقاطك: "), hb.RS(hb.var(sco, si))), 3), hb.sayfor(hb.S("نصيحة: جرّب مستوى أصعب وحاول التقاط النجوم الثلاث!"), 3), hb.stop_all())
+    lose = hb.if_(hb.lt(hb.R(hb.var(tm, tmi)), hb.N(1)), hb.sayfor(hb.S("انتهى الوقت!"), 3), hb.sayfor(hb.S("نصيحة: كل نجمة تمنحك 5 ثوان إضافية، التقطها!"), 3), hb.stop_all())
+    setlevel = lambda n, v, g, d, t: hb.if_(hb.eq(hb.R(hb.var(lvl, lvli)), hb.N(n)), hb.setv(gsp, gspi, hb.N(g)), hb.setv(ghd, ghdi, hb.N(d)), hb.setv(tot, toti, hb.N(t)))
+    choose = hb.until(hb.gt(hb.R(hb.var(lvl, lvli)), hb.N(0)), hb.if_(hb.key("1"), hb.setv(lvl, lvli, hb.N(1))), hb.if_(hb.key("2"), hb.setv(lvl, lvli, hb.N(2))), hb.if_(hb.key("3"), hb.setv(lvl, lvli, hb.N(3))))
+    hb.script(hb.hat_flag(), hb.setv(sco, si, 0), hb.setv(fr, fri, 0), hb.setv(lvl, lvli, 0), hb.setv(tip, tipi, 0), hb.size(22), hb.gotoxy_(hb.N(-200), hb.N(-130)), hb.show(),
+              hb.say_(hb.S("اختر المستوى: 1 سهل · 2 عادي · 3 صعب")), choose, setlevel(1, 1, 2, 3, 90), setlevel(2, 2, 3, 2, 60), setlevel(3, 3, 4, 1, 45),
+              hb.setv(tm, tmi, hb.R(hb.var(tot, toti))), hb.say_(hb.S("")),
               hb.forever_(*save, *moves, *walls, *edges, *clock, win, lose), y=0)
-    hb.script(hb.hat_flag(), hb.sayfor(hb.S("استعمل الأسهم للوصول إلى الجبن"), 4), y=500)
+    hb.script(hb.hat_flag(), wait_level(hb), hb.sayfor(hb.S("استعمل الأسهم للوصول إلى الجبن. اضغط H للحصول على نصيحة"), 4), y=500)
+    # astuces éducatives : la touche H affiche une astuce différente à chaque appui (variable « النصيحة », conditions simples)
+    TIPS = ["نصيحة 1: راقب الشبح 1: يصعد ثم ينزل بإيقاع ثابت. انتظر اللحظة المناسبة قبل أن تمرّ.", "نصيحة 2: الشبح 2 يظهر نصف ثانية دون خطر: ابتعد بسرعة!", "نصيحة 3: كل نجمة تمنحك نقطة و5 ثوان: الوقت متغير يمكن أن يزيد.",
+            "نصيحة 4: الجدار يعيدك إلى (س السابق، ص السابق): متغيران يحفظان مكانك قبل كل حركة.", "نصيحة 5: المستوى يغيّر سرعة الشبح ومدة اللعبة: هذه قيم تحفظها متغيرات."]
+    hb.script(hb.add("event_whenkeypressed", fields={"KEY_OPTION": ["h", None]}), hb.chg(tip, tipi, 1), hb.if_(hb.gt(hb.R(hb.var(tip, tipi)), hb.N(5)), hb.setv(tip, tipi, 1)),
+              *[hb.if_(hb.eq(hb.R(hb.var(tip, tipi)), hb.N(k)), hb.sayfor(hb.S(t), 4)) for k, t in enumerate(TIPS, 1)], y=1500)
     P.sprite("الفأرة", hb, [P.costume("فأرة", art.art_svg("a", "souris"))], x=-200, y=-130, size=22, visible=True, flip=True)
     # fromage (but)
     gb = B(); P.sprite("الجبن", gb, [P.costume("جبن", art.art_svg("d", "fromage"))], x=195, y=150, size=30, visible=True)
@@ -60,9 +71,9 @@ def build():
         menu2 = sb.add("sensing_of_object_menu", fields={"OBJECT": ["الفأرة", None]}, shadow=True)
         my = sb.add("sensing_of", fields={"PROPERTY": ["y position", None]}, inputs={"OBJECT": [1, menu2]})
         stop = sb.add("control_stop", fields={"STOP_OPTION": ["this script", None]}); sb.b[stop]["mutation"] = {"tagName": "mutation", "children": [], "hasnext": "false"}
-        near_y = sb.if_(sb.lt(sb.R(sb.absv(sb.R(sb.sub_(sb.R(sb.ypos()), sb.R(my))))), sb.N(30)), sb.chg(sco, si, 1), sb.play(ding["name"]), sb.add("looks_hide"), stop)
+        near_y = sb.if_(sb.lt(sb.R(sb.absv(sb.R(sb.sub_(sb.R(sb.ypos()), sb.R(my))))), sb.N(30)), sb.chg(sco, si, 1), sb.chg(fr, fri, -150), sb.play(ding["name"]), sb.add("looks_hide"), stop)
         near_x = sb.if_(sb.lt(sb.R(sb.absv(sb.R(sb.sub_(sb.R(sb.xpos()), sb.R(mx))))), sb.N(30)), near_y)
-        sb.script(sb.hat_flag(), sb.gotoxy_(sb.N(sx), sb.N(sy)), sb.size(25), sb.show(), sb.forever_(near_x), y=0)
+        sb.script(sb.hat_flag(), sb.gotoxy_(sb.N(sx), sb.N(sy)), sb.size(25), sb.show(), wait_level(sb), sb.forever_(near_x), y=0)
         P.sprite(f"نجمة {k}", sb, [P.costume("نجمة", art.art_svg("d", "etoile"))], [ding], x=sx, y=sy, size=25, visible=True)
     # deux fantômes : le premier fait des va-et-vient dans le couloir du milieu, le second se cache puis réapparaît à une position aléatoire ; le toucher = perdu
     def near_mouse(sb, *body):
@@ -71,16 +82,16 @@ def build():
         near_y = sb.if_(sb.lt(sb.R(sb.absv(sb.R(sb.sub_(sb.R(sb.ypos()), sb.R(my))))), sb.N(GHOST_NEAR)), *body)
         return sb.if_(sb.lt(sb.R(sb.absv(sb.R(sb.sub_(sb.R(sb.xpos()), sb.R(mx))))), sb.N(GHOST_NEAR)), near_y)
     g1 = B()   # fantôme 1 : va-et-vient vertical dans la colonne des ouvertures de droite : il faut choisir le bon moment pour passer
-    g1.script(g1.hat_flag(), g1.gotoxy_(g1.N(GX), g1.N(-140)), g1.direction(0), g1.size(30), g1.show(),
-              g1.forever_(g1.add("motion_movesteps", inputs={"STEPS": g1.N(3)}), g1.if_(g1.gt(g1.R(g1.ypos()), g1.N(TOP_END)), g1.direction(180)), g1.if_(g1.lt(g1.R(g1.ypos()), g1.N(-BOTTOM_END)), g1.direction(0)),
+    g1.script(g1.hat_flag(), g1.gotoxy_(g1.N(GX), g1.N(-140)), g1.direction(0), g1.size(30), g1.show(), wait_level(g1),
+              g1.forever_(g1.add("motion_movesteps", inputs={"STEPS": g1.R(g1.var(gsp, gspi))}), g1.if_(g1.gt(g1.R(g1.ypos()), g1.N(TOP_END)), g1.direction(180)), g1.if_(g1.lt(g1.R(g1.ypos()), g1.N(-BOTTOM_END)), g1.direction(0)),
                           near_mouse(g1, P.bc(g1, "خسرت", True), g1.stop_all())), y=0)
     P.sprite("الشبح 1", g1, [P.costume("شبح", ghost_svg("#ffffff", "#5b6b8c"), 35, 40)], x=GX, y=-140, size=30, visible=True)
     g2 = B()
-    g2.script(g2.hat_flag(), g2.hide(), g2.size(30), g2.forever_(g2.hide(), g2.wait(2), g2.gotoxy_(g2.R(g2.rand(g2.N(-200), g2.N(200))), g2.R(g2.rand(g2.N(-110), g2.N(120)))), g2.show(), g2.wait(0.5),
+    g2.script(g2.hat_flag(), g2.hide(), g2.size(30), wait_level(g2), g2.forever_(g2.hide(), g2.add("control_wait", inputs={"DURATION": g2.R(g2.var(ghd, ghdi))}), g2.gotoxy_(g2.R(g2.rand(g2.N(-200), g2.N(200))), g2.R(g2.rand(g2.N(-110), g2.N(120)))), g2.show(), g2.wait(0.5),
               g2.repeat(40, near_mouse(g2, P.bc(g2, "خسرت", True), g2.stop_all()))), y=0)
     P.sprite("الشبح 2", g2, [P.costume("شبح", ghost_svg("#e6dcff", "#6b4fb3"), 35, 40)], x=0, y=0, size=30, visible=False)
-    hb.script(P.hat(hb, "خسرت"), hb.stop_other(), hb.sayfor(hb.S("لمسك شبح! خسرت"), 3), y=1000)
-    P.monitor("النقاط", 5); P.monitor("الوقت", 32); P.monitor("الإطارات", 59, False); P.monitor("س السابق", 86, False); P.monitor("ص السابق", 113, False)
+    hb.script(P.hat(hb, "خسرت"), hb.stop_other(), hb.sayfor(hb.S("لمسك شبح! خسرت"), 3), hb.sayfor(hb.S("نصيحة: راقب إيقاع الشبح قبل المرور (اضغط H)"), 3), y=1000)
+    P.monitor("النقاط", 5); P.monitor("الوقت", 32); P.monitor("المستوى", 59); P.monitor("الإطارات", 86, False); P.monitor("س السابق", 113, False); P.monitor("ص السابق", 140, False)
     P.finish("mystere")
     cover = ('<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">' + nest(maze_svg(), 0, 0, 480, 360) +
              nest(art.art_svg("a", "souris"), 20, 240, 90, 75) + nest(art.art_svg("d", "fromage"), 350, 20, 80, 69) + nest(art.art_svg("d", "etoile"), 200, 150, 40, 40) + nest(ghost_svg("#ffffff", "#5b6b8c"), 250, 190, 60, 69) + nest(ghost_svg("#e6dcff", "#6b4fb3"), 110, 60, 50, 57) + '</svg>')

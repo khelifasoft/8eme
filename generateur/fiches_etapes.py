@@ -119,9 +119,12 @@ LABY = [("Début de partie", "Je clique sur le drapeau vert : la souris part en 
  ("Arrivée au fromage", "Quand y dépasse 140 : le message « Gagné ! » s'affiche et le jeu s'arrête. Si le temps tombe à 0, le jeu s'arrête aussi."),
  ("Le fantôme 1 monte et descend", "Le fantôme avance de 3 pas et fait demi-tour en haut (y > 105) et en bas (y < -140) : il balaie la colonne des ouvertures de droite. Il faut choisir le bon moment pour passer."),
  ("Le fantôme 2 réapparaît ailleurs", "Le fantôme se cache 2 secondes, puis réapparaît à une position au hasard. Pendant une demi-seconde il est visible sans danger : on a le temps de s'écarter."),
- ("Un fantôme me touche : perdu", "Si la différence en x et en y avec la souris est petite (moins de 30), le fantôme envoie le message « perdu » : la souris dit « Un fantôme t'a touché ! » et le jeu s'arrête.")]
-LL = {"fr": dict(flag="1  Drapeau vert", keys="2  Flèches", wall="3  Mur : retour", gap="4  Ouverture", star="+1 point", win="GAGNÉ !", g1="7  Fantôme 1 : va-et-vient", g2="8  Fantôme 2 : position au hasard", lose="9  Perdu !", lost="PERDU !"),
-      "ar": dict(flag="1  العلم الأخضر", keys="2  الأسهم", wall="3  جدار: رجوع", gap="4  الفتحة", star="+1 نقطة", win="فزت!", g1="7  الشبح 1: ذهاب وإياب", g2="8  الشبح 2: مكان عشوائي", lose="9  خسرت!", lost="خسرت!")}
+ ("Un fantôme me touche : perdu", "Si la différence en x et en y avec la souris est petite (moins de 30), le fantôme envoie le message « perdu » : la souris dit « Un fantôme t'a touché ! » et le jeu s'arrête."),
+ ("Je choisis le niveau", "Au début, la souris demande le niveau : touches 1 (facile), 2 (normal) ou 3 (difficile). Le niveau règle, avec des variables, la vitesse des fantômes, leur temps de disparition et la durée du jeu. Tous les lutins attendent ce choix."),
+ ("Une étoile ajoute du temps", "Chaque étoile ramassée ajoute 1 point et 5 secondes : on retire 150 au compteur d'images, donc le temps affiché remonte."),
+ ("Les astuces (touche H)", "La touche H affiche une astuce différente à chaque appui (variable « astuce »). À la fin de la partie, un conseil adapté s'affiche aussi : gagné, temps écoulé ou touché par un fantôme.")]
+LL = {"fr": dict(flag="1  Drapeau vert", keys="2  Flèches", wall="3  Mur : retour", gap="4  Ouverture", star="+1 point", win="GAGNÉ !", g1="7  Fantôme 1 : va-et-vient", g2="8  Fantôme 2 : position au hasard", lose="9  Perdu !", lost="PERDU !", lvl="10  Choix du niveau", bonus="11  +1 point et +5 s", tip="12  Astuce (touche H)", q_lvl="Choisis le niveau : 1 · 2 · 3", q_tip="Astuce : observe le rythme du fantôme !"),
+      "ar": dict(flag="1  العلم الأخضر", keys="2  الأسهم", wall="3  جدار: رجوع", gap="4  الفتحة", star="+1 نقطة", win="فزت!", g1="7  الشبح 1: ذهاب وإياب", g2="8  الشبح 2: مكان عشوائي", lose="9  خسرت!", lost="خسرت!", lvl="10  اختيار المستوى", bonus="11  نقطة و5 ثوان", tip="12  نصيحة (المفتاح H)", q_lvl="اختر المستوى: 1 · 2 · 3", q_tip="نصيحة: راقب إيقاع الشبح!")}
 def labyrinthe():
     import video_jeu as V
     z, T = V.load(os.path.join(ROOT, "jeux", "jeu_labyrinthe.sb3")); by = {t["name"]: t for t in T}
@@ -145,10 +148,13 @@ def labyrinthe():
              scene(192, 142, 3, 47, (), f'<rect x="0" y="0" width="480" height="360" fill="#000" fill-opacity=".45"/><text x="240" y="195" text-anchor="middle" font-family="Tajawal,Arial,sans-serif" font-size="52" font-weight="bold" fill="#fff">{L["win"]}</text>'),
              scene(150, -130, 1, 49, (2, 3), arrow(185, 120, 185, -90) + tag(L["g1"], 240, 215), ghosts=[("الشبح 1", 185, -20)]),
              scene(-40, -15, 1, 46, (3,), tag(L["g2"], 160, 275), ghosts=[("الشبح 1", 185, 60), ("الشبح 2", 20, 80)]),
-             scene(20, -15, 1, 45, (3,), f'<rect x="0" y="0" width="480" height="360" fill="#000" fill-opacity=".45"/><text x="240" y="195" text-anchor="middle" font-family="Tajawal,Arial,sans-serif" font-size="52" font-weight="bold" fill="#fff">{L["lost"]}</text>' + tag(L["lose"], 150, 300, "#c0392b"), ghosts=[("الشبح 2", 28, -10)])]
+             scene(20, -15, 1, 45, (3,), f'<rect x="0" y="0" width="480" height="360" fill="#000" fill-opacity=".45"/><text x="240" y="195" text-anchor="middle" font-family="Tajawal,Arial,sans-serif" font-size="52" font-weight="bold" fill="#fff">{L["lost"]}</text>' + tag(L["lose"], 150, 300, "#c0392b"), ghosts=[("الشبح 2", 28, -10)]),
+             scene(-200, -130, 0, 0, (1, 2, 3), V.bubble(L["q_lvl"], 130, 195) + tag(L["lvl"], 150, 240)),
+             scene(0, -130, 2, 62, (2, 3), tag(L["bonus"], 200, 190, "#2e9e5b") + arrow(60, 175, 10, 140, "#2e9e5b")),
+             scene(-30, -15, 1, 48, (3,), V.bubble(L["q_tip"], 140, 160) + tag(L["tip"], 130, 230))]
         for n, body in enumerate(S, 1):
             open(os.path.join(OUT, f"labyrinthe{suffix}-{n}.svg"), "w", encoding="utf-8").write(f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">{defs}{body}</svg>')
-    return [dict(img=f"fiches-activite/etapes/labyrinthe-{n}.svg", img_ar=f"fiches-activite/etapes/labyrinthe-ar-{n}.svg", t=LABY[n - 1][0], c=LABY[n - 1][1]) for n in range(1, 10)]
+    return [dict(img=f"fiches-activite/etapes/labyrinthe-{n}.svg", img_ar=f"fiches-activite/etapes/labyrinthe-ar-{n}.svg", t=LABY[n - 1][0], c=LABY[n - 1][1]) for n in range(1, 13)]
 def contes():
     out = {}
     for key in sc.D:

@@ -197,6 +197,53 @@ ct:forever|répéter indéfiniment|كرّر باستمرار
 ev:recv|quand je reçois « perdu » (lutin « souris »)|عند استقبال «خسرت» (الكائن «الفأرة»)
 ct:stop|stop les autres scripts du lutin|أوقف السكربتات الأخرى للكائن
 lk:say|dire « Un fantôme t'a touché ! Perdu » pendant 3 secondes|قل «لمسك شبح! خسرت» لمدة 3 ثوان"""),
+ ("الفأرة", "Lutin « souris » (choix du niveau)", f"""{FLAG}
+va:set|mettre niveau à 0|اجعل المستوى 0
+lk:say|dire « Choisis le niveau : 1 facile · 2 normal · 3 difficile »|قل «اختر المستوى: 1 سهل · 2 عادي · 3 صعب»
+ct:until|niveau > 0|المستوى > 0
+  ct:if|touche 1 pressée ?|هل المفتاح 1 مضغوط؟
+    va:set|mettre niveau à 1|اجعل المستوى 1
+  ct:if|touche 2 pressée ?|هل المفتاح 2 مضغوط؟
+    va:set|mettre niveau à 2|اجعل المستوى 2
+  ct:if|touche 3 pressée ?|هل المفتاح 3 مضغوط؟
+    va:set|mettre niveau à 3|اجعل المستوى 3
+ct:if|niveau = 1|المستوى = 1
+  va:set|mettre vitesse du fantôme à 2|اجعل سرعة الشبح 2
+  va:set|mettre disparition du fantôme à 3|اجعل اختفاء الشبح 3
+  va:set|mettre durée à 90|اجعل المدة 90
+ct:if|niveau = 2|المستوى = 2
+  va:set|mettre vitesse du fantôme à 3|اجعل سرعة الشبح 3
+  va:set|mettre disparition du fantôme à 2|اجعل اختفاء الشبح 2
+  va:set|mettre durée à 60|اجعل المدة 60
+ct:if|niveau = 3|المستوى = 3
+  va:set|mettre vitesse du fantôme à 4|اجعل سرعة الشبح 4
+  va:set|mettre disparition du fantôme à 1|اجعل اختفاء الشبح 1
+  va:set|mettre durée à 45|اجعل المدة 45
+va:set|mettre temps à (durée)|اجعل الوقت (المدة)
+ev:flag|quand le drapeau vert est cliqué (tous les autres lutins)|عند النقر على العلم الأخضر (باقي الكائنات)
+ct:waituntil|attendre jusqu'à ce que niveau > 0|انتظر حتى يصبح المستوى > 0"""),
+ ("نجمة 1", "Lutin « étoile 1 » (dans la boucle « répéter indéfiniment », bonus de temps)", """ct:if|valeur absolue de (x − x de la souris) < 30|القيمة المطلقة لـ (س − س الفأرة) < 30
+  ct:if|valeur absolue de (y − y de la souris) < 30|القيمة المطلقة لـ (ص − ص الفأرة) < 30
+    va:chg|ajouter 1 à score|غيّر النقاط بمقدار 1
+    va:chg|ajouter -150 à frames (5 secondes de plus)|غيّر الإطارات بمقدار -150 (5 ثوان إضافية)
+    sn:play|jouer le son « ding »|ابدأ الصوت «ding»
+    lk:hide|cacher|أخفِ
+    ct:stop|stop ce script|أوقف هذا السكربت
+va:set|mettre temps à (durée − arrondi de (frames / 30))|اجعل الوقت (المدة − تقريب (الإطارات / 30))"""),
+ ("الفأرة", "Lutin « souris » (astuces)", """ev:space|quand la touche h est pressée|عند ضغط المفتاح h
+va:chg|ajouter 1 à astuce|غيّر النصيحة بمقدار 1
+ct:if|astuce > 5|النصيحة > 5
+  va:set|mettre astuce à 1|اجعل النصيحة 1
+ct:if|astuce = 1|النصيحة = 1
+  lk:say|dire « Astuce 1 : observe le fantôme 1 : il monte puis descend à rythme régulier. Attends le bon moment. » pendant 4 secondes|قل «نصيحة 1: راقب الشبح 1: يصعد ثم ينزل بإيقاع ثابت. انتظر اللحظة المناسبة قبل أن تمرّ.» لمدة 4 ثوان
+ct:if|astuce = 2|النصيحة = 2
+  lk:say|dire « Astuce 2 : le fantôme 2 apparaît une demi-seconde sans danger : écarte-toi vite ! » pendant 4 secondes|قل «نصيحة 2: الشبح 2 يظهر نصف ثانية دون خطر: ابتعد بسرعة!» لمدة 4 ثوان
+ct:if|astuce = 3|النصيحة = 3
+  lk:say|dire « Astuce 3 : chaque étoile donne 1 point et 5 secondes : le temps peut augmenter. » pendant 4 secondes|قل «نصيحة 3: كل نجمة تمنحك نقطة و5 ثوان: الوقت متغير يمكن أن يزيد.» لمدة 4 ثوان
+ct:if|astuce = 4|النصيحة = 4
+  lk:say|dire « Astuce 4 : un mur te ramène à (x précédent, y précédent) : deux variables mémorisent ta position avant chaque déplacement. » pendant 4 secondes|قل «نصيحة 4: الجدار يعيدك إلى (س السابق، ص السابق): متغيران يحفظان مكانك قبل كل حركة.» لمدة 4 ثوان
+ct:if|astuce = 5|النصيحة = 5
+  lk:say|dire « Astuce 5 : le niveau change la vitesse des fantômes et la durée : ce sont des valeurs mémorisées par des variables. » pendant 4 secondes|قل «نصيحة 5: المستوى يغيّر سرعة الشبح ومدة اللعبة: هذه قيم تحفظها متغيرات.» لمدة 4 ثوان"""),
 ]
 SPR_FR = {}
 def export():
@@ -208,7 +255,7 @@ def export():
             base = re.sub(r" \(.*\)$", "", spr_fr); lab = "الكائن «" + spr + "»" + {"": "", "boucle": " — داخل حلقة «كرّر باستمرار»", "suite": " — تتمة السكربت"}[ctx]
             fr[lab] = base + {"": "", "boucle": " — dans la boucle « répéter indéfiniment »", "suite": " — suite du script"}[ctx]
             tok, f = parse(code); fr.update(f); steps[key].append(dict(sprite=lab, tok=tok))
-        assert len(steps[key]) == (9 if key == "labyrinthe" else 6)
+        assert len(steps[key]) == (12 if key == "labyrinthe" else 6)
     import jeux7_data as _J7   # « singe » et « requin »
     _s7, _f7 = _J7.solutions(); steps.update(_s7); fr.update(_f7)
     return dict(code=CODE, steps=steps), fr
